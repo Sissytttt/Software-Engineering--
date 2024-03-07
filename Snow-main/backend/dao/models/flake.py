@@ -36,6 +36,9 @@ class Flake(models.Model):
 
     def get_comments(self):
         return self.comments.all()
+# add get_retweets
+    def get_retweets(self):
+        return self.retweets.all()
 
 
 class Like(models.Model):

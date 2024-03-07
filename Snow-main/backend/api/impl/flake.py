@@ -69,6 +69,19 @@ def unlike(request):
     request.user.unlike(flake)
     return success(flake)
 
+# add retweet
+@require_auth
+@post("retweet")
+@contract(Schema({'id': int}))
+def retweet(request):
+    id = request.payload['id']
+    flake = service.flake.get(id)
+    if flake is None:
+        return client_error('INVALID_PARAM', f"No such flake: {id}")
+    request.user.retweet(flake)
+    return success(flake)
+
+
 @require_auth
 @get("feeds")
 @contract(Schema({Optional('user'): Use(int), Optional('offset', default=0): Use(int), Optional('limit', default=40): Use(int)}))

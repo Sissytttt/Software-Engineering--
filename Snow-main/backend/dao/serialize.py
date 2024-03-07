@@ -30,6 +30,7 @@ class SnowEncoder(DjangoJSONEncoder):
                 'image': obj.image if obj.image else None,
                 'reply_to': obj.reply_to.id if obj.reply_to else obj.reply_to,
                 'likes_count': len(obj.get_likes()),
+                'retweets_count': len(obj.get_retweets()),
                 'comments_count': len(obj.get_comments())
             }
 

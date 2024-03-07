@@ -59,6 +59,19 @@ class UserTestCase(TestCase):
         self.test_user2.unlike(flake)
         self.assertEqual(len(flake.get_likes()), 0)
 
+
+    def test_retweets(self):
+        self.test_user1.post_flake(content="hello test!")
+        flake = Flake.objects.get(author=self.test_user1)
+        self.assertEqual(len(flake.get_retweets()), 0)
+
+        self.test_user2.retweet(flake)
+        retweets = flake.get_retweets()
+        self.assertEqual(len(retweets), 1)
+        self.assertEqual(retweets[0].user, self.test_user2)
+        self.assertEqual(retweets[0].flake, flake)
+
+
     def test_follow(self):
         self.assertEqual(len(self.test_user1.get_follows()), 0)
         self.assertEqual(len(self.test_user1.get_followers()), 0)
@@ -104,3 +117,7 @@ class UserTestCase(TestCase):
         self.assertEqual(len(list(filter(lambda f: f.author == self.test_user2, feeds1))), 2)
         self.assertEqual(len(feeds2), 2)
         self.assertTrue(all(map(lambda f: f.author == self.test_user2, feeds2)))
+
+testcase = UserTestCase()
+testcase.setUp()
+testcase.test_retweets()

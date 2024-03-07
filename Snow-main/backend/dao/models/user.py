@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Q
 
 from .file import Image
-from .flake import Flake, Like
+from .flake import Flake, Like, Retweet
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
@@ -72,6 +72,14 @@ class User(models.Model):
             like.delete()
         except Like.DoesNotExist:
             return
+
+# add retweet function
+    def retweet(self, flake):
+        Retweet.objects.create(
+            user = self,
+            flake = flake
+        )
+    
 
     def follow(self, followee):
         self.follows.add(followee)
