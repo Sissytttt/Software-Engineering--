@@ -1,4 +1,4 @@
-from dao.models import Flake, User, Image
+from models import Flake, User, Image
 from django.test import TestCase
 from django.contrib.auth.models import User as AuthUser
 
