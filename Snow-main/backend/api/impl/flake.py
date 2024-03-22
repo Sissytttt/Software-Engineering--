@@ -17,12 +17,14 @@ def get_flake(request):
         return client_error('INVALID_PARAM', f"No such flake: {request.payload['id']}")
     return success(flake)
 
-@require_auth
-@post("post")
-@contract(Schema({'content': str, Optional('image'): int, Optional('reply_to'): int}))
-def _post(request):
+# api prefakes？api路径
+@require_auth # 登录过的用户才能使用这个api
+@post("post") # 直接说post请求 发post request到api才会响应
+@contract(Schema({'content': str, Optional('image'): int, Optional('reply_to'): int})) 
+#发出request时会给payload传进去 -- JASON （key-value）两个optional的key：image & reply_to，校验穿进去的是否符合
+def _post(request): # 通过上面校验 会进入下面的函数，做处理
     image = None
-    reply_to = None
+    reply_to = None 
     if 'image' in request.payload:
         image = service.file.get_image(request.payload['image'])
         if image is None:
@@ -80,7 +82,6 @@ def retweet(request):
         return client_error('INVALID_PARAM', f"No such flake: {id}")
     request.user.retweet(flake)
     return success(flake)
-
 
 @require_auth
 @get("feeds")
