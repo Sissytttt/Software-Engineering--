@@ -9,12 +9,10 @@ class Place:
             database=database
         )
         self.name = None
-        self.longitude = None
-        self.latitude = None
+        self.longitude = None # location_longtitude
+        self.latitude = None # location_latitude
         self.city = None
 
-    # def Get_Name(self):
-    #     return self.name
     def Get_Name(self, longitude, latitude):
         cursor = self.connection.cursor()
         query = """
@@ -27,10 +25,8 @@ class Place:
         if result:
             return result[0]
         else:
-            return "No place found with the provided coordinates."
-
-    # def Get_location_longitude(self):
-    #     return self.longitude
+            return "No place found"
+        
     def Get_location_longitude(self, name):
         cursor = self.connection.cursor()
         query = "SELECT longitude FROM place WHERE name = %s"
@@ -40,7 +36,7 @@ class Place:
         if result:
             return result[0]
         else:
-            return "No place found with this name."
+            return "No place found"
 
     def Get_location_latitude(self, name):
         cursor = self.connection.cursor()
@@ -51,7 +47,7 @@ class Place:
         if result:
             return result[0]
         else:
-            return "No place found with this name."
+            return "No place found"
 
     def Get_city(self, name):
         cursor = self.connection.cursor()
@@ -62,7 +58,7 @@ class Place:
         if result:
             return result[0]
         else:
-            return "No place found with this name."
+            return "No place found"
 
     def Set_Name(self, longitude, latitude, new_name):
         cursor = self.connection.cursor()
@@ -78,7 +74,7 @@ class Place:
         if affected_rows > 0:
             return "Name updated successfully."
         else:
-            return "No place found with the provided coordinates."
+            return "No place found"
 
 
 
