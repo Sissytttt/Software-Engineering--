@@ -52,3 +52,49 @@ class Migration(migrations.Migration):
                 ('rating', models.DecimalField(max_digits=3, decimal_places=2)),
             ],
         ),
+        
+        migrations.CreateModel(
+            name='BusinessOwner',
+            fields=[
+                ('phone_number', models.IntegerField(primary_key=True)),
+                ('city', models.CharField( max_length=100)),
+            ],
+        ),
+
+        migrations.CreateModel(
+            name='Client',
+            fields=[
+                ('phone_number', models.IntegerField(primary_key=True)),
+                ('city', models.CharField( max_length=100)),
+                ('follows', models.ManyToManyField(related_name='followers', related_query_name='follower', to='dao.client')),
+            ],
+        ),
+
+        migrations.CreateModel(
+            name='RSVP',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rsvps', related_query_name='rsvp', to='dao.event')), 
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rsvps', related_query_name='rsvp', to='dao.client')), 
+            ],
+        ),
+
+        migrations.CreateModel(
+            name='Save',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='saves', related_query_name='save', to='dao.place')), 
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dao.client')),
+            ],
+        ),
+
+        migrations.AddConstraint(
+            model_name = 'rsvp',
+            constraint = models.UniqueConstraint(models.F('client'), models.F('event'), name='unique_rsvp'),
+        ),
+
+        migrations.AddConstraint(
+            model_name = 'save',
+            constraint = models.UniqueConstraint(models.F('client'), models.F('place'), name='unique_save'),
+        ),
+    ]
