@@ -8,11 +8,11 @@ class BusinessOwner(models.Model):
     city = models.CharField(max_length=100)
     
 
-    def Search_Place(self, name, city=self.city):
+    def Search_Place(self, name, city=city):
         # change order by distance
         return Place.objects.filter(Q(name=name) & Q(city=city)).order_by("-creation_date")
 
-    def Search_Event(self, name, city=self.city, Etype, NotFull=True):
+    def Search_Event(self, name, city=city, Etype, NotFull=True):
         # change order by distance
         return Event.objects.filter(Q(name=name) & Q(city=city) & Q(event_type=Etype) & Q(Check_Full=full)).order_by("-creation_date")
 
@@ -31,9 +31,9 @@ class BusinessOwner(models.Model):
             place = Place,
         )
     
-    def Delete_Event(self, Event):
-        if Event.business_owner == self:
-            Event.delete()
+    def Delete_Event(self, event):
+        if event.business_owner == self:
+            event.delete()
 
     def Get_Phone(self):
         return self.phone

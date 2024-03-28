@@ -122,6 +122,7 @@ class rsvp(models.Model):
         null = True
     )
 
+
 # class Event:
 #     def __init__(self, host, user, password, database):
 #         self.connection = mysql.connector.connect(
