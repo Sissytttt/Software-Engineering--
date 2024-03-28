@@ -13,7 +13,7 @@ class Event(models.MOdel):
      # by default reference id
     business_owner = models.ForeignKey(
         Business_owner,
-        on_delete = models.CASCADE
+        on_delete = models.CASCADE,
         blank = True,
         null = True
     )
@@ -36,7 +36,7 @@ class Event(models.MOdel):
     
     place = models.ForeignKey(
         Place,
-        on_delete = models.CASCADE
+        on_delete = models.CASCADE,
         blank = True,
         null = True
     )

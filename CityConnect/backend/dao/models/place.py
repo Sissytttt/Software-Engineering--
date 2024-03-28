@@ -84,3 +84,22 @@ print(name)  # Eiffel Tower
 # longitude = place.Get_location_longitude("Eiffel Tower")
 # print(longitude)
 
+
+
+
+
+
+class Save(models.Model):
+    id = models.AutoField(primary_key=True)
+    client = models.ForeignKey(
+        'Client',
+        on_delete=models.CASCADE,
+    )
+    place = models.ForeignKey(
+        Place,
+        related_name = "saves",
+        related_query_name = "save",
+        on_delete=models.CASCADE
+    ) 
+    class Meta:
+        constraints = [models.UniqueConstraint("client", "place", name="unique_save")]
