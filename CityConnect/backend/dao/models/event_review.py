@@ -27,6 +27,8 @@ class Event_Review(models.MOdel):
     ]
     rating = models.IntegerChoice(RATING_CHOICE)
 
+    creation_date = models.DateTimeField(default=timezone.now)
+
 
     def get_content(self):
         return self.content
