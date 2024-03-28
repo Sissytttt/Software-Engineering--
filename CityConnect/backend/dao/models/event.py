@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils import timezone
 
-from .busienss_owner import Business_owner # need to import dao of business owner class
+from .BusinessOwner import Business_owner # need to import dao of business owner class
 from .place import Place
+from .client import Client
 
 class Event(models.MOdel):
     id = models.AutoField(primary_key=True)
@@ -101,6 +102,25 @@ class Event(models.MOdel):
 
     def check_full(self):
         return self.current_ppl >= self.max_ppl
+
+
+class rsvp(models.Model):
+
+    id = models.AutoField(primary_key=True)
+
+    event = models.ForeignKey(
+        Event,
+        on_delete = models.CASCADE,
+        blank = True,
+        null = True
+    )
+
+    client = models.ForeignKey(
+        Client,
+        on_delete = models.CASCADE,
+        blank = True,
+        null = True
+    )
 
 # class Event:
 #     def __init__(self, host, user, password, database):
