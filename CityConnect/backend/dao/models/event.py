@@ -1,29 +1,28 @@
 from django.db import models
 from django.utils import timezone
 
-from .BusinessOwner import Business_owner # need to import dao of business owner class
+from .BusinessOwner import BusinessOwner
 from .place import Place
 from .client import Client
 
 class Event(models.MOdel):
     id = models.AutoField(primary_key=True)
-
-    name = models.TextField()
-    start_time = models.DateTimeField(default=timezone.now)
-    end_time = models.DateTimeField(efault=None)
-     # by default reference id
-    business_owner = models.ForeignKey(
-        Business_owner,
+    name = models.CharField(max_length=100)
+    place = models.ForeignKey(
+        Place,
         on_delete = models.CASCADE,
-        blank = True,
-        null = True
     )
+    business_owner = models.ForeignKey(
+        BusinessOwner,
+        on_delete = models.CASCADE,
+    )
+    start_time = models.DateTimeField(editable=True)
+    end_time = models.DateTimeField(editable=True)
     description = models.TextField()
     max_ppl = models.IntegerField()
     current_ppl = models.IntegerField()
-    score = models.IntegerField()
-    avg_price = models.IntegerField()
-
+    score = models.DecimalField(max_digits=5, decimal_places=4)
+    avg_price = models.DecimalField(max_digits=10, decimal_places=4)
     # to be added
     EVENT_CHOICE = [
         ('dining', 'Dining'),
@@ -32,15 +31,8 @@ class Event(models.MOdel):
         ('conference', 'Conference'),
         ('workshop', 'Workshop'),
         ('other', 'Other'),]
-
     event_type = models.TextChoices(EVENT_CHOICE)
     
-    place = models.ForeignKey(
-        Place,
-        on_delete = models.CASCADE,
-        blank = True,
-        null = True
-    )
 
     def get_name(self):
         return self.name

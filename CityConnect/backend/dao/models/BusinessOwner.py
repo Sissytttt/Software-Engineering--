@@ -4,7 +4,7 @@ from django.utils import timezone
 from .models import Place
 
 class BusinessOwner(models.Model):
-    phone = models.CharField(max_length=20)
+    phone = models.IntegerField(primary_key=True, max_length=20)
     city = models.CharField(max_length=100)
     
 

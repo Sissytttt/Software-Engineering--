@@ -25,21 +25,30 @@ class Migration(migrations.Migration):
                 ('city', models.CharField( max_length=100))
             ],
         ),
+
+
         migrations.CreateModel(
             name='Event',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=100)),
-                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='places', related_query_name='place', to='dao.place')), 
-                ('business_owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='places', related_query_name='place', to='dao.business_owner')), 
+                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', related_query_name='event', to='dao.place')), 
+                ('business_owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', related_query_name='event', to='dao.business_owner')), 
                 ('start_time', models.DateTimeField(editable=True)),
                 ('end_time', models.DateTimeField(editable=True)),
                 ('description', models.TextField()),
                 ('max_ppl', models.IntegerField()),
                 ('current_ppl', models.IntegerField()),
                 ('score', models.DecimalField(max_digits=5, decimal_places=4)),
-                ('average_price', models.DecimalField(max_digits=10, decimal_places=4)),
-                ('type', models.CharField(max_length=100)),
+                ('avg_price', models.DecimalField(max_digits=10, decimal_places=4)),
+                ('event_type', models.CharField(max_length=100, choices=[
+                    ('dining', 'Dining'),
+                    ('outdoor', 'Outdoor'),
+                    ('party', 'Party'),
+                    ('conference', 'Conference'),
+                    ('workshop', 'Workshop'),
+                    ('other', 'Other'),
+                ])),
             ],
         ),
         migrations.CreateModel(
@@ -49,7 +58,14 @@ class Migration(migrations.Migration):
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='event_reviews', related_query_name='event_review', to='dao.event')), 
                 ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='event_reviews', related_query_name='event_review', to='dao.client')), 
                 ('content', models.TextField()),
-                ('rating', models.DecimalField(max_digits=3, decimal_places=2)),
+                ('rating', models.CharField(max_digits=1, choice = [
+                    (1, '1 - Very Poor'),
+                    (2, '2 - Poor'),
+                    (3, '3 - Average'),
+                    (4, '4 - Good'),
+                    (5, '5 - Excellent'),
+                ])),
+                ('creation_date', models.DateTimeField(default=django.utils.timezone.now)),
             ],
         ),
         

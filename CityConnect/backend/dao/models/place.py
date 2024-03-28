@@ -14,11 +14,11 @@ class Place(models.Model):
         # self.longitude = None
         # self.latitude = None
         # self.city = None
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, serialize=False)
     name = models.CharField(max_length=100)
-    longitude = models.FloatField()
-    latitude = models.FloatField()
-    city = models.CharField(max_length=50)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    city = models.CharField(max_length=100)
 
     # def Get_Name(self):
     #     return self.name

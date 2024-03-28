@@ -4,7 +4,7 @@ from .event import Event
 from .client import Client # to implement client
 
 class Event_Review(models.MOdel):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, serialize = False)
 
     event = models.ForeignKey(
         Event,
