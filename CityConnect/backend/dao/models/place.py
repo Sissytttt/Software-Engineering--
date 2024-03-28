@@ -88,7 +88,7 @@ print(name)  # Eiffel Tower
 
 
 class Save(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, serialize=False)
     client = models.ForeignKey(
         'Client',
         on_delete=models.CASCADE,
