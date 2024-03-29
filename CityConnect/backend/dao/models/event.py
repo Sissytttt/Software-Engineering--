@@ -103,15 +103,11 @@ class rsvp(models.Model):
     event = models.ForeignKey(
         Event,
         on_delete = models.CASCADE,
-        blank = True,
-        null = True
     )
 
     client = models.ForeignKey(
         Client,
         on_delete = models.CASCADE,
-        blank = True,
-        null = True
     )
 
 
