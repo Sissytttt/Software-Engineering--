@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BusinessOwner',
             fields=[
-                ('phone_number', models.IntegerField(primary_key=True)),
+                ('phone_number', models.IntegerField(primary_key=True, max_length=20)),
                 ('city', models.CharField( max_length=100)),
             ],
         ),
