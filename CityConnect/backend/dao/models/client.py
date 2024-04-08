@@ -9,7 +9,8 @@ class Client(models.Model):
 
     phone_number = models.IntegerField(primary_key=True)
     city = models.CharField(max_length=100)
-    follows = models.ManyToManyField('self', related_name='followers', related_query_name='follower', to='dao.client')
+    follows = models.ManyToManyField('self', related_name='followers', related_query_name='follower')
+    added_places = models.ManyToManyField(Place, related_name='added_by_clients', related_query_name='place')
 
     def Search_Place(self, name, city=city):
         # change order by distance
@@ -31,13 +32,26 @@ class Client(models.Model):
         return Event.objects.filter(Q(current_ppl__in=self)).order_by("-creation_date")
     
     def View_Map(self):
-        return
+        cities = self.added_places.values_list('city', flat=True).distinct()
+        return list(cities)
     
-    def Add_To_Map(self):
-        return
+    def Add_To_Map(self, place_id):
+        try:
+            place = Place.objects.get(id=place_id)
+            self.added_places.add(place)
+            self.save()
+            return True
+        except Place.DoesNotExist:
+            return False
     
-    def Delete_From_Map(self):
-        return
+    def Delete_From_Map(self, place_id):
+        try:
+            place = Place.objects.get(id=place_id)
+            self.added_places.remove(place)
+            self.save()
+            return True
+        except Place.DoesNotExist:
+            return False
     
     def Post_Event_Review(self):
         return
