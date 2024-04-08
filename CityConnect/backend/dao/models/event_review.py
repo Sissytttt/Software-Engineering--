@@ -1,4 +1,4 @@
-from django.db import models
+Ffrom django.db import models
 
 from .event import Event
 from .client import Client # to implement client
@@ -26,6 +26,7 @@ class Event_Review(models.MOdel):
         (5, '5 - Excellent'),
     ]
     rating = models.IntegerChoice(RATING_CHOICE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
     creation_date = models.DateTimeField(default=timezone.now)
 

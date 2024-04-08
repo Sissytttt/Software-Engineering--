@@ -39,6 +39,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField()),
                 ('max_ppl', models.IntegerField()),
                 ('current_ppl', models.IntegerField()),
+                ('ppl_reviewed', models.IntegerField()),
                 ('score', models.DecimalField(max_digits=5, decimal_places=4)),
                 ('avg_price', models.DecimalField(max_digits=10, decimal_places=4)),
                 ('event_type', models.CharField(max_length=100, choices=[
@@ -65,6 +66,7 @@ class Migration(migrations.Migration):
                     (4, '4 - Good'),
                     (5, '5 - Excellent'),
                 ])),
+                ('price', models.DecimalField(max_digits=10, decimal_places=2)),
                 ('creation_date', models.DateTimeField(default=django.utils.timezone.now)),
             ],
         ),

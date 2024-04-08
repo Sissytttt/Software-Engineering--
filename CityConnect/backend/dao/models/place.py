@@ -1,4 +1,4 @@
-import mysql.connector
+Fimport mysql.connector
 from django.db import models
 from django.utils import timezone
 

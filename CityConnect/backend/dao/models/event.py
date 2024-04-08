@@ -32,6 +32,7 @@ class Event(models.MOdel):
         ('workshop', 'Workshop'),
         ('other', 'Other'),]
     event_type = models.TextChoices(EVENT_CHOICE)
+    ppl_reviewed = models.IntegerField()
     
 
     def get_name(self):

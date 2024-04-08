@@ -29,6 +29,7 @@ class BusinessOwner(models.Model):
             avg_price = 0,
             event_type = event_type,
             place = Place,
+            ppl_reviewed = 0,
         )
     
     def Delete_Event(self, event):
