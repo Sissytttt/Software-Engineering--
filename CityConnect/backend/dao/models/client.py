@@ -2,8 +2,7 @@ import mysql.connector
 from django.db import models
 from django.utils import timezone
 
-from .models import Place
-from .models import Event
+from .models import Place, Event, Event_Review
 
 class Client(models.Model):
 
@@ -53,11 +52,17 @@ class Client(models.Model):
         except Place.DoesNotExist:
             return False
     
-    def Post_Event_Review(self):
-        return
+    def Post_Event_Review(self, id, event, content, rating, price, creation_date):
+        review = Event_Review.objects.create(id=id, event=event, client=self, content=content, rating=rating, price=price, creation_date=creation_date)
+        return review
     
-    def Delete_Event_Review(self):
-        return
+    def Delete_Event_Review(self, id):
+        try:
+            review = Event_Review.objects.get(id=id, client=self)
+            review.delete()
+            return True
+        except Event_Review.DoesNotExist:
+            return False
     
     def Get_Followers(self):
         return self.followers.all()
