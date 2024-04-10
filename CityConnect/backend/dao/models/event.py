@@ -20,7 +20,7 @@ class Event(models.MOdel):
     end_time = models.DateTimeField(editable=True)
     description = models.TextField()
     max_ppl = models.IntegerField()
-    current_ppl = models.IntegerField()
+    current_ppl = models.ManyToManyField(Client, related_name='rsvped_by_clients', related_query_name='event')
     score = models.DecimalField(max_digits=5, decimal_places=4)
     avg_price = models.DecimalField(max_digits=10, decimal_places=4)
     # to be added
