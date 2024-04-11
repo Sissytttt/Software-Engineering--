@@ -53,12 +53,12 @@ def current(request):
 @require_auth
 @post("follow")
 @contract(Schema({'followee': int}))
-def follow(request):
+def follow(request): # https request from front end
     followee = service.user.get(request.payload['followee'])
     if followee is None:
         return client_error('INVALID_PARAM', "No such user.")
     request.user.follow(followee)
-    return success(request.payload)
+    return success(request.payload) # jason response return -> json info return
 
 @require_auth
 @post("unfollow")
