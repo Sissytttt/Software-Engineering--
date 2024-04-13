@@ -4,7 +4,7 @@ from django.utils import timezone
 from .models import Place
 
 class BusinessOwner(models.Model):
-    phone = models.IntegerField(primary_key=True, max_length=20)
+    phone_number = models.IntegerField(primary_key=True, max_length=20)
     city = models.CharField(max_length=100)
     
 
@@ -29,7 +29,6 @@ class BusinessOwner(models.Model):
             avg_price = 0,
             event_type = event_type,
             place = Place,
-            ppl_reviewed = 0,
         )
     
     def Delete_Event(self, event):
