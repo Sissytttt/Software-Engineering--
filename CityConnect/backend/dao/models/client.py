@@ -77,6 +77,9 @@ class Client(models.Model):
     def Unfollow(self, followee):
         self.follows.remove(followee)
         self.save()
+
+    def get_added_places(self):
+        return self.added_places.all()
     
 
 # Example usage:
