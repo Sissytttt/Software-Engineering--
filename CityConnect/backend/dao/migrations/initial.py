@@ -86,7 +86,8 @@ class Migration(migrations.Migration):
                 ('phone_number', models.IntegerField(primary_key=True)),
                 ('city', models.CharField( max_length=100)),
                 ('follows', models.ManyToManyField(related_name='followers', related_query_name='follower', to='dao.client')),
-                ('added_places', models.ManyToManyField(related_name='added_by_clients', related_query_name='place', to='dao.client')),
+                ('added_places', models.ManyToManyField(related_name='added_by_clients', related_query_name='place', to='dao.place')),
+                ('added_events', models.ManyToManyField(related_name='events_added_by_clients', related_query_name='event', to='dao.event')),
             ],
         ),
 

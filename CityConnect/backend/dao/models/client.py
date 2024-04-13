@@ -10,6 +10,7 @@ class Client(models.Model):
     city = models.CharField(max_length=100)
     follows = models.ManyToManyField('self', related_name='followers', related_query_name='follower')
     added_places = models.ManyToManyField(Place, related_name='added_by_clients', related_query_name='place')
+    added_events = models.ManyToManyField(Event, related_name='events_added_by_clients', related_query_name='event')
 
     def Search_Place(self, name, city=city):
         # change order by distance
@@ -79,6 +80,9 @@ class Client(models.Model):
         self.save()
 
     def get_added_places(self):
+        return self.added_places.all()
+    
+    def get_added_events(self):
         return self.added_places.all()
     
 
