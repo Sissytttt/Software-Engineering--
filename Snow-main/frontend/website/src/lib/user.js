@@ -39,7 +39,7 @@ export async function logout() {
   return currentUser;
 }
 
-export async function signup(email, username, password){
+export async function signup(email, username, password) {
   let messages = [];
   await axios.post('/user/signup', {
     email: email,
@@ -127,7 +127,7 @@ export async function updateProfile(nickname, bio, profileImage, bannerImage) {
   let updatedUser = null;
   if (!currentUser) {
     return null;
-  } 
+  }
 
   if (profileImage) {
     let profileImageId = await uploadImage(profileImage);
