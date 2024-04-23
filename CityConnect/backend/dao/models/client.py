@@ -2,7 +2,7 @@ import mysql.connector
 from django.db import models
 from django.utils import timezone
 
-from .models import Place, Event, Event_Review
+from .models import Place, Event, Event_Review, Save
 
 class Client(models.Model):
 
@@ -90,19 +90,19 @@ class Client(models.Model):
     
     def like(self, place):
         try:
-            Like.objects.get(user=self, flake=flake)
-        except Like.DoesNotExist:
-            Like.objects.create(
+            Save.objects.get(user=self, place=place)
+        except Save.DoesNotExist:
+            Save.objects.create(
                 user = self,
-                flake = flake
+                place = place
             )
     
-    def unlike(self, flake):
-        try:
-            like = Like.objects.get(user=self, flake=flake)
-            like.delete()
-        except Like.DoesNotExist:
-            return
+    # def unlike(self, flake):
+    #     try:
+    #         like = Like.objects.get(user=self, flake=flake)
+    #         like.delete()
+    #     except Like.DoesNotExist:
+    #         return
     
 
 # Example usage:
