@@ -54,11 +54,11 @@ def get_place(request):
 @contract(Schema({'id': int}))
 def like(request):
     id = request.payload['id']
-    flake = service.flake.get(id)
-    if flake is None:
-        return client_error('INVALID_PARAM', f"No such flake: {id}")
-    request.user.like(flake)
-    return success(flake)
+    place = service.place.get(id)
+    if place is None:
+        return client_error('INVALID_PARAM', f"No such place: {id}")
+    request.user.like(place)
+    return success(place)
 
 # @require_auth
 # @post("unlike")
@@ -83,35 +83,37 @@ def like(request):
 #     request.user.retweet(flake)
 #     return success(flake)
 
-@require_auth
-@get("feeds")
-@contract(Schema({Optional('user'): Use(int), Optional('offset', default=0): Use(int), Optional('limit', default=40): Use(int)}))
-def feeds(request):
-    offset = request.payload['offset']
-    limit = request.payload['limit']
-    flakes = request.user.get_feeds()[offset:offset+limit]
-    return success(list(flakes))
+# @require_auth
+# @get("feeds")
+# @contract(Schema({Optional('user'): Use(int), Optional('offset', default=0): Use(int), Optional('limit', default=40): Use(int)}))
+# def feeds(request):
+#     offset = request.payload['offset']
+#     limit = request.payload['limit']
+#     flakes = request.user.get_feeds()[offset:offset+limit]
+#     return success(list(flakes))
 
 @get("list")
-@contract(Schema({Optional('user'): Use(int), Optional('offset', default=0): Use(int), Optional('limit', default=40): Use(int)}))
+@contract(Schema({Optional('client'): Use(int), Optional('offset', default=0): Use(int), Optional('limit', default=40): Use(int)}))
 def _list(request):
     offset = request.payload['offset']
     limit = request.payload['limit']
-    user = service.user.get(request.payload['user']) if 'user' in request.payload else service.session.get_current_user(request)
+    # this still not implemented in the service.user.__init__
+    client = service.user.get(request.payload['client']) if 'client' in request.payload else service.session.get_current_user(request)
     
-    if user is None:
-        return client_error('INVALID_PARAM', "No such user.")
+    if client is None:
+        return client_error('INVALID_PARAM', "No such client.")
 
-    flakes = user.list_flakes()[offset:offset+limit]
-    return success(list(flakes))
+    # list_places implemented in dao client
+    places = client.list_places()[offset:offset+limit]
+    return success(list(places))
 
-@get("comments")
-@contract(Schema({'id': Use(int), Optional('offset', default=0): Use(int), Optional('limit', default=40): Use(int)}))
-def comments(request):
-    id = request.payload['id']
-    flake = service.flake.get(id)
-    if flake is None:
-        return client_error('INVALID_PARAM', f"No such flake: {id}")
-    offset = request.payload['offset']
-    limit = request.payload['limit']
-    return success(list(flake.comments.all()[offset:offset+limit]))
+# @get("comments")
+# @contract(Schema({'id': Use(int), Optional('offset', default=0): Use(int), Optional('limit', default=40): Use(int)}))
+# def comments(request):
+#     id = request.payload['id']
+#     flake = service.flake.get(id)
+#     if flake is None:
+#         return client_error('INVALID_PARAM', f"No such flake: {id}")
+#     offset = request.payload['offset']
+#     limit = request.payload['limit']
+#     return success(list(flake.comments.all()[offset:offset+limit]))

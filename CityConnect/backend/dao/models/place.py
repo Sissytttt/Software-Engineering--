@@ -103,6 +103,3 @@ class Save(models.Model):
     ) 
     class Meta:
         constraints = [models.UniqueConstraint("client", "place", name="unique_save")]
-
-
-    

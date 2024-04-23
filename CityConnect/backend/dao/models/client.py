@@ -88,6 +88,22 @@ class Client(models.Model):
     def list_places(self):
         return Place.objects.filter(Q(name=self))
     
+    def like(self, place):
+        try:
+            Like.objects.get(user=self, flake=flake)
+        except Like.DoesNotExist:
+            Like.objects.create(
+                user = self,
+                flake = flake
+            )
+    
+    def unlike(self, flake):
+        try:
+            like = Like.objects.get(user=self, flake=flake)
+            like.delete()
+        except Like.DoesNotExist:
+            return
+    
 
 # Example usage:
 # Initialize the Place object with your MySQL database credentials
