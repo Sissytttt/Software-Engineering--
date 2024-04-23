@@ -57,19 +57,20 @@ def like(request):
     place = service.place.get(id)
     if place is None:
         return client_error('INVALID_PARAM', f"No such place: {id}")
+    # this is the user folder
     request.user.like(place)
     return success(place)
 
-# @require_auth
-# @post("unlike")
-# @contract(Schema({'id': int}))
-# def unlike(request):
-#     id = request.payload['id']
-#     flake = service.flake.get(id)
-#     if flake is None:
-#         return client_error('INVALID_PARAM', f"No such flake: {id}")
-#     request.user.unlike(flake)
-#     return success(flake)
+@require_auth
+@post("unlike")
+@contract(Schema({'id': int}))
+def unlike(request):
+    id = request.payload['id']
+    place = service.place.get(id)
+    if place is None:
+        return client_error('INVALID_PARAM', f"No such flake: {id}")
+    request.user.unlike(place)
+    return success(place)
 
 # # add retweet
 # @require_auth

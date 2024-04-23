@@ -97,12 +97,12 @@ class Client(models.Model):
                 place = place
             )
     
-    # def unlike(self, flake):
-    #     try:
-    #         like = Like.objects.get(user=self, flake=flake)
-    #         like.delete()
-    #     except Like.DoesNotExist:
-    #         return
+    def unlike(self, place):
+        try:
+            save = Save.objects.get(user=self, place=place)
+            save.delete()
+        except Save.DoesNotExist:
+            return
     
 
 # Example usage:
