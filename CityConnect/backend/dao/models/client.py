@@ -85,6 +85,9 @@ class Client(models.Model):
     def get_added_events(self):
         return self.added_places.all()
     
+    def list_places(self):
+        return Place.objects.filter(Q(name=self))
+    
 
 # Example usage:
 # Initialize the Place object with your MySQL database credentials

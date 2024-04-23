@@ -1,4 +1,4 @@
-Fimport mysql.connector
+import mysql.connector
 from django.db import models
 from django.utils import timezone
 
@@ -70,6 +70,8 @@ class Place(models.Model):
         # if result:
         #     self.name, self.longitude, self.latitude, self.city = result
 
+
+
 # Example usage:
 # Initialize the Place object with your MySQL database credentials
 place = Place(host='127.0.0.1', user='root', password='', database='software_engineering')
@@ -101,3 +103,6 @@ class Save(models.Model):
     ) 
     class Meta:
         constraints = [models.UniqueConstraint("client", "place", name="unique_save")]
+
+
+    

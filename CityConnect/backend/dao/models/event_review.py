@@ -1,4 +1,4 @@
-Ffrom django.db import models
+from django.db import models
 
 from .event import Event
 from .client import Client # to implement client
