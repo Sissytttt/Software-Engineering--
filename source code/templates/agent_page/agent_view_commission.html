@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Basic Background settings-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Agent View Commission </title>
+  <style>
+		body {
+		  background-image: url('../static/sky.png');
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;
+		  background-size: 100% 10%;
+		}
+
+		p {
+    color: Red;
+    font-family: "Cursive", Lucida Handwriting;
+		}
+
+		.content {
+		  max-width: 500px;
+		  margin: auto;
+		}
+
+		h1 {
+  font-family: "Cursive", Brush Script MT;
+		}
+
+		h2 {
+		font-family: "Fantasy",	Copperplate;}
+
+		input {
+		font-family: "Fantasy", Papyrus;
+		}
+
+
+		</style>
+</head>
+
+<body>
+  <h2> Your sales performance in recent 30 days: </h2>
+  <table border="1">
+
+    <tr> <!--The title line of default display-->
+      <th>Total Commission</th>
+      <th>Number of Tickets Sold</th>
+      <th>Average Commission per Ticket</th>
+    </tr>
+
+    <tr>
+      <td>{{commission}}</td>
+      <td>{{num_ticket}}</td>
+      <td>{{average_commission}}</td>
+    </tr>
+
+  </table>
+  <p>----------------------------------------------------------------------------------------------------------------</p>
+  <!--Form for searching commission given a time period-->
+  <h2> You may also search by specify date range: </h2>
+
+  <form action='/agent_customize_commission' method='POST'>
+
+    <p>Start Date</p>
+    <input type="date"  name="start_date" required/>
+
+    <p>End Date</p>
+    <input type="date" name="end_date" required/>
+
+    <input type="submit" value="Search">
+  </form>
+
+  <!--    another view  -->
+  {% if num_ticket_c %}
+  <h4> Your customized search result: </h4>
+  <table border="1">
+
+    <tr> <!--The title line of default display-->
+      <th>Total Commission</th>
+      <th>Number of Tickets Sold</th>
+      <th>Average Commission per Ticket</th>
+    </tr>
+
+    <tr>
+      <td>{{commission_c}}</td>
+      <td>{{num_ticket_c}}</td>
+      <td>{{average_commission_c}}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  {% if not num_ticket_c %}
+  <h4> No commission in this date range! </h4>
+  {% endif %}
+
+  {% if error %}
+  <p class="error"><strong>Error:</strong> {{error}}</p>
+  {% endif %}
+
+
+    <br/><br/>
+    <a href="/agent_home">Back to home</a>
+
+</body>
+</html>

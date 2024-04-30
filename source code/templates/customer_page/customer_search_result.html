@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="Customer_flight_search_result">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">   
+    <title> Customer Flight Search Result</title>
+    <style>
+		body {
+		  background-image: url('../static/map.png');
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;
+		  background-size: 100% 13%;
+		}
+
+
+		p {
+    color: Red;
+    font-family: "Cursive", Lucida Handwriting;
+		}
+
+		.content {
+		  max-width: 500px;
+		  margin: auto;
+		}
+
+		h1 {
+  font-family: "Cursive", Brush Script MT;
+		}
+
+		h2 {
+		font-family: "Fantasy",	Copperplate;}
+
+		input {
+		font-family: "Fantasy", Papyrus;
+		}
+		</style>
+  </head>
+
+  <body>
+    <h2> Customer Search Result</h2>
+    <br>
+    <br>
+    <br>
+    
+      <table class="table table-striped">
+        <tr> <!--The title line of flight search-->
+          <th>Airline Name</th>
+          <th>Flight Number</th>
+          <th>Departure Airport</th>
+          <th>Departure Time</th>
+          <th>Arrival Airport</th>
+          <th>Arrival Time</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Airplane ID</th>
+        </tr>
+
+        {% for result in posts %}
+        <tr>
+          <td>{{result["airline_name"]}}</td>
+          <td>{{result["flight_num"]}}</td>
+          <td>{{result["departure_airport"]}}</td>
+          <td>{{result["departure_time"]}}</td>
+          <td>{{result["arrival_airport"]}}</td>
+          <td>{{result["arrival_time"]}}</td>
+          <td>{{result["price"]}}</td>
+          <td>{{result["status"]}}</td>
+          <td>{{result["airplane_id"]}}</td>
+        </tr>
+        {% endfor %}
+
+      </table>
+      </br>
+      <a href="/customer_flight_search">Back to Search</a>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  </body>
+</html>

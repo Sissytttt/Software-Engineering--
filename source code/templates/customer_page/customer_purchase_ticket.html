@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="Customer_ticket_purchase">
+
+    <title> Customer Ticket Purchase</title>
+	  <style>
+		body {
+		  background-image: url('../static/map.png');
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;
+		  background-size: 100% 13%;
+		}
+
+
+		p {
+    color: Red;
+    font-family: "Cursive", Lucida Handwriting;
+		}
+
+		.content {
+		  max-width: 500px;
+		  margin: auto;
+		}
+
+		h1 {
+  font-family: "Cursive", Brush Script MT;
+		}
+
+		h2 {
+		font-family: "Fantasy",	Copperplate;}
+
+		input {
+		font-family: "Fantasy", Papyrus;
+		}
+
+
+		</style>
+  </head>
+
+  <body>
+    <h1> Purchase your ticket</h1>
+    <h2> -- Upcoming flight info</h2>
+      <table border="1">
+        <tr> <!--The title line of flight search-->
+          <th>Airline Name</th>
+          <th>Flight Number</th>
+          <th>Departure Airport</th>
+          <th>Departure Time</th>
+          <th>Arrival Airport</th>
+          <th>Arrival Time</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Airplane ID</th>
+        </tr>
+
+        {% for result in posts %}
+        <tr>
+          <td>{{result["airline_name"]}}</td>
+          <td>{{result["flight_num"]}}</td>
+          <td>{{result["departure_airport"]}}</td>
+          <td>{{result["departure_time"]}}</td>
+          <td>{{result["arrival_airport"]}}</td>
+          <td>{{result["arrival_time"]}}</td>
+          <td>{{result["price"]}}</td>
+          <td>{{result["status"]}}</td>
+          <td>{{result["airplane_id"]}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      </br>
+
+    <h2> -- choose ticket</h2>
+
+    <form action="/customer_purchase_ticket" method="post">
+	    <div>
+				<p>enter your email or purchase for your friends</p>
+					<input type="email" name="username" required = "required"/>
+			</div>
+
+			<div>
+				<p>enter flight number from shown above</p>
+					<input type="text" name="flight_num" required="required"/>
+			</div>
+
+			<div>
+			<input type="submit" value="Purchase"/>
+			</div>
+    </form>
+
+
+    {% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+
+      <a href="/customer_home">Back to Home</a>
+  </body>
+</html>

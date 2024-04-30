@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="Agent_flight_search_result">
+
+    <title> Agent Flight Search Result</title>
+    <style>
+		body {
+		  background-image: url('../static/sky.png');
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;
+		  background-size: 100% 10%;
+		}
+
+		p {
+    color: Red;
+    font-family: "Cursive", Lucida Handwriting;
+		}
+
+		.content {
+		  max-width: 500px;
+		  margin: auto;
+		}
+
+		h1 {
+  font-family: "Cursive", Brush Script MT;
+		}
+
+		h2 {
+		font-family: "Fantasy",	Copperplate;}
+
+		input {
+		font-family: "Fantasy", Papyrus;
+		}
+
+
+		</style>
+  </head>
+
+  <body>
+    <h2> Agent Search Result</h2>
+      <table border="1">
+        <tr> <!--The title line of flight search-->
+          <th>Airline Name</th>
+          <th>Flight Number</th>
+          <th>Departure Airport</th>
+          <th>Departure Time</th>
+          <th>Arrival Airport</th>
+          <th>Arrival Time</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Airplane ID</th>
+        </tr>
+
+        {% for result in posts %}
+        <tr>
+          <td>{{result["airline_name"]}}</td>
+          <td>{{result["flight_num"]}}</td>
+          <td>{{result["departure_airport"]}}</td>
+          <td>{{result["departure_time"]}}</td>
+          <td>{{result["arrival_airport"]}}</td>
+          <td>{{result["arrival_time"]}}</td>
+          <td>{{result["price"]}}</td>
+          <td>{{result["status"]}}</td>
+          <td>{{result["airplane_id"]}}</td>
+        </tr>
+        {% endfor %}
+
+      </table>
+      </br>
+      <a href="/agent_flight_search">Back to Search</a>
+  </body>
+</html>
