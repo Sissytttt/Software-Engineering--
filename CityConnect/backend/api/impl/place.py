@@ -49,6 +49,22 @@ def get_place(request):
 #     request.user.delete_flake(flake)
 #     return success({'id': id})
 
+@get("Search_Place")
+@contract(Schema({'id': str}))
+def Search_Place(request):
+    keyword = request.payload.get('id')
+    
+    # Call the search service to get places based on the provided criteria
+    places = service.place.search(keyword)
+    
+    if not places:
+        return client_error('NO_RESULTS', "No places found matching the criteria.")
+    return success({
+        'places': places,
+        'total': len(places)
+    })
+
+
 @require_auth
 @post("like")
 @contract(Schema({'id': int}))

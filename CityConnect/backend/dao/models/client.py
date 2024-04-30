@@ -14,22 +14,22 @@ class Client(models.Model):
 
     def Search_Place(self, name, city=city):
         # change order by distance
-        return Place.objects.filter(Q(name=name) & Q(city=city)).order_by("-creation_date")
+        return Place.objects.filter(Q(name=name) & Q(city=city))
     
     def Search_Event(self, name, city, start_time, end_time, Etype, full):
-        return Event.objects.filter(Q(name=name) & Q(start_time=start_time) & Q(end_time=end_time) & Q(Etype=Etype) & Q(Check_full=full)).order_by("-creation_date")
+        return Event.objects.filter(Q(name=name) & Q(start_time=start_time) & Q(end_time=end_time) & Q(Etype=Etype) & Q(Check_full=full))
     
     def RSVP_Event(self, event):
         # update event attribute
         if event.check_full() == True and event.get_current_ppl() < event.get_max_ppl():
             event.update_current_ppl(event.get_current_ppl()+1)
         # update rsvp many to many table
-        return Event.objects.filter(Q(current_ppl__in=self)).order_by("-creation_date") # return a list of events rsvp by the client
+        return Event.objects.filter(Q(current_ppl__in=self)) # return a list of events rsvp by the client
     
     def Cancel_Event(self, event):
         if self.events.filter(id=event.id).exists():
             event.update_current_ppl(event.get_current_ppl() - 1)
-        return Event.objects.filter(Q(current_ppl__in=self)).order_by("-creation_date")
+        return Event.objects.filter(Q(current_ppl__in=self))
     
     def View_Map(self):
         cities = self.added_places.values_list('city', flat=True).distinct()
