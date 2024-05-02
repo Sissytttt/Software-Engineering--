@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+	<head>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="public">
+
+		<title>Public | Upcoming flights</title>
+
+		<style>
+		body {
+		  background-image: url('static/sky.png');
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;
+		  background-size: 100% 10%;
+		}
+
+		.content {
+		  margin: auto;
+		}
+
+	p {
+    color: Black;
+    font-family: "Cursive", Lucida Handwriting;
+		}
+
+		.content {
+		  max-width: 500px;
+		  margin: auto;
+		}
+
+		h1 {
+  font-family: "Cursive", Brush Script MT;
+		}
+
+		h2 {
+		font-family: "Fantasy",	Copperplate;}
+
+		input {
+		font-family: "Fantasy", Papyrus;
+		}
+
+		</style>
+
+	</head>
+
+	<body>
+		<div class="content">
+  <!-- Page content -->
+
+			<style type="text/css">
+			table, th, td{
+			border: 1px solid black;
+			}
+			</style>
+
+			<p>Search result: FLight info</p>
+			<br></br>
+			<table>
+				<tr> <!--The title line of flight search-->
+          <th>Airline Name</th>
+          <th>Flight Number</th>
+          <th>Departure Airport</th>
+          <th>Departure Time</th>
+          <th>Arrival Airport</th>
+          <th>Arrival Time</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Airplane ID</th>
+        </tr>
+			{% for line in posts %}
+			<tr>
+				<td>{{line['airline_name']}}</td>
+				<td>{{line['flight_num']}}</td>
+				<td>{{line['departure_airport']}}</td>
+				<td>{{line['departure_time']}}</td>
+				<td>{{line['arrival_airport']}}</td>
+				<td>{{line['arrival_time']}}</td>
+				<td>{{line['price']}}</td>
+				<td>{{line['status']}}</td>
+				<td>{{line['airplane_id']}}</td>
+			</tr>
+			{% endfor %}
+			</table>
+
+			<br></br>
+			<a href="/">Back to Homepage</a>
+		</div>
+	</body>
+
+</html>
