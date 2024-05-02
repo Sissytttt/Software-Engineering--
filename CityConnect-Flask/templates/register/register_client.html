@@ -44,29 +44,36 @@
 	<body>
 
 	<div class="content">
-		<h1>Register - Booking Agent</h1>
+		<h1>Client Register</h1>
 		<hr>
 
 		<h2>Please enter your information</h2>
 
-			{% if error %}
-		<p class="error"><strong>Error:</strong> {{error}}</p>
-			{% endif %}
+			<!-- {% if error %}
+				<p class="error"><strong>Error:</strong> {{error}}</p>
+			{% endif %} -->
 
 		<form action="/registerAuth_agent" method="post">
 			<div class="mb-3">
-			  <label for="formGroupExampleInput" class="form-label">Email</label>
-			  <input type="email" name="username" class="form-control" id="formGroupExampleInput" placeholder="email" required="required">
+				<label for="formGroupExampleInputUsername" class="form-label">Username</label>
+				<input type="text" name="username" class="form-control" id="formGroupExampleInputUsername" placeholder="Enter your username" required="required">
 			</div>
 			<div class="mb-3">
-			  <label for="formGroupExampleInput2" class="form-label">Password</label>
-			  <input type="password" name="password" class="form-control" id="formGroupExampleInput2" placeholder="password" required="required">
+				<label for="formGroupExampleInputPassword" class="form-label">Password</label>
+				<input type="password" name="password" class="form-control" id="formGroupExampleInputPassword" placeholder="Enter your password" required="required">
 			</div>
 			<div class="mb-3">
-			  <label for="formGroupExampleInput3" class="form-label">Airline You Work For</label>
-			  <input type="text" name="airline" class="form-control" id="formGroupExampleInput3" placeholder="airline" required="required">
+				<label for="formGroupExampleInputName" class="form-label">Full Name</label>
+				<input type="text" name="name" class="form-control" id="formGroupExampleInputName" placeholder="Enter your full name" required="required">
 			</div>
-
+			<div class="mb-3">
+				<label for="formGroupExampleInputPhone" class="form-label">Phone Number</label>
+				<input type="tel" name="phone" class="form-control" id="formGroupExampleInputPhone" placeholder="Enter your phone number" required="required">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInputCity" class="form-label">City</label>
+				<input type="text" name="city" class="form-control" id="formGroupExampleInputCity" placeholder="Enter your city" required="required">
+			</div>
 				<br>
 				<div class="col-12">
           <button type="submit" class="btn btn-primary">Register</button>
@@ -76,11 +83,11 @@
 		</form>
 		<br>
 
-		<a href="/">Back to Homepage</a>
+		<a href="/register">Back to Homepage</a>
 
-	{% if error %}
+	<!-- {% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>
-	{% endif %}
+	{% endif %} -->
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 

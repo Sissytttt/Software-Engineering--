@@ -4,7 +4,7 @@
 	<head>
 		<meta charset = "UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="keywords" content="Register customer">
+		<meta name="keywords" content="Business Owner Register">
 
 		<title>Register - Customer</title>
 
@@ -46,66 +46,37 @@
 	<body>
 	<div class="content">
 
-			<h1>Register - Customer</h1>
+			<h1>Business Owner Register</h1>
 			<hr>
 
 			<h2>Please enter your information</h2>
 
-			{% if error %}
+			<!-- {% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>
-			{% endif %}
+			{% endif %} -->
 
 		<form action="/registerAuth_customer" method="post">
 
 			<div class="mb-3">
-			  <label for="formGroupExampleInput" class="form-label">Email</label>
-			  <input type="email" name="username" class="form-control" id="formGroupExampleInput" placeholder="email" required="required">
+				<label for="formGroupExampleInputUsername" class="form-label">Username</label>
+				<input type="text" name="username" class="form-control" id="formGroupExampleInputUsername" placeholder="Enter your username" required="required">
 			</div>
 			<div class="mb-3">
-			  <label for="formGroupExampleInput2" class="form-label">Password</label>
-			  <input type="password" name="password" class="form-control" id="formGroupExampleInput2" placeholder="password" required="required">
+				<label for="formGroupExampleInputPassword" class="form-label">Password</label>
+				<input type="password" name="password" class="form-control" id="formGroupExampleInputPassword" placeholder="Enter your password" required="required">
 			</div>
 			<div class="mb-3">
-			  <label for="formGroupExampleInput3" class="form-label">Name</label>
-			  <input type="text" name="name" class="form-control" id="formGroupExampleInput3" placeholder="name" required="required">
+				<label for="formGroupExampleInputName" class="form-label">Full Name</label>
+				<input type="text" name="name" class="form-control" id="formGroupExampleInputName" placeholder="Enter your full name" required="required">
 			</div>
 			<div class="mb-3">
-			  <label for="formGroupExampleInput4" class="form-label">Building Number</label>
-			  <input type="text" name="building" class="form-control" id="formGroupExampleInput4" placeholder="building number" required="required">
+				<label for="formGroupExampleInputPhone" class="form-label">Phone Number</label>
+				<input type="tel" name="phone" class="form-control" id="formGroupExampleInputPhone" placeholder="Enter your phone number" required="required">
 			</div>
 			<div class="mb-3">
-			  <label for="formGroupExampleInput5" class="form-label">Street</label>
-			  <input type="text" name="street" class="form-control" id="formGroupExampleInput5" placeholder="street" required="required">
+				<label for="formGroupExampleInputCity" class="form-label">City</label>
+				<input type="text" name="city" class="form-control" id="formGroupExampleInputCity" placeholder="Enter your city" required="required">
 			</div>
-			<div class="mb-3">
-			  <label for="formGroupExampleInput6" class="form-label">City</label>
-			  <input type="text" name="city" class="form-control" id="formGroupExampleInput6" placeholder="City" required="required">
-			</div>
-			<div class="mb-3">
-			  <label for="formGroupExampleInput8" class="form-label">State</label>
-			  <input type="text" name="state" class="form-control" id="formGroupExampleInput8" placeholder="State" required="required">
-			</div>
-			<div class="mb-3">
-			  <label for="formGroupExampleInput9" class="form-label">Phone Number</label>
-			  <input type="text" name="phone" class="form-control" id="formGroupExampleInput9" placeholder="Phone number" required="required">
-			</div>
-			<div class="mb-3">
-			  <label for="formGroupExampleInput10" class="form-label">Passport Number</label>
-			  <input type="text" name="passport" class="form-control" id="formGroupExampleInput10" placeholder="Passport number" required="required">
-			</div>
-			<div class="mb-3">
-			  <label for="formGroupExampleInput11" class="form-label">Passport Expiration Date</label>
-			  <input type="date" name="passport_exp" class="form-control" id="formGroupExampleInput11" placeholder="Expiration date" required="required">
-			</div>
-			<div class="mb-3">
-			  <label for="formGroupExampleInput12" class="form-label">Passport Country</label>
-			  <input type="text" name="passport_country" class="form-control" id="formGroupExampleInput12" placeholder="Passport Country" required="required">
-			</div>
-			<div class="mb-3">
-			  <label for="formGroupExampleInput13" class="form-label">Date of Birth</label>
-			  <input type="date" name="birth" class="form-control" id="formGroupExampleInput13" placeholder="Birth Date" required="required">
-			</div>
-
 
 				<br>
 				<div class="col-12">
