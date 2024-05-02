@@ -99,7 +99,7 @@ def event_search():
         if len(score) == 0:
             query = 'SELECT * FROM event WHERE name = %s and time > %s and price < %s'
             cursor.execute(query, (name, time, price))
-        else：
+        else:
             query = 'SELECT * FROM event WHERE name = %s and time > %s and score > %s and price < %s'
             cursor.execute(query, (name, time, score, price))
 
@@ -136,7 +136,7 @@ def view_map():
     # executes query
     query = 'SELECT p.website FROM place as p, map as m, client as c WHERE c.username = %s '\
             'and c.id = m.client_id and p.id = m.place_id'
-    cursor.execute(query, (name))
+    cursor.execute(query, (username))
 
     # stores the results in a variable
     # fetchone 即每次只读一行
@@ -548,11 +548,11 @@ def client_post_event_review():
     query3 = "select max(id) as next_id from review"
     cursor.execute(query3)
     review_id = cursor.fetchall()
-    review_id = ticket_id[0]["next_id"]
+    review_id = review_id[0]["next_id"]
 
 
     ins = 'INSERT INTO review VALUES(%s, %s, %s, %s, %s, %s, CURRENT_DATE())'
-    cursor.execute(ins1, (str(ticket_id + 1), event_id, user_id, content, rating, price))
+    cursor.execute(ins, (str(review_id + 1), event_id, user_id, content, rating, price))
     conn.commit()
     cursor.close()
     return render_template('client_page/client_purchase_successful.html')
@@ -587,7 +587,7 @@ def cancle_register():
 
     # If the event and registration exist, delete the registration
     query_delete_review = 'DELETE FROM review WHERE client_id = %s AND event_id = %s'
-    cursor.execute(query_delete_registration, (client_id, event_id))
+    cursor.execute(query_delete_review, (user_id, event_id))
     conn.commit()  # Commit the transaction to make sure changes are saved
 
     success_message = "Review cancelled successfully."
@@ -595,110 +595,167 @@ def cancle_register():
 # -----------------------------------------------------------
 # ------------------------------------------------------------
 
+@app.route("/bo_home", methods=["GET"])
+def bo_home():
+    return render_template("bo_page/bo_home.html")
 
-@app.route('/log_in_business_owner')
-def log_in_business_owner():
-    return render_template('log_in/log_in_business_owner.html')
-
-
-# Authenticates the login
-# 既可以向外展示，也可以获取数据
-@app.route('/business_owner_auth', methods=['GET', 'POST'])
-def loginAuth_business_owner():
-    # grabs information from the forms
-    # get
-    username = request.form["username"]  # 对应html 文件的form class
-    password = request.form['password']
-
-    # cursor used to send queries
-    # 游标（Cursor）是处理数据的一种方法，为了查看或者处理结果集中的数据，游标提供了在结果集中一次一行或者多行前进或向后浏览数据的能力。可以把游标当作一个指针，它可以指定结果中的任何位置，然后允许用户对指定位置的数据进行处理
-    cursor = conn.cursor()
-
-    # executes query
-    # query = 'SELECT * FROM booking_agent_work_for as a, booking_agent as b WHERE a.email = b.email ' \
-    #         'and b.email = %s and b.password = MD5(%s) '
-    query = 'SELECT * FROM business_owner WHERE email = %s and password = MD5(%s) '
-    # and a.airline_name = "Jet Blue"
-    cursor.execute(query, (username, password))
-    # stores the results in a variable
-    # fetchone 即每次只读一行
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
-    # if data is not none
-    if (data):
-        # creates a session for the the user
-        # 创造一个会话
-        # session is a built in
-        session['username'] = username
-        return redirect('/business_owner_home')  # a url in app.route
-    else:
-        # returns an error message to the html page
-        error = 'Invalid username or password'
-        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("log_in/log_in_business_owner.html", error=error)
-
-
-@app.route('/business_owner_home')
-def business_owner_home():
-    return render_template('business_owner_page/business_owner_home.html', username=session['username'])
-
-
-@app.route("/business_owner_flight_search", methods=['GET', 'POST'])
-def business_owner_flight_search():
-    return render_template('business_owner_page/business_owner_flight_search.html')
-
-
-@app.route('/business_owner_search', methods=['GET', 'POST'])
-def business_owner_search():
-    dept_city = request.form["dept_city"]  # now required to fill in
-    dept_airport = request.form["dept_airport"]
-    arrival_city = request.form["arrival_city"]  # now required to fill in    type str
-    arrival_airport = request.form["arrival_airport"]
-    date = request.form["date"]  # now required to fill in
+@app.route("/bo_view_event", methods=["GET","POST"])
+def bo_view_my_event():
+    bo_email = session["email"]
 
     cursor = conn.cursor()
-
-    # executes query
-
-
-    if len(dept_airport) == 0:
-        if len(arrival_airport) == 0:
-            query = 'SELECT * FROM flight as f, airport as a1, airport as a2 WHERE a1.airport_name = ' \
-                    'f.departure_airport and a2.airport_name = f.arrival_airport and f.departure_airport = ' \
-                    'f.departure_airport and f.arrival_airport = f.arrival_airport and f.departure_time >= %s  and ' \
-                    'a1.airport_city = %s and a2.airport_city = %s '
-            cursor.execute(query, (date, dept_city, arrival_city))
-        else:
-            query = 'SELECT * FROM flight as f, airport as a1, airport as a2 WHERE a1.airport_name = ' \
-                    'f.departure_airport and a2.airport_name = f.arrival_airport and f.departure_airport = ' \
-                    'f.departure_airport and f.arrival_airport = %s and f.departure_time >= %s  and a1.airport_city = ' \
-                    '%s and a2.airport_city = %s '
-            cursor.execute(query, (arrival_airport, date, dept_city, arrival_city))
-    else:
-        if len(arrival_airport) == 0:
-            query = 'SELECT * FROM flight as f, airport as a1, airport as a2 WHERE a1.airport_name = ' \
-                    'f.departure_airport and a2.airport_name = f.arrival_airport and f.departure_airport = ' \
-                    '%s and f.arrival_airport = f.arrival_airport and f.departure_time > %s  and ' \
-                    'a1.airport_city = %s and a2.airport_city = %s '
-            cursor.execute(query, (dept_airport, date, dept_city, arrival_city))
-        else:
-            query = 'SELECT * FROM flight as f, airport as a1, airport as a2 WHERE a1.airport_name = ' \
-                    'f.departure_airport and a2.airport_name = f.arrival_airport and f.departure_airport = ' \
-                    '%s and f.arrival_airport = %s and f.departure_time > %s  and ' \
-                    'a1.airport_city = %s and a2.airport_city = %s '
-            cursor.execute(query, (dept_airport, arrival_airport, date, dept_city, arrival_city))
-
-    data = cursor.fetchall()  # list(dict())
+    q_get_events = "select e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
+        from events e join place p on p.id = e.place_id where e.owner_id = (select distinct id from businessowner where email = %s)"
+    cursor.execute(q_get_events, (bo_email,))
+    events = cursor.fetchall()
     cursor.close()
-    error = None
-    if len(data) > 0:
-        return render_template("business_owner_page/business_owner_search_result.html", posts=data)  # a url in app.route
-    if len(data) == 0:
-        error = 'no such flight'
-        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("business_owner_page/business_owner_flight_search.html", error=error)
+
+    return render_template("/bo_view_event.html",events=events)
+
+
+@app.route("/bo_search_event_form", methods=["GET"])
+def bo_search_event_form():
+    # to add bo's search event, copy from the public search
+    # to add bo's log out button to that page
+    pass
+
+@app.route("/bo_create_event_form", methods=["GET", "POST"])
+def bo_create_event_form():
+    # Fetch place names from the database
+    cursor = conn.cursor()
+    cursor.execute("select name from place")
+    place_names = [row for row in cursor.fetchall()]
+    cursor.close()
+
+    if request.method == "POST":
+        bo_email = session["email"]
+        event_name = request.form["e_name"]
+        event_time = request.form["e_time"]
+        event_descript = request.form["e_descript"]
+        event_max_ppl = request.form["e_max_ppl"]
+        event_current_ppl = 0
+        event_score = 0
+        event_price = request.form["e_price"]
+        event_place = request.form["e_place"]
+        event_owner = bo_email
+
+        # get this bo_id
+        cursor = conn.cursor()
+        q_bo_id = "SELECT id FROM businessowner WHERE email = %s"
+        cursor.execute(q_bo_id, (bo_email,))
+        bo_id = cursor.fetchone()[0]
+        cursor.close()
+
+        # event with same name by this owner cannot be created
+        cursor = conn.cursor()
+        q_check_ename = "SELECT name FROM events WHERE owner_id = %s"
+        cursor.execute(q_check_ename, (bo_id,))
+        all_event_name = cursor.fetchall()
+        cursor.close()
+
+        # check event with the same time and location cannot be created
+        cursor = conn.cursor()
+        q_check_timeloc = "SELECT COUNT(id) FROM events WHERE time = %s AND place_id IN \
+            (SELECT id FROM place WHERE name = %s)"
+        cursor.execute(q_check_timeloc, (event_time, event_place))
+        n_dup_event = cursor.fetchone()[0]
+        cursor.close()
+
+        if (event_name,) in all_event_name or n_dup_event >= 1:
+            flash('Failed! Event already exists! Please either change event name or change event time and location')
+        else:
+            cursor = conn.cursor()
+            q_create_event = "INSERT INTO events (name, time, description, max_ppl, current_ppl, score, price, place_id, owner_id) \
+                VALUES (%s, %s, %s, %s, %s, %s, %s, (SELECT id FROM place WHERE name = %s), %s)"
+            cursor.execute(q_create_event, (event_name, event_time, event_descript, event_max_ppl, event_current_ppl,
+                                             event_score, event_price, event_place, event_owner))
+            conn.commit()
+            cursor.close()
+            flash("You have successfully created an event")
+            return render_template("bo_page/bo_home.html")
+
+    return render_template("bo_page/bo_create_event.html", place_names=place_names)
+
+
+@app.route("/bo_delete_event_form", methods=["GET", "POST"])
+def bo_delete_event_form():
+    bo_email = session["email"]
+        
+    # list all event this bo has
+    cursor = conn.cursor()
+    q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
+        from events e join place p on p.id = e.place_id where e.owner_id = (select distinct id from businessowner where email = %s)"
+    cursor.execute(q_get_events, (bo_email,))
+    events = cursor.fetchall()
+    cursor.close()
+
+    if request.method == "POST":
+        event_id = request.form["event_id"]
+
+        cursor = conn.cursor()
+        q_delete_event = "delete from events where id = %s"
+        cursor.execute(q_delete_event, (event_id, bo_email))
+        conn.commit()
+        cursor.close()
+
+        flash("Event deleted successfully.")
+
+        # redirect to same page to refresh event list
+        return redirect(url_for("bo_delete_event_form"))
+
+    # render the delete event page with events owned by the business owner
+    return render_template("bo_delete_event_form.html", events=events)
+
+
+@app.route("/bo_modify_event_form", methods=["GET", "POST"])
+def bo_modify_event_form():
+    bo_email = session["email"]
+
+    # list all his event
+    cursor = conn.cursor()
+    q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
+        from events e join place p on p.id = e.place_id where e.owner_id = (select distinct id from businessowner where email = %s)"
+    cursor.execute(q_get_events, (bo_email,))
+    events = cursor.fetchall()
+    cursor.close()
+
+    if request.method == "POST":
+        event_id = request.form["event_id"]
+        parameter_to_modify = request.form["parameter_to_modify"]
+        new_value = request.form["new_value"]
+        new_time = request.form["new_time"]
+
+        if parameter_to_modify == 'time':
+            new_value = new_time
+
+        # modify
+        cursor = conn.cursor()
+        q_modify_event = f"update events set {parameter_to_modify} = %s where id = %s"
+        cursor.execute(q_modify_event, (new_value, event_id))
+        conn.commit()
+        cursor.close()
+
+        flash("Event modified successfully.")
+
+        # Redirect to the same page to refresh event list
+        return redirect(url_for("bo_modify_event_form"))
+
+    # Render the modify event page with events owned by the business owner
+    return render_template("bo_modify_event_form.html", events=events)
+
+
+@app.route('/bo_logout')
+def staff_logout():
+    session.pop('email')
+    return render_template('/index.html')
+
+
+app.secret_key = 'some key that you will never guess'
+# Run the app on localhost port 5000
+# debug = True -> you don't have to restart flask
+# for changes to go through, TURN OFF FOR PRODUCTION
+if __name__ == "__main__":
+    app.run('127.0.0.1', 5000, debug=True)
 
 
 # -----------------------------------------------------------
