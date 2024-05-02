@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Event</title>
+</head>
+<body>
+    <h1>Delete Event</h1>
+    {% if events %}
+        <ul>
+            {% for event_id, event_name in events %}
+                <li>
+                    <form action="/bo_delete_event" method="POST">
+                        <input type="hidden" name="event_id" value="{{ event_id }}">
+                        <span>{{ event_name }}</span>
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No events can be found.</p>
+    {% endif %}
+
+    <div class="btn-group">
+      <a href="/bo_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>
+      <a href="/bo_logout" class="btn btn-outline-dark">Log Out</a> 
+    </div>
+
+</body>
+</html>
