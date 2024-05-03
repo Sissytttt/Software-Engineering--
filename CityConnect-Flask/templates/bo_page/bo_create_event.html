@@ -46,7 +46,7 @@
                 <select id="e_place" name="e_place">
                     <option value="" disabled selected>Select Place</option>
                     {% for place_name in place_names %}
-                        <option value="{{ place_name }}">{{ place_name }}</option>
+                        <option value="{{ place_name['name'] }}">{{ place_name["name"] }}</option>
                     {% endfor %}
                 </select>
             </div>

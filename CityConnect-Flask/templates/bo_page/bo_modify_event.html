@@ -40,10 +40,10 @@
 
     {% if events %}
     <h2>Modify Event</h2>
-    <form action="/bo_modify_event" method="POST">
+    <form action="/bo_modify_event_form" method="POST">
         <select name="event_name">
             {% for event in events %}
-                <option value="event_name">{{ event.name }}</option>
+                <option value="{{ event.name }}">{{ event.name }}</option>
             {% endfor %}
         </select>
         <select name="parameter_to_modify" onchange="toggleInputType()">

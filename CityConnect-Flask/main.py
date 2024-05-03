@@ -729,21 +729,21 @@ def bo_search_event_form():
         cursor = conn.cursor()
 
         # executes query
-
+        name = '%' + name + '%'
         if len(price) == 0:
             if len(score) == 0:
-                query = 'SELECT * FROM events WHERE name like %s and date(time) > %s '
+                query = 'SELECT * FROM events WHERE name LIKE lower(%s) AND DATE(time) >= %s'
                 cursor.execute(query, (name, time))
             else:
-                query = 'SELECT * FROM events WHERE like = %s and date(time) > %s  and score > %s '
+                query = 'SELECT * FROM events WHERE name like = lower(%s) and date(time) >= %s  and score >= %s '
                 cursor.execute(query, (name, time, score))
 
         else:
             if len(score) == 0:
-                query = 'SELECT * FROM events WHERE name like %s and date(time) > %s and price < %s'
+                query = 'SELECT * FROM events WHERE name like lower(%s) and date(time) >= %s and price =< %s'
                 cursor.execute(query, (name, time, price))
             else:
-                query = 'SELECT * FROM events WHERE name like %s and date(time) > %s and score > %s and price < %s'
+                query = 'SELECT * FROM events WHERE name like lower(%s) and date(time) >= %s and score >= %s and price =< %s'
                 cursor.execute(query, (name, time, score, price))
 
         data = cursor.fetchall() 
@@ -776,6 +776,7 @@ def bo_create_event_form():
         event_score = 0
         event_price = request.form["e_price"]
         event_place = request.form["e_place"]
+        print(event_place)
         event_owner = bo_email
 
         # get this bo_id
@@ -805,10 +806,16 @@ def bo_create_event_form():
             return render_template("bo_page/bo_home.html", error=error)
         else:
             cursor = conn.cursor()
+            q_p_id = "SELECT id FROM place WHERE name = %s"
+            cursor.execute(q_p_id, (event_place,))
+            place_id = cursor.fetchone()
+            cursor.close()
+
+            cursor = conn.cursor()
             q_create_event = "INSERT INTO events (name, time, description, max_ppl, current_ppl, score, price, place_id, owner_id) \
-                VALUES (%s, %s, %s, %s, %s, %s, %s, (SELECT id FROM place WHERE name = %s), %s)"
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cursor.execute(q_create_event, (event_name, event_time, event_descript, event_max_ppl, event_current_ppl,
-                                             event_score, event_price, event_place, bo_id))
+                                             event_score, event_price, place_id["id"], bo_id))
             conn.commit()
             cursor.close()
             message = "You have successfully created an event"
@@ -820,11 +827,11 @@ def bo_create_event_form():
 @app.route("/bo_delete_event_form", methods=["GET", "POST"])
 def bo_delete_event_form():
     bo_email = session["email"]
-        
-    # list all event this bo has
+    
+    # list all events this BO has
     cursor = conn.cursor()
-    q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
-        from events e join place p on p.id = e.place_id where e.owner_id = (select distinct id from businessowner where email = %s)"
+    q_get_events = "SELECT e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
+        FROM events e JOIN place p ON p.id = e.place_id WHERE e.owner_id = (SELECT DISTINCT id FROM businessowner WHERE email = %s)"
     cursor.execute(q_get_events, (bo_email,))
     events = cursor.fetchall()
     cursor.close()
@@ -833,18 +840,15 @@ def bo_delete_event_form():
         event_id = request.form["event_id"]
 
         cursor = conn.cursor()
-        q_delete_event = "delete from events where id = %s"
-        cursor.execute(q_delete_event, (event_id, bo_email))
+        q_delete_event = "DELETE FROM events WHERE id = %s"
+        cursor.execute(q_delete_event, (event_id,))
         conn.commit()
         cursor.close()
 
-        flash("Event deleted successfully.")
-
-        # redirect to same page to refresh event list
         return redirect(url_for("bo_delete_event_form"))
 
-    # render the delete event page with events owned by the business owner
-    return render_template("bo_delete_event_form.html", events=events)
+    # Render the delete event page with events owned by the business owner
+    return render_template("bo_page/bo_delete_event_form.html", events=events)
 
 
 @app.route("/bo_modify_event_form", methods=["GET", "POST"])
@@ -876,24 +880,22 @@ def bo_modify_event_form():
 
         # has the same event name exist:
         if (n_event):
-            error = "Failed to modify event, duplicate event name"
-            return render_template("bo_page/bo_modify_event.html", evemts=events, message=error, event_name=event_name)
-        # modify
-        else:
-
+            print(event_name)
             cursor = conn.cursor()
-            q_modify_event = f"update events set {parameter_to_modify} = %s where name = %s"
+            q_modify_event = f"update events set {parameter_to_modify}"
+            print(q_modify_event)
+            q_modify_event = q_modify_event+" = %s where name = %s"
+            print(q_modify_event)
             cursor.execute(q_modify_event, (new_value, event_name))
             conn.commit()
             cursor.close()
 
-            message = "Event modified sucesfully!"
-            return render_template("bo_page/bo_modify_event.html", events=events, message=message, event_name=event_name)
+            # message = "Event modified sucesfully!"
+            return redirect(url_for("bo_modify_event_form"))
+        else:
+            error = "Failed to modify event, duplicate event name"
+            return render_template("bo_page/bo_modify_event.html", evemts=events, message=error, event_name=event_name)
 
-        # # Redirect to the same page to refresh event list
-        # return redirect(url_for("bo_modify_event"))
-
-    # Render the modify event page with events owned by the business owner
     return render_template("bo_page/bo_modify_event.html", events=events)
 
 
