@@ -8,6 +8,7 @@
 <body>
     <h1>Modify Event</h1>
 
+    <p>Event I owned:</p>
     {% if events %}
         <table>
             <tr>
@@ -40,12 +41,12 @@
     {% if events %}
     <h2>Modify Event</h2>
     <form action="/bo_modify_event" method="POST">
-        <select name="event_id">
+        <select name="event_name">
             {% for event in events %}
-                <option value="{{ event.id }}">{{ event.name }}</option>
+                <option value="event_name">{{ event.name }}</option>
             {% endfor %}
         </select>
-        <select name="parameter_to_modify">
+        <select name="parameter_to_modify" onchange="toggleInputType()">
             <option value="name">Name</option>
             <option value="time">Time</option>
             <option value="description">Description</option>
@@ -56,11 +57,33 @@
             <option value="place_id">Place</option>
         </select>
         <input type="text" name="new_value" placeholder="Enter New Value">
-        <input type="time" name="new_time" style="display:none;">
+        <input type="datetime-local" name="new_time" style="display:none;">
         <button type="submit">Modify Event</button>
+        
+        <script>
+            function toggleInputType() {
+                var selectElement = document.getElementsByName("parameter_to_modify")[0];
+                var timeInput = document.getElementsByName("new_time")[0];
+                var textInput = document.getElementsByName("new_value")[0];
+                if (selectElement.value === "time") {
+                    timeInput.style.display = "inline-block";
+                    textInput.style.display = "none";
+                } else {
+                    timeInput.style.display = "none";
+                    textInput.style.display = "inline-block";
+                }
+            }
+        </script>
     </form>
     {% endif %}
 
+    <br></br>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
+    <br></br>
+    <br></br>
     
     <div class="btn-group">
       <a href="/bo_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>

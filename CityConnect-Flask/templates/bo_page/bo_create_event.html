@@ -7,8 +7,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    
     <div class="container">
+        
         <h1>Create Event</h1>
+
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+
         <form action="/bo_create_event_form" method="POST" onsubmit="return validateForm()">
             <div class="form-group">
                 <label for="e_name">Event Name:</label>

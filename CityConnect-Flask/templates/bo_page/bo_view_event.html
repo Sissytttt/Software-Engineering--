@@ -10,6 +10,20 @@
 	<br>
 	<br>
 	<br>
+
+  <div class="btn-group">
+		<a href="/bo_view_event" class="btn btn-outline-dark">View My Event</a> 
+	</div>
+
+
+  {% if error %}
+    <p>{{ error }}</p>
+  {% endif %}
+
+  <br>
+	<br>
+	<br>
+  {% if events %}
       <table class="table table-striped">
         <tr> <!--The title line of flight search-->
           <th>Name</th>
@@ -20,7 +34,8 @@
           <th>Price</th>
           <th>Place</th>
         </tr>
-
+        
+      
         {% for event in events %}
         <tr>
           <td>{{event["name"]}}</td>
@@ -32,11 +47,16 @@
           <td>{{event["place_name"]}}</td>
         </tr>
         {% endfor %}
-
       </table>
+  {% endif %}
+      
 
+      <br>
+      <br>
+      <br>
       <a href="/bo_home">Back to Home</a>
       <a href="/bo_logout" class="btn btn-outline-dark">Log out</a> 
 	  
+    
   </body>
 </html>
