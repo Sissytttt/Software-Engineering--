@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang = "en">
-<head>
-	<meta charset = "UTF-8">
-	<title>Purchase successful</title>
-	<style>
+
+	<head>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="public">
+
+		<title>My Map</title>
+
+			<style>
 		body {
-		  background-image: url('../static/map.png');
+		  background-image: url('static/sky.png');
 		  background-repeat: no-repeat;
 		  background-attachment: fixed;
 		  background-size: 100% 10%;
 		}
 
-
 		.content {
-		  max-width: 500px;
 		  margin: auto;
 		}
 
-		p {
-    color: Red;
+	p {
+    color: Black;
     font-family: "Cursive", Lucida Handwriting;
 		}
 
@@ -38,12 +41,36 @@
 		font-family: "Fantasy", Papyrus;
 		}
 
-
 		</style>
-</head>
-<body>
-	<h1>Thank You !</h1>
-	<h3>your ticket is successfully purchased</h3>
-	<a href="/customer_home">Back to Home</a>
+
+	</head>
+
+	<body>
+
+		<div class="content">
+			<style type="text/css">
+			table, th, td{
+			border: 1px solid black;
+			}
+			</style>
+
+			<h2><p>Saved Places:</p></h2>
+
+			<table>
+				<tr> <!--The title line of flight search-->
+          <th>name</th>
+          <th>location</th>
+        </tr>
+			{% for line in posts %}
+			<tr>
+				<td>{{line['name']}}</td>
+				<td>{{line['website']}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+
+			<br></br>
+		<a href="/">Back to Homepage</a>
+		</div>
 </body>
 </html>
