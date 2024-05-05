@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Review</title>
+</head>
+
+<h1> Review You Post</h1>
+	<br>
+	<br>
+	<br>
+
+  <div class="btn-group">
+		<a href="/client_view_review" class="btn btn-outline-dark">View My Reviews</a> 
+	</div>
+
+
+  {% if error %}
+    <p>{{ error }}</p>
+  {% endif %}
+
+  <br>
+	<br>
+	<br>
+  {% if reviews %}
+      <table class="table table-striped">
+        <tr> <!--The title line of flight search-->
+          <th>Event</th>
+          <th>Rating</th>
+          <th>Price</th>
+          <th>Review Date</th>
+          <th>Content</th>
+        </tr>
+        
+      
+        {% for review in reviews %}
+        <tr>
+          <td>{{review["event_name"]}}</td>
+          <td>{{review["rating"]}}</td>
+          <td>{{review["price"]}}</td>
+          <td>{{review["creation_date"]}}</td>
+          <td>{{review["content"]}}</td>
+          <td> <!-- New table cell for the action -->
+            <form action="/client_delete_review" method="POST">
+                <input type="hidden" name="review_id" value="{{review.id }}">
+                <button type="submit">Delete Review</button>
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+      </table>
+  {% endif %}
+      
+
+      <br>
+      <br>
+      <br>
+      <a href="/client_home">Back to Home</a>
+      <a href="/client_logout" class="btn btn-outline-dark">Log out</a> 
+	  
+    
+  </body>
+</html>

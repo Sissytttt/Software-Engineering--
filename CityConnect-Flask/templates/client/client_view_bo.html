@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View BO</title>
+</head>
+
+<h1> Business Owner Profile</h1>
+	<br>
+	<br>
+	<br>
+
+  <div class="btn-group">
+		<a href="/client_view_bo" class="btn btn-outline-dark">View Business Owner</a> 
+	</div>
+
+
+  {% if error %}
+    <p>{{ error }}</p>
+  {% endif %}
+
+  <br>
+	<br>
+	<br>
+  {% if bos %}
+      <table class="table table-striped">
+        <tr> <!--The title line of flight search-->
+          <th>Name</th>
+          <th>Company Name</th>
+          <th>City</th>
+          <th>Description</th>
+        </tr>
+        
+      
+        {% for bo in bos %}
+        <tr>
+          <td>{{bo["name"]}}</td>
+          <td>{{bo["company_name"]}}</td>
+          <td>{{bo["city"]}}</td>
+          <td>{{bo["description"]}}</td>
+          <td> <!-- New table cell for the action -->
+            <form action="/client_follow_bo" method="POST">
+                <input type="hidden" name="bo_id" value="{{ bo.id }}">
+                <button type="submit">Follow Business Owner</button>
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+      </table>
+  {% endif %}
+      
+
+      <br>
+      <br>
+      <br>
+      <a href="/client_home">Back to Home</a>
+      <a href="/client_logout" class="btn btn-outline-dark">Log out</a> 
+	  
+    
+  </body>
+</html>

@@ -46,6 +46,18 @@
                 <td>{{ event.score }}</td>
                 <td>{{ event.price }}</td>
                 <td>{{ event.place_name }}</td>
+                <td> <!-- New table cell for the action -->
+                    <form action="/client_rsvp_event" method="POST">
+                        <input type="hidden" name="event_id" value="{{ event.id }}">
+                        <button type="submit">RSVP Event</button>
+                    </form>
+                </td>
+                <td> <!-- New table cell for the action -->
+                    <form action="/client_view_bo" method="POST">
+                        <input type="hidden" name="event_id" value="{{ event.id }}">
+                        <button type="submit">View its Business Owner</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </table>

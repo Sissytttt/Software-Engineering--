@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Event</title>
+</head>
+
+<h1> Event You RSVPed</h1>
+	<br>
+	<br>
+	<br>
+
+  <div class="btn-group">
+		<a href="/client_view_event" class="btn btn-outline-dark">View My Event</a> 
+	</div>
+
+
+  {% if error %}
+    <p>{{ error }}</p>
+  {% endif %}
+
+  <br>
+	<br>
+	<br>
+  {% if events %}
+      <table class="table table-striped">
+        <tr> <!--The title line of flight search-->
+          <th>Name</th>
+          <th>Time</th>
+          <th>Max Capacity</th>
+          <th>Current People</th>
+          <th>Score</th>
+          <th>Price</th>
+          <th>Place</th>
+          <th>Description</th>
+        </tr>
+        
+      
+        {% for event in events %}
+        <tr>
+          <td>{{event["name"]}}</td>
+          <td>{{event["time"]}}</td>
+          <td>{{event["max_ppl"]}}</td>
+          <td>{{event["current_ppl"]}}</td>
+          <td>{{event["score"]}}</td>
+          <td>{{event["price"]}}</td>
+          <td>{{event["place_name"]}}</td>
+          <td>{{event["description"]}}</td>
+          <td> <!-- New table cell for the action -->
+            <form action="/client_view_bo" method="POST">
+                <input type="hidden" name="event_id" value="{{ event.id }}">
+                <button type="submit">View its Business Owner</button>
+            </form>
+        </td>
+          <td> <!-- New table cell for the action -->
+            <form action="/client_post_review" method="POST">
+                <button type="submit">Post Review</button>
+            </form>
+        </td>
+        <td> <!-- New table cell for the action -->
+          <form action="/client_unrsvp_event" method="POST">
+              <input type="hidden" name="event_id" value="{{ event.id }}">
+              <button type="submit">Not Going</button>
+          </form>
+      </td>
+        </tr>
+        {% endfor %}
+      </table>
+  {% endif %}
+      
+
+      <br>
+      <br>
+      <br>
+      <a href="/client_home">Back to Home</a>
+      <a href="/client_logout" class="btn btn-outline-dark">Log out</a> 
+	  
+    
+  </body>
+</html>
