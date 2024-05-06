@@ -13,71 +13,65 @@
 	<style>
 		body {
 			font-family: Arial, sans-serif;
-			/* 使用常规 sans-serif 字体 */
-			background-image: url('../static/sky.png');
 			background-repeat: no-repeat;
 			background-attachment: fixed;
 			background-size: cover;
 			padding: 20px;
 			color: #333;
-			/* 默认文本颜色 */
 		}
 
 		.content {
 			max-width: 500px;
 			margin: auto;
 			padding: 20px;
-			border-radius: 8px;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 			background: rgba(255, 255, 255, 0.8);
 		}
 
 		h2 {
 			font-family: Arial, sans-serif;
-			/* 使用常规 sans-serif 字体 */
+			margin-top: 50px;
+			margin-bottom: 50px;
 			text-align: center;
 		}
 
 		.card {
-			margin-bottom: 20px;
+			margin-bottom: 30px;
 		}
 
 		.card-title {
 			font-family: Arial, sans-serif;
-			/* 使用常规 sans-serif 字体 */
 			color: #333;
-			/* 卡片标题文本颜色 */
 		}
 
 		.card-text {
 			font-family: Arial, sans-serif;
-			/* 使用常规 sans-serif 字体 */
 			color: #666;
-			/* 卡片内容文本颜色 */
 		}
 
 		.btn-primary {
-			background: linear-gradient(135deg, #FFB38E, #FF9662);
-			/* 橙色主题背景 */
 			color: #fff;
-			/* 白色文本颜色 */
 			border: none;
 			border-radius: 5px;
 			font-size: 16px;
 			font-family: Arial, sans-serif;
-			/* 使用常规 sans-serif 字体 */
 			transition: background 0.3s ease;
 			width: 100%;
 		}
 
-		.btn-primary.blue {
-			background: linear-gradient(135deg, #B3D9FF, #6DB5FF);
-			/* 蓝色主题背景 */
+		.btn-primary.orange {
+			background: linear-gradient(135deg, #FFB38E, #FF9662);
 		}
 
-		.btn-primary:hover {
-			background: linear-gradient(135deg, #FF9662, #FFB38E);
-			/* 鼠标悬停时背景颜色变化 */
+		.btn-primary.blue {
+			background: linear-gradient(135deg, #B3D9FF, #6DB5FF);
+		}
+
+		.btn-primary.orange:hover {
+			background: linear-gradient(135deg, #ffa172, #ff8041);
+		}
+
+		.btn-primary.blue:hover {
+			background: linear-gradient(135deg, #81c0ff, #46a3ff);
 		}
 	</style>
 </head>
@@ -90,7 +84,7 @@
 			<div class="card-body">
 				<h5 class="card-title">Client Log in</h5>
 				<p class="card-text">Welcome to Client home</p>
-				<a href="/log_in_client" class="btn btn-primary">Log in</a>
+				<a href="/log_in_client" class="btn btn-primary orange">Log in</a>
 			</div>
 		</div>
 
@@ -101,10 +95,8 @@
 				<a href="/log_in_business_owner" class="btn btn-primary blue">Log in</a>
 			</div>
 		</div>
-	</div>
 
-	<!-- Bootstrap JS -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>
