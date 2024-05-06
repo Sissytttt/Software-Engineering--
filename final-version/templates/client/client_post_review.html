@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    
+    <div class="container">
+        
+        <h1>Post Review</h1>
+
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+
+        <form action="/client_post_review" method="POST" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="rating">Rating from 1 to 5:</label>
+                <input type="number" id="rating" name="rating">
+            </div>
+            <div class="form-group">
+                <label for="price">Price per Person:</label>
+                <input type="number" id="price" name="price">
+            </div>
+			<div class="form-group">
+                <label for="content">Anything you'd like to say to us:</label>
+                <textarea id="content" name="content"></textarea>
+            </div>
+            <input type="submit" value="Create Event">
+        </form>
+    </div>
+
+    <div class="btn-group">
+      <a href="/client_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>
+      <a href="/client_logout" class="btn btn-outline-dark">Log Out</a> 
+    </div>
+
+</body>
+</html>

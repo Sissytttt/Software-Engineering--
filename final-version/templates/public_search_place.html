@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Place Search</title>
+</head>
+<body>
+    <h2>Search for Places</h2>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form action="/client_search_place_form" method="POST">
+        <label for="name">Event Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        <label for="city">In this City:</label><br>
+        <input type="text" id="city" name="city" required><br>
+        <input type="submit" value="Search">
+    </form>
+
+    {% if places %}
+    <h2>Places from your search</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Longitude</th>
+                <th>Latitude</th>
+                <th>City</th>
+            </tr>
+            {% for place in places %}
+            <tr>
+                <td>{{ place.name }}</td>
+                <td>{{ place.location_long }}</td>
+                <td>{{ place.location_lati }}</td>
+                <td>{{ place.city }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    <div class="btn-group">
+        <a href="/client_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>
+        <a href="/client_logout" class="btn btn-outline-dark">Log Out</a> 
+    </div>
+
+</body>
+</html>
