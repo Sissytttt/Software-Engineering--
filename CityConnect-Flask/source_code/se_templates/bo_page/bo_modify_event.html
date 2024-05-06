@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Event</title>
+</head>
+<body>
+    <h1>Modify Event</h1>
+
+    {% if events %}
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Description</th>
+                <th>Maximum People</th>
+                <th>Current People</th>
+                <th>Score</th>
+                <th>Price</th>
+                <th>Place</th>
+            </tr>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>{{ event.time }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.max_ppl }}</td>
+                <td>{{ event.current_ppl }}</td>
+                <td>{{ event.score }}</td>
+                <td>{{ event.price }}</td>
+                <td>{{ event.place_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No events to display.</p>
+    {% endif %}
+
+    {% if events %}
+    <h2>Modify Event</h2>
+    <form action="/bo_modify_event" method="POST">
+        <select name="event_id">
+            {% for event in events %}
+                <option value="{{ event.id }}">{{ event.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="parameter_to_modify">
+            <option value="name">Name</option>
+            <option value="time">Time</option>
+            <option value="description">Description</option>
+            <option value="max_ppl">Maximum People</option>
+            <option value="current_ppl">Current People</option>
+            <option value="score">Score</option>
+            <option value="price">Price</option>
+            <option value="place_id">Place</option>
+        </select>
+        <input type="text" name="new_value" placeholder="Enter New Value">
+        <input type="time" name="new_time" style="display:none;">
+        <button type="submit">Modify Event</button>
+    </form>
+    {% endif %}
+
+    
+    <div class="btn-group">
+      <a href="/bo_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>
+      <a href="/bo_logout" class="btn btn-outline-dark">Log Out</a> 
+    </div>
+
+</body>
+</html>
+

@@ -1,0 +1,245 @@
+/* Business Owner homepage */
+
+
+@media only screen and (prefers-color-scheme: dark) {
+
+    body {
+        background-color: rgb(54, 54, 54);
+    }
+
+    .title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 4%;
+        /* background: #FFCEC2; */
+        flex-direction: column;
+        color: white;
+    }
+
+    * {
+        font-family: 'Nova Mono', monospace;
+    }
+
+    .hello {
+        text-align: center;
+        font-family: 'Nova Mono', monospace;
+        font-size: 85px;
+        margin-bottom: 0px;
+    }
+
+    .welcome {
+        text-align: center;
+        font-size: 20px;
+        font-family: 'Nova Mono', monospace;
+    }
+
+
+    .wrapperbg {
+        background:
+            linear-gradient(-180deg, rgb(0, 0, 0) 50%, rgb(255, 255, 255) 0),
+            linear-gradient(0deg, rgb(0, 0, 0) 50%, rgb(255, 255, 255) 0),
+            linear-gradient(0deg, rgba(252, 0, 0, 0) 50%, rgb(0, 0, 0) 0),
+            linear-gradient(-180deg, rgba(255, 255, 255, 0) 50%, rgb(0, 0, 0) 0);
+
+        background-repeat: no-repeat;
+        background-size: 200% 200%;
+        /* background-position: top, bottom; */
+        background-position: bottom, top;
+        -webkit-background-clip: text, text, padding-box, padding-box;
+        background-clip: text, text, padding-box, padding-box;
+        transition: 0.8s
+    }
+
+    .name {
+        color: #FFF;
+    }
+
+
+
+    .wrapperbg:hover {
+        /* background-position: bottom , top; */
+        background-position: top, bottom;
+        color: rgb(0, 0, 0);
+    }
+
+    .wrapper {
+        margin-left: 7%;
+        margin-right: 7%;
+        margin-top: 6%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .manu {
+        width: 5%;
+        /* background-color: crimson; */
+    }
+
+    a {
+        width: 10%;
+        color: black;
+        transition: 0.8s;
+    }
+
+    .wrapper:hover a {
+        color: rgb(0, 0, 0);
+
+    }
+
+    .centerImage {
+        text-align: center;
+        display: block;
+    }
+}
+
+@media only screen and (prefers-color-scheme: light) {
+
+    .title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 4%;
+        /* background: #FFCEC2; */
+        flex-direction: column;
+    }
+
+    * {
+        font-family: 'Nova Mono', monospace;
+    }
+
+    .hello {
+        text-align: center;
+        font-family: 'Nova Mono', monospace;
+        font-size: 60px;
+        margin-bottom: 0px;
+    }
+
+    .welcome {
+        text-align: center;
+        font-size: 20px;
+        font-family: 'Nova Mono', monospace;
+    }
+
+
+    .wrapperbg {
+        background:
+            linear-gradient(-180deg, rgb(0, 0, 0) 50%, rgb(255, 255, 255) 0),
+            linear-gradient(0deg, rgb(0, 0, 0) 50%, rgb(255, 255, 255) 0),
+            linear-gradient(0deg, rgba(252, 0, 0, 0) 50%, rgb(100, 100, 100) 0),
+            linear-gradient(-180deg, rgba(255, 255, 255, 0) 50%, rgb(100, 100, 100) 0);
+
+        background-repeat: no-repeat;
+        background-size: 200% 200%;
+        /* background-position: top, bottom; */
+        background-position: bottom, top;
+        -webkit-background-clip: text, text, padding-box, padding-box;
+        background-clip: text, text, padding-box, padding-box;
+        transition: 0.8s
+    }
+
+
+    .wrapperbg:hover {
+        /* background-position: bottom , top; */
+        background-position: top, bottom;
+        color: #fff;
+    }
+
+    .wrapper {
+        margin-left: 7%;
+        margin-right: 7%;
+        margin-top: 6%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .manu {
+        width: 5%;
+        /* background-color: crimson; */
+    }
+
+    a {
+        width: 10%;
+        color: black;
+        transition: 0.8s;
+    }
+
+    .wrapper:hover a {
+        color: #FFF;
+
+    }
+
+    .centerImage {
+        text-align: center;
+        display: block;
+    }
+}
+
+
+/* View Events */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fc;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.event-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.event-tile:hover {
+    transform: translateY(-2px);
+    /* Move the tile upward on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Enhance box shadow on hover */
+}
+
+.event-image {
+    width: 100px;
+    /* Adjust image size */
+    height: 100px;
+    /* Adjust image size */
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.event-details {
+    text-align: center;
+}
+
+.event-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.event-description {
+    font-size: 14px;
+    color: #666;
+}
+
+.actions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.actions a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #333;
+}

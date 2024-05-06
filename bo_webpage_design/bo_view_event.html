@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Event</title>
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+  <h1>Events You Host</h1>
+
+  <div class="event-container">
+    {% for event in events %}
+    <div class="event-tile">
+      <img src="{{ event['image_url'] }}" alt="Event Image" class="event-image">
+      <div class="event-details">
+        <div class="event-name">{{ event["name"] }}</div>
+        <div class="event-description">
+          <p><strong>Time:</strong> {{ event["time"] }}</p>
+          <p><strong>Max Capacity:</strong> {{ event["max_ppl"] }}</p>
+          <p><strong>Current People:</strong> {{ event["current_ppl"] }}</p>
+          <p><strong>Score:</strong> {{ event["score"] }}</p>
+          <p><strong>Price:</strong> {{ event["price"] }}</p>
+          <p><strong>Place:</strong> {{ event["place_name"] }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="actions">
+    <a href="/bo_home">Back to Home</a>
+    <a href="/bo_logout" class="btn btn-outline-dark">Log out</a>
+  </div>
+</body>
+
+</html>
