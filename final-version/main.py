@@ -83,8 +83,6 @@ def event_search():
 
     cursor = conn.cursor()
 
-    # executes query
-
     if len(price) == 0:
         if len(score) == 0:
             query = 'SELECT * FROM event WHERE name = %s and time > %s '
@@ -92,7 +90,6 @@ def event_search():
         else:
             query = 'SELECT * FROM event WHERE name = %s and time > %s  and score > %s '
             cursor.execute(query, (name, time, score))
-
     else:
         if len(score) == 0:
             query = 'SELECT * FROM event WHERE name = %s and time > %s and price < %s'
@@ -101,22 +98,13 @@ def event_search():
             query = 'SELECT * FROM event WHERE name = %s and time > %s and score > %s and price < %s'
             cursor.execute(query, (name, time, score, price))
 
-    # stores the results in a variable
-    # fetchone 即每次只读一行
-    data = cursor.fetchall()  # list(dict())
-    # use fetchall() if you are expecting more than 1 data row
+    data = cursor.fetchall()
     cursor.close()
     error = None
-    # if data is not none
     if len(data) > 0:
-        # creates a session for the the user
-        # 创造一个会话
-        # session is a built in
-        return render_template("event_search.html", posts=data)  # a url in app.route
+        return render_template("event_search.html", posts=data)
     if len(data) == 0:
-        # returns an error message to the html page
         error = 'no such event'
-        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
         return render_template("event_search.html", error=error)
 
 # view map
@@ -242,42 +230,6 @@ def loginAuth_client():
 def log_in_client():
     return render_template('log_in/log_in_client.html')
 
-# Authenticates the login
-# 既可以向外展示，也可以获取数据
-@app.route('/client_auth', methods=['GET', 'POST'])
-def loginAuth_client():
-    # grabs information from the forms
-    # get
-    username = request.form["username"]  # 对应html 文件的form class
-    password = request.form['password']
-
-    # cursor used to send queries
-    # 游标（Cursor）是处理数据的一种方法，为了查看或者处理结果集中的数据，游标提供了在结果集中一次一行或者多行前进或向后浏览数据的能力。可以把游标当作一个指针，它可以指定结果中的任何位置，然后允许用户对指定位置的数据进行处理
-    cursor = conn.cursor()
-
-    # executes query
-    query = 'SELECT * FROM client WHERE email = %s and password = MD5(%s)'
-    cursor.execute(query, (username, password))
-    # stores the results in a variable
-    # fetchone 即每次只读一行
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
-    # if data is not none
-    if data is not None:
-        # creates a session for the the user
-        # 创造一个会话
-        # session is a built in
-        session['username'] = username
-        return redirect('/client_home')  # a url in app.route
-    else:
-        # returns an error message to the html page
-        error = 'Invalid username or password'
-        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("log_in/log_in_client.html", error=error)
-
-
       
 # -------------------------------------------------------------
 
@@ -337,8 +289,6 @@ def register_event():
 def cancle_register():
     username = request.form["username"]
     id = request.form["id"]
-
-    # Create a database cursor
     cursor = conn.cursor()
 
     # Check if the event exists
@@ -346,7 +296,6 @@ def cancle_register():
     cursor.execute(query_check_event, (id))
     event = cursor.fetchall()
     event_id = event['id']
-   
     query_client = "SELECT id FROM client WHERE username = %s"
     cursor.execute(query_client, (username,))
     client_result = cursor.fetchone()
@@ -360,7 +309,6 @@ def cancle_register():
     query_check_registration = "SELECT p.id FROM participate as p, client as c, event as e WHERE c.username = %s AND c.id = p.client_id AND p.event_id = %s"
     cursor.execute(query_check_registration, (username, event_id))
     registration = cursor.fetchone()
-
     if registration is None:
         error = "No registration found for this user and event."
         return render_template("client_home/cancel_register.html", error=error)
@@ -368,8 +316,7 @@ def cancle_register():
     # If the event and registration exist, delete the registration
     query_delete_registration = 'DELETE FROM participate WHERE client_id = %s AND event_id = %s'
     cursor.execute(query_delete_registration, (client_id, event_id))
-    conn.commit()  # Commit the transaction to make sure changes are saved
-
+    conn.commit()
     success_message = "Registration cancelled successfully."
     return render_template("client_home/cancel_register.html", success=success_message)
   
@@ -575,8 +522,6 @@ def client_post_event_review():
     query_check = "select id from client"
     cursor.execute(query_check)
     check = cursor.fetchall()
-    # print(check)
-    # print(type(check[0]))
 
     check1 = []
     for item in check:
