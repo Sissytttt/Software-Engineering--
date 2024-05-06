@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Owner Event Search</title>
+</head>
+<body>
+    <h2>Search for Events</h2>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form action="/bo_search_event_form" method="POST">
+        <label for="name">Event Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        <label for="date">After this Date:</label><br>
+        <input type="date" id="time" name="time" required><br>
+        <label for="score">Minimum Score (Optional):</label><br>
+        <input type="text" id="score" name="score"><br>
+        <label for="price">Maximum Price (Optional):</label><br>
+        <input type="text" id="price" name="price"><br><br>
+        <input type="submit" value="Search">
+    </form>
+
+    {% if events %}
+    <h2>Events from your search</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Description</th>
+                <th>Maximum People</th>
+                <th>Current People</th>
+                <th>Score</th>
+                <th>Price</th>
+                <th>Place</th>
+            </tr>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>{{ event.time }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.max_ppl }}</td>
+                <td>{{ event.current_ppl }}</td>
+                <td>{{ event.score }}</td>
+                <td>{{ event.price }}</td>
+                <td>{{ event.place_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    <div class="btn-group">
+        <a href="/bo_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>
+        <a href="/bo_logout" class="btn btn-outline-dark">Log Out</a> 
+    </div>
+
+</body>
+</html>

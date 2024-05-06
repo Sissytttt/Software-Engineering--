@@ -34,12 +34,6 @@
                 <td>{{ place.location_long }}</td>
                 <td>{{ place.location_lati }}</td>
                 <td>{{ place.city }}</td>
-                <td> <!-- New table cell for the action -->
-                    <form action="/client_label_place_to_map" method="POST">
-                        <input type="hidden" name="place_id" value="{{ place.id }}">
-                        <button type="submit">Add to Map</button>
-                    </form>
-                </td>
             </tr>
             {% endfor %}
         </table>
