@@ -100,10 +100,28 @@
 			margin-top: 20px;
 			text-align: center;
 		}
+
+		.logo-container {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			z-index: 1000;
+		}
+
+		.logo-container img {
+			width: 100px;
+			/* Adjust width as needed */
+			height: auto;
+			/* Maintain aspect ratio */
+		}
 	</style>
 </head>
 
 <body>
+
+	<div class="logo-container">
+		<img src="../logo.png" alt="Logo">
+	</div>
 	<h1>Welcome Home My Best Client!<span class="badge bg-secondary"></span></h1>
 
 	<div class="alert-container">
