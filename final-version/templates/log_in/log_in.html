@@ -73,10 +73,27 @@
 		.btn-primary.blue:hover {
 			background: linear-gradient(135deg, #81c0ff, #46a3ff);
 		}
+
+		.logo-container {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			z-index: 1000;
+		}
+
+		.logo-container img {
+			width: 100px;
+			/* Adjust width as needed */
+			height: auto;
+			/* Maintain aspect ratio */
+		}
 	</style>
 </head>
 
 <body>
+	<div class="logo-container">
+		<img src="../logo.png" alt="Logo">
+	</div>
 	<div class="content">
 		<h2>Choose your identity</h2>
 
