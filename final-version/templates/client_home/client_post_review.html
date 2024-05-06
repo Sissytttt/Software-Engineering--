@@ -55,7 +55,6 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            /* Gradient background */
             background-image: linear-gradient(135deg, #FF9563, #69b2ff);
         }
 
@@ -69,8 +68,20 @@
             justify-content: space-between;
         }
 
+        .logo-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .logo-container img {
+            width: 100px;
+            height: auto;
+        }
+
         .btn {
-            padding: 10px 20px;
+            padding: 5px 20px;
             border-radius: 5px;
             font-size: 16px;
             text-decoration: none;
@@ -87,6 +98,9 @@
 </head>
 
 <body>
+    <div class="logo-container">
+        <img src="../logo.png" alt="Logo">
+    </div>
     <br>
     <br>
     <br>

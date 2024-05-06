@@ -88,10 +88,25 @@
     a:hover {
       text-decoration: underline;
     }
+
+    .logo-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    .logo-container img {
+      width: 100px;
+      height: auto;
+    }
   </style>
 </head>
 
 <body>
+  <div class="logo-container">
+    <img src="../logo.png" alt="Logo">
+  </div>
   <h1>Reviews You Posted</h1>
   <br>
   <br>
