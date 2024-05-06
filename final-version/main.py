@@ -23,7 +23,7 @@ conn = pymysql.connect(host='localhost',
 # 表示地址为“/”路径时就调用下方的函数
 @app.route('/', methods=['GET', 'POST'])
 def hello():
-    return render_template('index.html')
+    return render_template('/index.html')
 
 # -----------------------------------------------------------
 # --------------------------------------------------------------
@@ -31,7 +31,7 @@ def hello():
 # search
 @app.route("/public_place_search", methods=['GET', 'POST'])
 def public_place_search():
-    return render_template('place_search.html')
+    return render_template('/place_search.html')
 
 
 @app.route('/place_search', methods=['GET', 'POST'])
@@ -154,470 +154,494 @@ def view_map():
         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
         return render_template("view_map.html", error=error)
       
-# # register
-# @app.route('/register_client')
-# def register_client():
-#     return render_template('register/register_client.html')
+# register
+@app.route('/register_client')
+def register_client():
+    return render_template('register/register_client.html')
 
-# # Authenticates the register
-# @app.route('/registerAuth_client', methods=['GET', 'POST'])
-# def registerAuth_client():
-#     # grabs information from the forms
-#     username = request.form['username']
-#     password = request.form['password']
-#     name = request.form['name']
-#     phone = request.form['phone']
-#     city = request.form['city']
+# Authenticates the register
+@app.route('/registerAuth_client', methods=['GET', 'POST'])
+def registerAuth_client():
+    # grabs information from the forms
+    username = request.form['username']
+    password = request.form['password']
+    name = request.form['name']
+    phone = request.form['phone']
+    city = request.form['city']
 
-#     # cursor used to send queries
-#     cursor = conn.cursor()
+    # cursor used to send queries
+    cursor = conn.cursor()
 
-#     # executes query
-#     query = 'SELECT username FROM client WHERE username = %s'  # check for no same username
-#     cursor.execute(query, (username))
-#     # stores the results in a variable
-#     data = cursor.fetchone()
-#     # use fetchall() if you are expecting more than 1 data row
-#     error = None
+    # executes query
+    query = 'SELECT username FROM client WHERE username = %s'  # check for no same username
+    cursor.execute(query, (username))
+    # stores the results in a variable
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    error = None
 
-#     if (data):
-#         # If the previous query returns data, then user exists
-#         error = "This user already exists"
-#         return render_template('register/register_.html', error=error)
+    if (data):
+        # If the previous query returns data, then user exists
+        error = "This user already exists"
+        return render_template('register/register_.html', error=error)
 
-#     else:
-#         ins = 'INSERT INTO client VALUES(%s, MD5(%s), %s, %s, %s)'
-#         cursor.execute(ins, (username, password, name, phone, city))
-#         conn.commit()
-#         cursor.close()
-#         return render_template('index.html')
+    else:
+        ins = 'INSERT INTO client VALUES(%s, MD5(%s), %s, %s, %s)'
+        cursor.execute(ins, (username, password, name, phone, city))
+        conn.commit()
+        cursor.close()
+        return render_template('index.html')
 
 
     
 
 # --------------------------------------------------------------------------
-# # log in
-# # @app.route('/log_in_bo')
-# # def log_in_bo():
-# #     return render_template('log_in/log_in_client.html')
-
-# # Authenticates the login
-# # 既可以向外展示，也可以获取数据
-# @app.route('/client_auth', methods=['GET', 'POST'])
-# def loginAuth_client():
-#     # grabs information from the forms
-#     # get
-#     username = request.form["username"]  # 对应html 文件的form class
-#     password = request.form['password']
-
-#     # cursor used to send queries
-#     # 游标（Cursor）是处理数据的一种方法，为了查看或者处理结果集中的数据，游标提供了在结果集中一次一行或者多行前进或向后浏览数据的能力。可以把游标当作一个指针，它可以指定结果中的任何位置，然后允许用户对指定位置的数据进行处理
-#     cursor = conn.cursor()
-
-#     # executes query
-#     query = 'SELECT * FROM client WHERE email = %s and password = MD5(%s)'
-#     cursor.execute(query, (username, password))
-#     # stores the results in a variable
-#     # fetchone 即每次只读一行
-#     data = cursor.fetchone()
-#     # use fetchall() if you are expecting more than 1 data row
-#     cursor.close()
-#     error = None
-#     # if data is not none
-#     if data is not None:
-#         # creates a session for the the user
-#         # 创造一个会话
-#         # session is a built in
-#         session['username'] = username
-#         return redirect('/client_home')  # a url in app.route
-#     else:
-#         # returns an error message to the html page
-#         error = 'Invalid username or password'
-#         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-#         return render_template("log_in/log_in_client.html", error=error)
-
-
-# # log in
-# @app.route('/log_in_client')
-# def log_in_client():
+# log in
+# @app.route('/log_in_bo')
+# def log_in_bo():
 #     return render_template('log_in/log_in_client.html')
 
-# # Authenticates the login
-# # 既可以向外展示，也可以获取数据
-# @app.route('/client_auth', methods=['GET', 'POST'])
-# def loginAuth_client():
-#     # grabs information from the forms
-#     # get
-#     username = request.form["username"]  # 对应html 文件的form class
-#     password = request.form['password']
+# Authenticates the login
+# 既可以向外展示，也可以获取数据
+@app.route('/client_auth', methods=['GET', 'POST'])
+def loginAuth_client():
+    # grabs information from the forms
+    # get
+    username = request.form["username"]  # 对应html 文件的form class
+    password = request.form['password']
 
-#     # cursor used to send queries
-#     # 游标（Cursor）是处理数据的一种方法，为了查看或者处理结果集中的数据，游标提供了在结果集中一次一行或者多行前进或向后浏览数据的能力。可以把游标当作一个指针，它可以指定结果中的任何位置，然后允许用户对指定位置的数据进行处理
-#     cursor = conn.cursor()
+    # cursor used to send queries
+    # 游标（Cursor）是处理数据的一种方法，为了查看或者处理结果集中的数据，游标提供了在结果集中一次一行或者多行前进或向后浏览数据的能力。可以把游标当作一个指针，它可以指定结果中的任何位置，然后允许用户对指定位置的数据进行处理
+    cursor = conn.cursor()
 
-#     # executes query
-#     query = 'SELECT * FROM client WHERE email = %s and password = MD5(%s)'
-#     cursor.execute(query, (username, password))
-#     # stores the results in a variable
-#     # fetchone 即每次只读一行
-#     data = cursor.fetchone()
-#     # use fetchall() if you are expecting more than 1 data row
-#     cursor.close()
-#     error = None
-#     # if data is not none
-#     if data is not None:
-#         # creates a session for the the user
-#         # 创造一个会话
-#         # session is a built in
-#         session['username'] = username
-#         return redirect('/client_home')  # a url in app.route
-#     else:
-#         # returns an error message to the html page
-#         error = 'Invalid username or password'
-#         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-#         return render_template("log_in/log_in_client.html", error=error)
+    # executes query
+    query = 'SELECT * FROM client WHERE email = %s and password = MD5(%s)'
+    cursor.execute(query, (username, password))
+    # stores the results in a variable
+    # fetchone 即每次只读一行
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    cursor.close()
+    error = None
+    # if data is not none
+    if data is not None:
+        # creates a session for the the user
+        # 创造一个会话
+        # session is a built in
+        session['username'] = username
+        return redirect('/client_home')  # a url in app.route
+    else:
+        # returns an error message to the html page
+        error = 'Invalid username or password'
+        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
+        return render_template("log_in/log_in_client.html", error=error)
+
+
+# log in
+@app.route('/log_in_client')
+def log_in_client():
+    return render_template('log_in/log_in_client.html')
+
+# Authenticates the login
+# 既可以向外展示，也可以获取数据
+@app.route('/client_auth', methods=['GET', 'POST'])
+def loginAuth_client():
+    # grabs information from the forms
+    # get
+    username = request.form["username"]  # 对应html 文件的form class
+    password = request.form['password']
+
+    # cursor used to send queries
+    # 游标（Cursor）是处理数据的一种方法，为了查看或者处理结果集中的数据，游标提供了在结果集中一次一行或者多行前进或向后浏览数据的能力。可以把游标当作一个指针，它可以指定结果中的任何位置，然后允许用户对指定位置的数据进行处理
+    cursor = conn.cursor()
+
+    # executes query
+    query = 'SELECT * FROM client WHERE email = %s and password = MD5(%s)'
+    cursor.execute(query, (username, password))
+    # stores the results in a variable
+    # fetchone 即每次只读一行
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    cursor.close()
+    error = None
+    # if data is not none
+    if data is not None:
+        # creates a session for the the user
+        # 创造一个会话
+        # session is a built in
+        session['username'] = username
+        return redirect('/client_home')  # a url in app.route
+    else:
+        # returns an error message to the html page
+        error = 'Invalid username or password'
+        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
+        return render_template("log_in/log_in_client.html", error=error)
 
 
       
-# # -------------------------------------------------------------
+# -------------------------------------------------------------
 
-# @app.route('/client_home')
-# def client_home():
-#     return render_template('client_page/client_home.html', username=session['username'])
+@app.route('/client_home')
+def client_home():
+    return render_template('client_page/client_home.html', username=session['username'])
 
 
-# # @app.route("/client_place_search", methods=['GET', 'POST'])
-# # def client_place_search():
-# #     return render_template('place_search.html')
+# @app.route("/client_place_search", methods=['GET', 'POST'])
+# def client_place_search():
+#     return render_template('place_search.html')
   
 
-# # @app.route("/client_event_search", methods=['GET', 'POST'])
-# # def client_event_search():
-# #     return render_template('event_search.html')
+# @app.route("/client_event_search", methods=['GET', 'POST'])
+# def client_event_search():
+#     return render_template('event_search.html')
 
-# @app.route("/register_event", methods=['GET', 'POST']) 
-# def register_event():
-#     username = request.form["username"]
-#     id = request.form["id"]
+@app.route("/register_event", methods=['GET', 'POST']) 
+def register_event():
+    username = request.form["username"]
+    id = request.form["id"]
 
-#     cursor = conn.cursor()
-#     query = 'SELECT * FROM event WHERE id = %s'
-#     cursor.execute(query, (id))
-#     data = cursor.fetchall()  # list(dict())
-#     event_id = data['id']
+    cursor = conn.cursor()
+    query = 'SELECT * FROM event WHERE id = %s'
+    cursor.execute(query, (id))
+    data = cursor.fetchall()  # list(dict())
+    event_id = data['id']
    
-#     query_client = "SELECT id FROM client WHERE username = %s"
-#     cursor.execute(query_client, (username,))
-#     client_result = cursor.fetchone()
-#     client_id = client_result['id']
+    query_client = "SELECT id FROM client WHERE username = %s"
+    cursor.execute(query_client, (username,))
+    client_result = cursor.fetchone()
+    client_id = client_result['id']
     
-#     if event_id is None:
-#         error = "Sorry, no such event exists!"
-#         return render_template("client_home/register_event.html", error=error)
+    if event_id is None:
+        error = "Sorry, no such event exists!"
+        return render_template("client_home/register_event.html", error=error)
       
-#     query_check_registration = 'SELECT p.id FROM event as e, participate as p, client as c '\
-#         'WHERE c.username = %s AND c.id = p.client_id AND e.id = p.event_id'
-#     cursor.execute(query_check_registration, (username, event_id))
-#     registration = cursor.fetchone()
+    query_check_registration = 'SELECT p.id FROM event as e, participate as p, client as c '\
+        'WHERE c.username = %s AND c.id = p.client_id AND e.id = p.event_id'
+    cursor.execute(query_check_registration, (username, event_id))
+    registration = cursor.fetchone()
 
-#     if registration:
-#         error = "You are already registered for this event."
-#         return render_template("client_home/register_event.html", error=error)
+    if registration:
+        error = "You are already registered for this event."
+        return render_template("client_home/register_event.html", error=error)
 
-#     # Register the user for the event
-#     query_register = 'INSERT INTO participate (client_id, event_id) VALUES (%s, %s)'
-#     cursor.execute(query_register, (client_id, event_id))
-#     conn.commit()  # Commit to save the changes
+    # Register the user for the event
+    query_register = 'INSERT INTO participate (client_id, event_id) VALUES (%s, %s)'
+    cursor.execute(query_register, (client_id, event_id))
+    conn.commit()  # Commit to save the changes
 
-#     success_message = "You have successfully registered for the event."
-#     return render_template("client_home/register_event.html", success=success_message)
+    success_message = "You have successfully registered for the event."
+    return render_template("client_home/register_event.html", success=success_message)
 
       
-# @app.route("/cancel_register", methods=['GET', 'POST'])
-# def cancle_register():
-#     username = request.form["username"]
-#     id = request.form["id"]
+@app.route("/cancel_register", methods=['GET', 'POST'])
+def cancle_register():
+    username = request.form["username"]
+    id = request.form["id"]
 
-#     # Create a database cursor
-#     cursor = conn.cursor()
+    # Create a database cursor
+    cursor = conn.cursor()
 
-#     # Check if the event exists
-#     query_check_event = 'SELECT * FROM event WHERE id = %s'
-#     cursor.execute(query_check_event, (id))
-#     event = cursor.fetchall()
-#     event_id = event['id']
+    # Check if the event exists
+    query_check_event = 'SELECT * FROM event WHERE id = %s'
+    cursor.execute(query_check_event, (id))
+    event = cursor.fetchall()
+    event_id = event['id']
    
-#     query_client = "SELECT id FROM client WHERE username = %s"
-#     cursor.execute(query_client, (username,))
-#     client_result = cursor.fetchone()
-#     client_id = client_result['id']
+    query_client = "SELECT id FROM client WHERE username = %s"
+    cursor.execute(query_client, (username,))
+    client_result = cursor.fetchone()
+    client_id = client_result['id']
 
-#     if event_id is None:
-#         error = "Event not found."
-#         return render_template("client_home/cancel_register.html", error=error)
+    if event_id is None:
+        error = "Event not found."
+        return render_template("client_home/cancel_register.html", error=error)
 
-#     # Check if the user is registered for the event
-#     query_check_registration = "SELECT p.id FROM participate as p, client as c, event as e WHERE c.username = %s AND c.id = p.client_id AND p.event_id = %s"
-#     cursor.execute(query_check_registration, (username, event_id))
-#     registration = cursor.fetchone()
+    # Check if the user is registered for the event
+    query_check_registration = "SELECT p.id FROM participate as p, client as c, event as e WHERE c.username = %s AND c.id = p.client_id AND p.event_id = %s"
+    cursor.execute(query_check_registration, (username, event_id))
+    registration = cursor.fetchone()
 
-#     if registration is None:
-#         error = "No registration found for this user and event."
-#         return render_template("client_home/cancel_register.html", error=error)
+    if registration is None:
+        error = "No registration found for this user and event."
+        return render_template("client_home/cancel_register.html", error=error)
 
-#     # If the event and registration exist, delete the registration
-#     query_delete_registration = 'DELETE FROM participate WHERE client_id = %s AND event_id = %s'
-#     cursor.execute(query_delete_registration, (client_id, event_id))
-#     conn.commit()  # Commit the transaction to make sure changes are saved
+    # If the event and registration exist, delete the registration
+    query_delete_registration = 'DELETE FROM participate WHERE client_id = %s AND event_id = %s'
+    cursor.execute(query_delete_registration, (client_id, event_id))
+    conn.commit()  # Commit the transaction to make sure changes are saved
 
-#     success_message = "Registration cancelled successfully."
-#     return render_template("client_home/cancel_register.html", success=success_message)
+    success_message = "Registration cancelled successfully."
+    return render_template("client_home/cancel_register.html", success=success_message)
   
 
-# @app.route('/get_followers', methods=['GET', 'POST'])
-# def get_followers():
-#     prime_id = request.form["prime_id"]
-#     cursor = conn.cursor()
-#     query = 'SELECT following_id FROM follow WHERE prime_id = %s'
-#     cursor.execute(query, (prime_id))
-#     data = cursor.fetchall()  # list(dict())
-#     cursor.close()
+@app.route('/get_followers', methods=['GET', 'POST'])
+def get_followers():
+    prime_id = request.form["prime_id"]
+    cursor = conn.cursor()
+    query = 'SELECT following_id FROM follow WHERE prime_id = %s'
+    cursor.execute(query, (prime_id))
+    data = cursor.fetchall()
+    cursor.close()
     
-#     return render_template("client_home/get_followers.html", posts=data)
+    return render_template("client_home/get_followers.html", posts=data)
+
+@app.route('/client_view_follow', methods=['GET', 'POST'])
+def get_following():
+    following_id = request.form["following_id"]
+    cursor = conn.cursor()
+    query = 'SELECT prime_id FROM follow WHERE following_id = %s'
+    cursor.execute(query, (following_id))
+    data = cursor.fetchall()
+    cursor.close()
+    
+    return render_template("client_home/client_view_follow.html", posts=data)
 
   
-# @app.route('/follow', methods=['GET', 'POST'])
-# def follow():
-#     owner_id = request.form["id"]
-#     client_id = request.form["id"]
+@app.route('/follow', methods=['GET', 'POST'])
+def follow():
+    owner_id = request.form["id"]
+    client_id = request.form["id"]
 
-#     cursor = conn.cursor()
-#     query = 'SELECT * FROM businessowner WHERE id = %s'
-#     cursor.execute(query, (owner_id))
-#     data = cursor.fetchone()
-#     # owner_id = data['id']
+    cursor = conn.cursor()
+    query = 'SELECT * FROM businessowner WHERE id = %s'
+    cursor.execute(query, (owner_id))
+    data = cursor.fetchone()
+    # owner_id = data['id']
    
-#     query_client = "SELECT id FROM client WHERE username = %s"
-#     cursor.execute(query_client, (client_id))
-#     client_result = cursor.fetchone()
-#     # client_id = client_result['id']
+    query_client = "SELECT id FROM client WHERE username = %s"
+    cursor.execute(query_client, (client_id))
+    client_result = cursor.fetchone()
+    # client_id = client_result['id']
     
-#     query_id = 'SELECT MAX(id) AS max_id FROM follow'
-#     cursor.excute(query_id)
-#     result = cursor.fetchone()
-#     max_id = result[0] if result[0] is not None else 0
+    query_id = 'SELECT MAX(id) AS max_id FROM follow'
+    cursor.excute(query_id)
+    result = cursor.fetchone()
+    max_id = result[0] if result[0] is not None else 0
     
-#     if data is None:
-#         error = "Sorry, no such business owner!"
-#         return render_template("client_home/follow.html", error=error)
-#     if client_result is None:
-#         error = "Sorry, no such user!"
-#         return render_template("client_home/follow.html", error=error)
+    if data is None:
+        error = "Sorry, no such business owner!"
+        return render_template("client_home/client_home.html", error=error)
+    if client_result is None:
+        error = "Sorry, no such user!"
+        return render_template("client_home/client_home.html", error=error)
       
-#     query_check_registration = 'SELECT * FROM follow WHERE following_id = %s AND prime_id = %s'
-#     cursor.execute(query_check_registration, (client_id, owner_id))
-#     registration = cursor.fetchone()
+    query_check_registration = 'SELECT * FROM follow WHERE following_id = %s AND prime_id = %s'
+    cursor.execute(query_check_registration, (client_id, owner_id))
+    registration = cursor.fetchone()
 
-#     if registration:
-#         error = "You are already following this business owner."
-#         return render_template("client_home/follow.html", error=error)
+    if registration:
+        error = "You are already following this business owner."
+        return render_template("client_home/client_home.html", error=error)
 
-#     # Register the user for the event
-#     query_register = 'INSERT INTO participate (id, following_id, prime_id) VALUES (%s, %s)'
-#     cursor.execute(query_register, (max_id + 1, client_id, owner_id))
-#     conn.commit()  # Commit to save the changes 
+    query_register = 'INSERT INTO participate (id, prime_id, following_id) VALUES (%s, %s)'
+    cursor.execute(query_register, (max_id + 1, owner_id, client_id))
+    conn.commit() 
     
 
-# @app.route('/unfollow', methods=['GET', 'POST'])
-# def unfollow():
-#     business_owner = request.form["id"]
-#     client = request.form["id"]
+@app.route('/unfollow', methods=['GET', 'POST'])
+def unfollow():
+    business_owner = request.form["id"]
+    client = request.form["id"]
     
-#     cursor = conn.cursor()
+    cursor = conn.cursor()
 
-#     # Check if the user is registered for the event
-#     query_check_registration = 'SELECT * FROM follow WHERE prime_id = %s AND following_id = %s'
-#     cursor.execute(query_check_registration, (business_owner, client))
-#     registration = cursor.fetchone()
+    query_check_registration = 'SELECT * FROM follow WHERE prime_id = %s AND following_id = %s'
+    cursor.execute(query_check_registration, (business_owner, client))
+    registration = cursor.fetchone()
 
-#     if registration is None:
-#         error = "You have not followed this business owner"
-#         return render_template("client_home/unfollow.html", error=error)
+    if registration is None:
+        error = "You have not followed this business owner"
+        return render_template("client_home.html", error=error)
 
-#     # If the event and registration exist, delete the registration
-#     query_delete_registration = 'DELETE FROM follow WHERE following_id = %s AND prime_id = %s'
-#     cursor.execute(query_delete_registration, (client, business_owner))
-#     conn.commit()  # Commit the transaction to make sure changes are saved
-
-#     success_message = "Unfollowed successfully."
-#     return render_template("client_home/follow.html", success=success_message)
+    query_delete_registration = 'DELETE FROM follow WHERE following_id = %s AND prime_id = %s'
+    cursor.execute(query_delete_registration, (client, business_owner))
+    conn.commit()
 
 
-# @app.route('/customer_ticket_view', methods=['GET', 'POST']) # view map
-# def customer_ticket_view():
-#     cursor = conn.cursor()
+@app.route('/client_view_event', methods=['GET', 'POST'])
+def client_view_event():
+    client_id = request.form.get('client_id')
+    cursor = conn.cursor()
+    query = 'SELECT event_id FROM participate WHERE client_id = %s'
+    cursor.execute(query, (client_id,))
+    events = cursor.fetchall()
 
-#     query = 'SELECT * FROM flight WHERE status = "Upcoming"'
-#     cursor.execute(query)
-#     data = cursor.fetchall()  # list(dict())
+    cursor.close()
 
-#     cursor.close()
+    if not events:
+        return render_template("client_home/client_view_event.html", message="No events found for this client.")
+    
+    return render_template("client_home/client_view_event.html", events=events)
 
-#     return render_template("customer_page/customer_purchase_ticket.html", posts=data)  # a url in app.route
+@app.route('/client_view_review', methods=['GET', 'POST'])
+def client_view_review():
+    client_id = request.form.get('client_id')
+    cursor = conn.cursor()
+    query = 'SELECT event_id, content, rating FROM review WHERE client_id = %s'
+    cursor.execute(query, (client_id,))
+    reviews = cursor.fetchall()
+
+    cursor.close()
+
+    if not reviews:
+        return render_template("client_home/client_view_review.html", message="No event reviews found for this client.")
+    
+    return render_template("client_home/client_view_review.html", reviews=reviews)
+
+@app.route('label', methods=['GET', 'POST'])
+def label():
+    client_id = request.form["id"]
+    place_id = request.form["id"]
+
+    cursor = conn.cursor()
+    query = 'SELECT * FROM place WHERE id = %s'
+    cursor.execute(query, (place_id))
+    data = cursor.fetchone()
+   
+    query_client = "SELECT id FROM client WHERE id = %s"
+    cursor.execute(query_client, (client_id))
+    client_result = cursor.fetchone()
+    
+    query_id = 'SELECT MAX(id) AS max_id FROM map'
+    cursor.excute(query_id)
+    result = cursor.fetchone()
+    max_id = result[0] if result[0] is not None else 0
+    
+    if data is None:
+        error = "Sorry, no such place!"
+        return render_template("client_home/client_home.html", error=error)
+    if client_result is None:
+        error = "Sorry, no such user!"
+        return render_template("client_home/client_home.html", error=error)
+      
+    query_check_registration = 'SELECT * FROM map WHERE client_id = %s AND place_id = %s'
+    cursor.execute(query_check_registration, (client_id, place_id))
+    registration = cursor.fetchone()
+
+    if registration:
+        error = "You are already labeled this place."
+        return render_template("client_home/client_home.html", error=error)
+
+    query_register = 'INSERT INTO map (id, client_id, place_id) VALUES (%s, %s)'
+    cursor.execute(query_register, (max_id + 1, client_id, place_id))
+    conn.commit()
 
 
-# @app.route('/customer_track', methods=['GET', 'POST'])
-# def customer_track():
-#     data3 = None
-#     return render_template("customer_page/customer_track_my_spending.html", data3=data3)
+@app.route('/unlabel', methods=['GET', 'POST'])
+def unlabel():
+    place = request.form["id"]
+    client = request.form["id"]
+    
+    cursor = conn.cursor()
+
+    # Check if the user is registered for the event
+    query_check_registration = 'SELECT * FROM map WHERE place_id = %s AND client_id = %s'
+    cursor.execute(query_check_registration, (place, client))
+    registration = cursor.fetchone()
+
+    if registration is None:
+        error = "You have not labeled this map"
+        return render_template("client_home/client_home.html", error=error)
+
+    # If the event and registration exist, delete the registration
+    query_delete_registration = 'DELETE FROM map WHERE client_id = %s AND place_id = %s'
+    cursor.execute(query_delete_registration, (client, place))
+    conn.commit()  # Commit the transaction to make sure changes are saved
 
 
-# @app.route("/customer_track_my_spending", methods=['GET', 'POST'])
-# def customer_track_spending():
-#     username = session["username"]
-#     start = request.form["start_date"]
-#     end = request.form['end_date']
+@app.route('/logout')
+def logout():
+    session.pop('email')
+    return render_template('/index.html')
 
-#     cursor = conn.cursor()
-
-#     query1 = "SELECT SUM(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN " \
-#              "DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND CURDATE() AND customer_email = %s "
-#     cursor.execute(query1, (username))
-#     sum_past_year = cursor.fetchone()
-
-#     query2 = "SELECT SUM(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN %s " \
-#              "AND %s AND customer_email = %s "
-#     cursor = conn.cursor()
-#     cursor.execute(query2, (start, end, username))
-#     sum_period = cursor.fetchone()
-
-#     query3 = "SELECT sum(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN " \
-#              "DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND CURDATE() AND customer_email = %s "
-#     query4 = "SELECT sum(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN " \
-#              "DATE_SUB(CURDATE(), INTERVAL 2 MONTH) AND DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND customer_email = %s "
-#     query5 = "SELECT sum(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN " \
-#              "DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND DATE_SUB(CURDATE(), INTERVAL 2 MONTH) AND customer_email = %s "
-#     query6 = "SELECT sum(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN " \
-#              "DATE_SUB(CURDATE(), INTERVAL 4 MONTH) AND DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND customer_email = %s "
-#     query7 = "SELECT sum(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN " \
-#              "DATE_SUB(CURDATE(), INTERVAL 5 MONTH) AND DATE_SUB(CURDATE(), INTERVAL 4 MONTH) AND customer_email = %s "
-#     query8 = "SELECT sum(price) as total FROM flight NATURAL JOIN ticket NATURAL JOIN purchases WHERE purchase_date BETWEEN " \
-#              "DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND DATE_SUB(CURDATE(), INTERVAL 5 MONTH) AND customer_email = %s "
-
-#     cursor = conn.cursor()
-#     cursor.execute(query3, (username))
-#     sum_1_month = cursor.fetchone()
-#     cursor.execute(query4, (username))
-#     sum_2_month = cursor.fetchone()
-#     cursor.execute(query5, (username))
-#     sum_3_month = cursor.fetchone()
-#     cursor.execute(query6, (username))
-#     sum_4_month = cursor.fetchone()
-#     cursor.execute(query7, (username))
-#     sum_5_month = cursor.fetchone()
-#     cursor.execute(query8, (username))
-#     sum_6_month = cursor.fetchone()
-
-#     data_temp = [sum_1_month["total"], sum_2_month["total"], sum_3_month["total"], sum_4_month["total"],
-#              sum_5_month["total"], sum_6_month["total"]]
-#     data3 = []
-#     for item in data_temp:
-#         if item is None:
-#             item = 0
-#             data3.append(item)
-#         else:
-#             data3.append(int(item))
-
-#     return render_template("customer_page/customer_track_my_spending.html", data1=sum_past_year, data2=sum_period,
-#                            data3=data3)
     
 # -----------------------------------------------------------
 # ------------------------------------------------------------
-# # event review
-# @app.route('/post_event_review')
-# def post_event_review():
-#     return render_template('review/post_event_review.html')
+# event review
+@app.route('/post_event_review')
+def post_event_review():
+    return render_template('review/post_event_review.html')
   
-# @app.route("/client_post_event_review", methods=['GET', 'POST']) 
-# def client_post_event_review():
-#     user_id = request.form["user_id"]
-#     event_id = request.form["event_id"]
-#     content = request.form["content"]
-#     rating = request.form["rating"]
-#     price = request.form["price"]
+@app.route("/client_post_event_review", methods=['GET', 'POST']) 
+def client_post_event_review():
+    user_id = request.form["user_id"]
+    event_id = request.form["event_id"]
+    content = request.form["content"]
+    rating = request.form["rating"]
+    price = request.form["price"]
 
-#     cursor = conn.cursor()
+    cursor = conn.cursor()
 
-#     query_check = "select id from client"
-#     cursor.execute(query_check)
-#     check = cursor.fetchall()
-#     # print(check)
-#     # print(type(check[0]))
+    query_check = "select id from client"
+    cursor.execute(query_check)
+    check = cursor.fetchall()
+    # print(check)
+    # print(type(check[0]))
 
-#     check1 = []
-#     for item in check:
-#         check1.append(item["user_id"])
-#     if int(user_id) not in check1:
-#         error = "Sorry, user_id not existed !"
-#         return render_template("review/post_event_review.html", error=error)
+    check1 = []
+    for item in check:
+        check1.append(item["user_id"])
+    if int(user_id) not in check1:
+        error = "Sorry, user_id not existed !"
+        return render_template("review/post_event_review.html", error=error)
 
-#     query_check2 = 'SELECT * FROM event WHERE id = %s'
-#     cursor.execute(query_check2, event_id)
-#     check_f = cursor.fetchall()
-#     check3 = []
-#     for item in check_f:
-#         check3.append(item["event_id"])
-#     if int(event_id) not in check3:
-#         error = "Sorry, you input a wrong event id !"
-#         return render_template("review/post_event_review.html", error=error)
+    query_check2 = 'SELECT * FROM event WHERE id = %s'
+    cursor.execute(query_check2, event_id)
+    check_f = cursor.fetchall()
+    check3 = []
+    for item in check_f:
+        check3.append(item["event_id"])
+    if int(event_id) not in check3:
+        error = "Sorry, you input a wrong event id !"
+        return render_template("review/post_event_review.html", error=error)
 
-#     query3 = "select max(id) as next_id from review"
-#     cursor.execute(query3)
-#     review_id = cursor.fetchall()
-#     review_id = review_id[0]["next_id"]
+    query3 = "select max(id) as next_id from review"
+    cursor.execute(query3)
+    review_id = cursor.fetchall()
+    review_id = review_id[0]["next_id"]
 
 
-#     ins = 'INSERT INTO review VALUES(%s, %s, %s, %s, %s, %s, CURRENT_DATE())'
-#     cursor.execute(ins, (str(review_id + 1), event_id, user_id, content, rating, price))
-#     conn.commit()
-#     cursor.close()
-#     return render_template('client_page/client_purchase_successful.html')
+    ins = 'INSERT INTO review VALUES(%s, %s, %s, %s, %s, %s, CURRENT_DATE())'
+    cursor.execute(ins, (str(review_id + 1), event_id, user_id, content, rating, price))
+    conn.commit()
+    cursor.close()
+    return render_template('client_page/client_purchase_successful.html')
   
-# @app.route("/delete_review", methods=['GET', 'POST'])
-# def cancle_register():
-#     user_id = request.form["user_id"]
-#     event_id = request.form["event_id"]
+@app.route("/delete_review", methods=['GET', 'POST'])
+def cancle_register():
+    user_id = request.form["user_id"]
+    event_id = request.form["event_id"]
 
-#     # Create a database cursor
-#     cursor = conn.cursor()
+    # Create a database cursor
+    cursor = conn.cursor()
 
-#     query_check = "select id from client"
-#     cursor.execute(query_check)
-#     check = cursor.fetchall()
-#     # print(check)
-#     # print(type(check[0]))
+    query_check = "select id from client"
+    cursor.execute(query_check)
+    check = cursor.fetchall()
+    # print(check)
+    # print(type(check[0]))
 
-#     check1 = []
-#     for item in check:
-#         check1.append(item["user_id"])
-#     if int(user_id) not in check1:
-#         error = "Sorry, user_id not existed !"
-#         return render_template("client/client_home.html", error=error)
+    check1 = []
+    for item in check:
+        check1.append(item["user_id"])
+    if int(user_id) not in check1:
+        error = "Sorry, user_id not existed !"
+        return render_template("client/client_home.html", error=error)
 
-#     query_check2 = 'SELECT * FROM review WHERE event_id = %s and client_id = %s'
-#     cursor.execute(query_check2, event_id, user_id)
-#     check_f = cursor.fetchall()
-#     if check_f is None:
-#         error = "Sorry, you have not post any reviews for this event !"
-#         return render_template("review/post_event_review.html", error=error)
+    query_check2 = 'SELECT * FROM review WHERE event_id = %s and client_id = %s'
+    cursor.execute(query_check2, event_id, user_id)
+    check_f = cursor.fetchall()
+    if check_f is None:
+        error = "Sorry, you have not post any reviews for this event !"
+        return render_template("review/post_event_review.html", error=error)
 
-#     # If the event and registration exist, delete the registration
-#     query_delete_review = 'DELETE FROM review WHERE client_id = %s AND event_id = %s'
-#     cursor.execute(query_delete_review, (user_id, event_id))
-#     conn.commit()  # Commit the transaction to make sure changes are saved
+    # If the event and registration exist, delete the registration
+    query_delete_review = 'DELETE FROM review WHERE client_id = %s AND event_id = %s'
+    cursor.execute(query_delete_review, (user_id, event_id))
+    conn.commit()  # Commit the transaction to make sure changes are saved
 
-#     success_message = "Review cancelled successfully."
-#     return render_template("client_home/cancel_register.html", success=success_message)
+    success_message = "Review cancelled successfully."
+    return render_template("client_home/cancel_register.html", success=success_message)
 # -----------------------------------------------------------
 
 # ----------------------------------------------------------------------
