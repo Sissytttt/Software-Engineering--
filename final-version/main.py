@@ -353,12 +353,10 @@ def follow():
     query = 'SELECT * FROM businessowner WHERE id = %s'
     cursor.execute(query, (owner_id))
     data = cursor.fetchone()
-    # owner_id = data['id']
    
     query_client = "SELECT id FROM client WHERE username = %s"
     cursor.execute(query_client, (client_id))
     client_result = cursor.fetchone()
-    # client_id = client_result['id']
     
     query_id = 'SELECT MAX(id) AS max_id FROM follow'
     cursor.excute(query_id)
