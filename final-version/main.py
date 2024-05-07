@@ -62,16 +62,16 @@ def place_search():
         # creates a session for the the user
         # 创造一个会话
         # session is a built in
-        return render_template("place_search.html", posts=data)  # a url in app.route
+        return render_template("/client_home/place_search.html", posts=data)  # a url in app.route
     if len(data) == 0:
         # returns an error message to the html page
         error = 'no such place'
         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("place_search.html", error=error)
+        return render_template("/client_home/place_search.html", error=error)
       
 @app.route("/public_event_search", methods=['GET', 'POST'])
 def public_event_search():
-    return render_template('event_search.html')
+    return render_template('/client_home/event_search.html')
 
 
 @app.route('/event_search', methods=['GET', 'POST'])
@@ -102,15 +102,15 @@ def event_search():
     cursor.close()
     error = None
     if len(data) > 0:
-        return render_template("event_search.html", posts=data)
+        return render_template("/client_home/event_search.html", posts=data)
     if len(data) == 0:
         error = 'no such event'
-        return render_template("event_search.html", error=error)
+        return render_template("/client_home/event_search.html", error=error)
 
 # view map
 @app.route("/public_view_map", methods=['GET', 'POST'])
 def public_view_map():
-    return render_template('view_map.html')
+    return render_template('/client_home/view_map.html')
 
 
 @app.route('/view_map', methods=['GET', 'POST'])
@@ -135,17 +135,17 @@ def view_map():
         # creates a session for the the user
         # 创造一个会话
         # session is a built in
-        return render_template("view_map.html", posts=data)  # a url in app.route
+        return render_template("/client_home/view_map.html", posts=data)  # a url in app.route
     if len(data) == 0:
         # returns an error message to the html page
         error = 'no such place'
         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("view_map.html", error=error)
+        return render_template("/client_home/view_map.html", error=error)
       
 # register
 @app.route('/register_client')
 def register_client():
-    return render_template('register/register_client.html')
+    return render_template('/register/register_client.html')
 
 # Authenticates the register
 @app.route('/registerAuth_client', methods=['GET', 'POST'])
@@ -171,14 +171,14 @@ def registerAuth_client():
     if (data):
         # If the previous query returns data, then user exists
         error = "This user already exists"
-        return render_template('register/register_.html', error=error)
+        return render_template('/register/register_.html', error=error)
 
     else:
         ins = 'INSERT INTO client VALUES(%s, MD5(%s), %s, %s, %s)'
         cursor.execute(ins, (username, password, name, phone, city))
         conn.commit()
         cursor.close()
-        return render_template('index.html')
+        return render_template('/index.html')
 
 
     
@@ -217,25 +217,25 @@ def loginAuth_client():
         # 创造一个会话
         # session is a built in
         session['username'] = username
-        return redirect('/client_home')  # a url in app.route
+        return redirect('/client_home/client_home.html')  # a url in app.route
     else:
         # returns an error message to the html page
         error = 'Invalid username or password'
         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("log_in/log_in_client.html", error=error)
+        return render_template("/log_in/log_in_client.html", error=error)
 
 
 # log in
 @app.route('/log_in_client')
 def log_in_client():
-    return render_template('log_in/log_in_client.html')
+    return render_template('/log_in/log_in_client.html')
 
       
 # -------------------------------------------------------------
 
 @app.route('/client_home')
 def client_home():
-    return render_template('client_page/client_home.html', username=session['username'])
+    return render_template('/client_home/client_home.html', username=session['username'])
 
 
 # @app.route("/client_place_search", methods=['GET', 'POST'])
@@ -265,7 +265,7 @@ def register_event():
     
     if event_id is None:
         error = "Sorry, no such event exists!"
-        return render_template("client_home/register_event.html", error=error)
+        return render_template("/client_home/event_search.html", error=error)
       
     query_check_registration = 'SELECT p.id FROM event as e, participate as p, client as c '\
         'WHERE c.username = %s AND c.id = p.client_id AND e.id = p.event_id'
@@ -274,7 +274,7 @@ def register_event():
 
     if registration:
         error = "You are already registered for this event."
-        return render_template("client_home/register_event.html", error=error)
+        return render_template("/client_home/event_search.html", error=error)
 
     # Register the user for the event
     query_register = 'INSERT INTO participate (client_id, event_id) VALUES (%s, %s)'
@@ -282,7 +282,7 @@ def register_event():
     conn.commit()  # Commit to save the changes
 
     success_message = "You have successfully registered for the event."
-    return render_template("client_home/register_event.html", success=success_message)
+    return render_template("/client_home/event_search.html", success=success_message)
 
       
 @app.route("/cancel_register", methods=['GET', 'POST'])
@@ -303,7 +303,7 @@ def cancle_register():
 
     if event_id is None:
         error = "Event not found."
-        return render_template("client_home/cancel_register.html", error=error)
+        return render_template("/client_home/event_search.html", error=error)
 
     # Check if the user is registered for the event
     query_check_registration = "SELECT p.id FROM participate as p, client as c, event as e WHERE c.username = %s AND c.id = p.client_id AND p.event_id = %s"
@@ -311,14 +311,14 @@ def cancle_register():
     registration = cursor.fetchone()
     if registration is None:
         error = "No registration found for this user and event."
-        return render_template("client_home/cancel_register.html", error=error)
+        return render_template("/client_home/event_search.html", error=error)
 
     # If the event and registration exist, delete the registration
     query_delete_registration = 'DELETE FROM participate WHERE client_id = %s AND event_id = %s'
     cursor.execute(query_delete_registration, (client_id, event_id))
     conn.commit()
     success_message = "Registration cancelled successfully."
-    return render_template("client_home/cancel_register.html", success=success_message)
+    return render_template("/client_home/event_search.html", success=success_message)
   
 
 @app.route('/get_followers', methods=['GET', 'POST'])
@@ -330,7 +330,7 @@ def get_followers():
     data = cursor.fetchall()
     cursor.close()
     
-    return render_template("client_home/get_followers.html", posts=data)
+    return render_template("/client_home/client_view_follow.html", posts=data)
 
 @app.route('/client_view_follow', methods=['GET', 'POST'])
 def get_following():
@@ -341,7 +341,7 @@ def get_following():
     data = cursor.fetchall()
     cursor.close()
     
-    return render_template("client_home/client_view_follow.html", posts=data)
+    return render_template("/client_home/client_view_follow.html", posts=data)
 
   
 @app.route('/follow', methods=['GET', 'POST'])
@@ -365,10 +365,10 @@ def follow():
     
     if data is None:
         error = "Sorry, no such business owner!"
-        return render_template("client_home/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
     if client_result is None:
         error = "Sorry, no such user!"
-        return render_template("client_home/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
       
     query_check_registration = 'SELECT * FROM follow WHERE following_id = %s AND prime_id = %s'
     cursor.execute(query_check_registration, (client_id, owner_id))
@@ -376,7 +376,7 @@ def follow():
 
     if registration:
         error = "You are already following this business owner."
-        return render_template("client_home/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
 
     query_register = 'INSERT INTO participate (id, prime_id, following_id) VALUES (%s, %s)'
     cursor.execute(query_register, (max_id + 1, owner_id, client_id))
@@ -396,7 +396,7 @@ def unfollow():
 
     if registration is None:
         error = "You have not followed this business owner"
-        return render_template("client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
 
     query_delete_registration = 'DELETE FROM follow WHERE following_id = %s AND prime_id = %s'
     cursor.execute(query_delete_registration, (client, business_owner))
@@ -414,9 +414,9 @@ def client_view_event():
     cursor.close()
 
     if not events:
-        return render_template("client_home/client_view_event.html", message="No events found for this client.")
+        return render_template("/client_home/client_view_event.html", message="No events found for this client.")
     
-    return render_template("client_home/client_view_event.html", events=events)
+    return render_template("/client_home/client_view_event.html", events=events)
 
 @app.route('/client_view_review', methods=['GET', 'POST'])
 def client_view_review():
@@ -429,9 +429,9 @@ def client_view_review():
     cursor.close()
 
     if not reviews:
-        return render_template("client_home/client_view_review.html", message="No event reviews found for this client.")
+        return render_template("/client_home/client_view_review.html", message="No event reviews found for this client.")
     
-    return render_template("client_home/client_view_review.html", reviews=reviews)
+    return render_template("/client_home/client_view_review.html", reviews=reviews)
 
 @app.route('label', methods=['GET', 'POST'])
 def label():
@@ -454,10 +454,10 @@ def label():
     
     if data is None:
         error = "Sorry, no such place!"
-        return render_template("client_home/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
     if client_result is None:
         error = "Sorry, no such user!"
-        return render_template("client_home/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
       
     query_check_registration = 'SELECT * FROM map WHERE client_id = %s AND place_id = %s'
     cursor.execute(query_check_registration, (client_id, place_id))
@@ -465,7 +465,7 @@ def label():
 
     if registration:
         error = "You are already labeled this place."
-        return render_template("client_home/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
 
     query_register = 'INSERT INTO map (id, client_id, place_id) VALUES (%s, %s)'
     cursor.execute(query_register, (max_id + 1, client_id, place_id))
@@ -486,12 +486,12 @@ def unlabel():
 
     if registration is None:
         error = "You have not labeled this map"
-        return render_template("client_home/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
 
     # If the event and registration exist, delete the registration
     query_delete_registration = 'DELETE FROM map WHERE client_id = %s AND place_id = %s'
     cursor.execute(query_delete_registration, (client, place))
-    conn.commit()  # Commit the transaction to make sure changes are saved
+    conn.commit()
 
 
 @app.route('/logout')
