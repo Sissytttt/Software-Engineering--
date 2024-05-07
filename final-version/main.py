@@ -505,7 +505,7 @@ def logout():
 # event review
 @app.route('/post_event_review')
 def post_event_review():
-    return render_template('review/post_event_review.html')
+    return render_template('/client_home/client_post_review.html')
   
 @app.route("/client_post_event_review", methods=['GET', 'POST']) 
 def client_post_event_review():
@@ -526,7 +526,7 @@ def client_post_event_review():
         check1.append(item["user_id"])
     if int(user_id) not in check1:
         error = "Sorry, user_id not existed !"
-        return render_template("review/post_event_review.html", error=error)
+        return render_template("/client_home/client_post_review.html", error=error)
 
     query_check2 = 'SELECT * FROM event WHERE id = %s'
     cursor.execute(query_check2, event_id)
@@ -536,7 +536,7 @@ def client_post_event_review():
         check3.append(item["event_id"])
     if int(event_id) not in check3:
         error = "Sorry, you input a wrong event id !"
-        return render_template("review/post_event_review.html", error=error)
+        return render_template("/client_home/client_post_review.html", error=error)
 
     query3 = "select max(id) as next_id from review"
     cursor.execute(query3)
@@ -548,7 +548,7 @@ def client_post_event_review():
     cursor.execute(ins, (str(review_id + 1), event_id, user_id, content, rating, price))
     conn.commit()
     cursor.close()
-    return render_template('client_page/client_purchase_successful.html')
+    return render_template('/client_home/client_review_successful.html')
   
 @app.route("/delete_review", methods=['GET', 'POST'])
 def cancle_register():
@@ -569,14 +569,14 @@ def cancle_register():
         check1.append(item["user_id"])
     if int(user_id) not in check1:
         error = "Sorry, user_id not existed !"
-        return render_template("client/client_home.html", error=error)
+        return render_template("/client_home/client_home.html", error=error)
 
     query_check2 = 'SELECT * FROM review WHERE event_id = %s and client_id = %s'
     cursor.execute(query_check2, event_id, user_id)
     check_f = cursor.fetchall()
     if check_f is None:
         error = "Sorry, you have not post any reviews for this event !"
-        return render_template("review/post_event_review.html", error=error)
+        return render_template("/client_home/client_post_review.html", error=error)
 
     # If the event and registration exist, delete the registration
     query_delete_review = 'DELETE FROM review WHERE client_id = %s AND event_id = %s'
@@ -584,7 +584,7 @@ def cancle_register():
     conn.commit()  # Commit the transaction to make sure changes are saved
 
     success_message = "Review cancelled successfully."
-    return render_template("client_home/cancel_register.html", success=success_message)
+    return render_template("/client_home/client_post_review.html", success=success_message)
 # -----------------------------------------------------------
 
 # ----------------------------------------------------------------------
