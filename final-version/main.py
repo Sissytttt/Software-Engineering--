@@ -40,7 +40,7 @@ def public_place_search():
     return render_template('/place_search.html')
 
 
-@app.route('/place_search', methods=['GET', 'POST'])
+@app.route('/client_search_place_form', methods=['GET', 'POST'])
 def place_search():
     city = request.form["city"]  # now required to fill in
     name = request.form["name"]  # now required to fill in    type str
@@ -80,7 +80,7 @@ def public_event_search():
     return render_template('/client_home/event_search.html')
 
 
-@app.route('/event_search', methods=['GET', 'POST'])
+@app.route('/client_search_event_form', methods=['GET', 'POST'])
 def event_search():
     name = request.form["name"]  # now required to fill in    type str
     time = request.form["time"]  # required
@@ -151,10 +151,10 @@ def view_map():
 # register
 @app.route('/register_client')
 def register_client():
-    return render_template('/register/register_client.html')
+    return render_template('/register/client_register.html')
 
 # Authenticates the register
-@app.route('/registerAuth_client', methods=['GET', 'POST'])
+@app.route('/register_auth_client', methods=['GET', 'POST'])
 def registerAuth_client():
     # grabs information from the forms
     username = request.form['username']
@@ -177,7 +177,7 @@ def registerAuth_client():
     if (data):
         # If the previous query returns data, then user exists
         error = "This user already exists"
-        return render_template('/register/register_.html', error=error)
+        return render_template('/register/client_register.html', error=error)
 
     else:
         ins = 'INSERT INTO client VALUES(%s, MD5(%s), %s, %s, %s)'
@@ -194,10 +194,16 @@ def registerAuth_client():
 # @app.route('/log_in_bo')
 # def log_in_bo():
 #     return render_template('log_in/log_in_client.html')
+    
+
+# log in
+@app.route('/log_in_client')
+def log_in_client():
+    return render_template('/log_in/client_login.html')
 
 # Authenticates the login
 # 既可以向外展示，也可以获取数据
-@app.route('/client_auth', methods=['GET', 'POST'])
+@app.route('/login_auth_client', methods=['GET', 'POST'])
 def loginAuth_client():
     # grabs information from the forms
     # get
@@ -228,13 +234,7 @@ def loginAuth_client():
         # returns an error message to the html page
         error = 'Invalid username or password'
         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("/log_in/log_in_client.html", error=error)
-
-
-# log in
-@app.route('/log_in_client')
-def log_in_client():
-    return render_template('/log_in/log_in_client.html')
+        return render_template("/log_in/client_login.html", error=error)
 
       
 # -------------------------------------------------------------
@@ -327,16 +327,16 @@ def cancle_register():
     return render_template("/client_home/event_search.html", success=success_message)
   
 
-@app.route('/get_followers', methods=['GET', 'POST'])
-def get_followers():
-    prime_id = request.form["prime_id"]
-    cursor = conn.cursor()
-    query = 'SELECT following_id FROM follow WHERE prime_id = %s'
-    cursor.execute(query, (prime_id))
-    data = cursor.fetchall()
-    cursor.close()
+# @app.route('/get_followers', methods=['GET', 'POST'])
+# def get_followers():
+#     prime_id = request.form["prime_id"]
+#     cursor = conn.cursor()
+#     query = 'SELECT following_id FROM follow WHERE prime_id = %s'
+#     cursor.execute(query, (prime_id))
+#     data = cursor.fetchall()
+#     cursor.close()
     
-    return render_template("/client_home/client_view_follow.html", posts=data)
+#     return render_template("/client_home/client_view_follow.html", posts=data)
 
 @app.route('/client_view_follow', methods=['GET', 'POST'])
 def get_following():
@@ -350,7 +350,7 @@ def get_following():
     return render_template("/client_home/client_view_follow.html", posts=data)
 
   
-@app.route('/follow', methods=['GET', 'POST'])
+@app.route('/client_follow_bo', methods=['GET', 'POST'])
 def follow():
     owner_id = request.form["id"]
     client_id = request.form["id"]
@@ -371,10 +371,10 @@ def follow():
     
     if data is None:
         error = "Sorry, no such business owner!"
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/client_view_bo.html", error=error)
     if client_result is None:
         error = "Sorry, no such user!"
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/client_view_bo.html", error=error)
       
     query_check_registration = 'SELECT * FROM follow WHERE following_id = %s AND prime_id = %s'
     cursor.execute(query_check_registration, (client_id, owner_id))
@@ -382,14 +382,14 @@ def follow():
 
     if registration:
         error = "You are already following this business owner."
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/client_view_bo.html", error=error)
 
     query_register = 'INSERT INTO participate (id, prime_id, following_id) VALUES (%s, %s)'
     cursor.execute(query_register, (max_id + 1, owner_id, client_id))
     conn.commit() 
     
 
-@app.route('/unfollow', methods=['GET', 'POST'])
+@app.route('/client_unfollow_bo', methods=['GET', 'POST'])
 def unfollow():
     business_owner = request.form["id"]
     client = request.form["id"]
@@ -402,7 +402,7 @@ def unfollow():
 
     if registration is None:
         error = "You have not followed this business owner"
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/client_view_bo.html", error=error)
 
     query_delete_registration = 'DELETE FROM follow WHERE following_id = %s AND prime_id = %s'
     cursor.execute(query_delete_registration, (client, business_owner))
@@ -439,7 +439,7 @@ def client_view_review():
     
     return render_template("/client_home/client_view_review.html", reviews=reviews)
 
-@app.route('/label', methods=['GET', 'POST'])
+@app.route('/client_label_place_to_map', methods=['GET', 'POST'])
 def label():
     client_id = request.form["id"]
     place_id = request.form["id"]
@@ -460,18 +460,18 @@ def label():
     
     if data is None:
         error = "Sorry, no such place!"
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/view_map.html", error=error)
     if client_result is None:
         error = "Sorry, no such user!"
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/view_map.html", error=error)
       
     query_check_registration = 'SELECT * FROM map WHERE client_id = %s AND place_id = %s'
     cursor.execute(query_check_registration, (client_id, place_id))
     registration = cursor.fetchone()
 
     if registration:
-        error = "You are already labeled this place."
-        return render_template("/client_home/client_home.html", error=error)
+        error = "You have already labeled this place."
+        return render_template("/client_home/view_map.html", error=error)
 
     query_register = 'INSERT INTO map (id, client_id, place_id) VALUES (%s, %s)'
     cursor.execute(query_register, (max_id + 1, client_id, place_id))
@@ -492,7 +492,7 @@ def unlabel():
 
     if registration is None:
         error = "You have not labeled this map"
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/view_map.html", error=error)
 
     # If the event and registration exist, delete the registration
     query_delete_registration = 'DELETE FROM map WHERE client_id = %s AND place_id = %s'
@@ -513,7 +513,7 @@ def logout():
 def post_event_review():
     return render_template('/client_home/client_post_review.html')
   
-@app.route("/client_post_event_review", methods=['GET', 'POST']) 
+@app.route("/client_post_review", methods=['GET', 'POST']) 
 def client_post_event_review():
     user_id = request.form["user_id"]
     event_id = request.form["event_id"]
@@ -575,7 +575,7 @@ def cancle_register():
         check1.append(item["user_id"])
     if int(user_id) not in check1:
         error = "Sorry, user_id not existed !"
-        return render_template("/client_home/client_home.html", error=error)
+        return render_template("/client_home/client_post_review.html", error=error)
 
     query_check2 = 'SELECT * FROM review WHERE event_id = %s and client_id = %s'
     cursor.execute(query_check2, event_id, user_id)
