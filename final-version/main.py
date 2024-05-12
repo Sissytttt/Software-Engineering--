@@ -433,7 +433,7 @@ def client_view_review():
     
     return render_template("/client_home/client_view_review.html", reviews=reviews)
 
-@app.route('label', methods=['GET', 'POST'])
+@app.route('/label', methods=['GET', 'POST'])
 def label():
     client_id = request.form["id"]
     place_id = request.form["id"]
