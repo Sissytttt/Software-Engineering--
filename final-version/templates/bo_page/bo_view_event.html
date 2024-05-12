@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Event</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .btn-group {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            background: linear-gradient(135deg, #FFB38E, #B3D9FF);
+            /* Primary theme colors */
+            color: #fff;
+            transition: background 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #FF9662, #6DB5FF);
+            /* Hover theme colors */
+        }
+
+        .error {
+            color: #FA97A4;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            background: linear-gradient(135deg, #FFB38E, #B3D9FF);
+            /* Primary theme colors */
+            color: #fff;
+            transition: background 0.3s ease;
+            text-decoration: none;
+        }
+
+        a.btn {
+            margin-left: 0;
+        }
+
+        a:hover {
+            background: linear-gradient(135deg, #FF9662, #6DB5FF);
+            /* Hover theme colors */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Event You Host</h1>
+    <br>
+    <br>
+    <br>
+
+    <div class="btn-group">
+        <a href="/bo_view_event" class="btn">View My Event</a>
+    </div>
+
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <br>
+    <br>
+    <br>
+    {% if events %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Max Capacity</th>
+            <th>Current People</th>
+            <th>Score</th>
+            <th>Price</th>
+            <th>Place</th>
+        </tr>
+
+        {% for event in events %}
+        <tr>
+            <td>{{ event["name"] }}</td>
+            <td>{{ event["time"] }}</td>
+            <td>{{ event["max_ppl"] }}</td>
+            <td>{{ event["current_ppl"] }}</td>
+            <td>{{ event["score"] }}</td>
+            <td>{{ event["price"] }}</td>
+            <td>{{ event["place_name"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <br>
+    <br>
+    <br>
+    <a href="/bo_home">Back to Home</a>
+    <a href="/bo_logout" class="btn">Log out</a>
+</body>
+
+</html>
