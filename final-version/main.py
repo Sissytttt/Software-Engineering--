@@ -770,14 +770,12 @@ def cancle_register():
     """
     client_email = session["email"]
 
-    # get this client_id
     cursor = conn.cursor()
     q_client_id = "SELECT id FROM client WHERE email = %s"
     cursor.execute(q_client_id, (client_email,))
     client_id = cursor.fetchone()["id"]
     cursor.close()
 
-    # display all his events
     cursor = conn.cursor()
     q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, pl.name as place_name \
             from events e inner join place pl on pl.id = e.place_id inner join participate p on p.event_id = e.id inner join client c \

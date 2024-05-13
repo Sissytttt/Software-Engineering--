@@ -349,6 +349,75 @@ class TestClientApp(unittest.TestCase):
         ))
         self.assertEqual(response.status_code, 200)
 
+    def test_cancle_register(self):
+        """
+        Test case when the client wants to cancle registering an event.
+
+        Simulates an post review attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+        response = self.app.post('/client_unrsvp_event', data=dict(
+            event_id='7'
+        ))
+        self.assertEqual(response.status_code, 200)
+    
+    def test_get_following(self):
+        """
+        Test case when the client wants to get the business owners he is following.
+
+        Simulates an post review attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+        response = self.app.post('/client_view_follow')
+        self.assertEqual(response.status_code, 200)
+    
+    def test_unfollow(self):
+        """
+        Test case when the client wants to unfollow a business owner.
+
+        Simulates an post review attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_unfollow_bo', data=dict(
+            bo_id='1',
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_map(self):
+        """
+        Test case when the client wants to view the places he labeled.
+
+        Simulates an post review attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/view_map')
+        self.assertEqual(response.status_code, 200)
+
+    def test_unlabel(self):
+        """
+        Test case when the client wants to unlabel a place.
+
+        Simulates an post review attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_unlike_place', data=dict(
+            place_id='7',
+        ))
+        self.assertEqual(response.status_code, 200)
+
 
     
 # start test
