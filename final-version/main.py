@@ -351,7 +351,7 @@ def register_event():
 
         cursor = conn.cursor()
         query_check_registration = 'select p.id from client c inner join\
-            participate p on p.client_id = c.id inner join events e on e.id = p.event_id where r.client_id = %s and e.id = %s'
+            participate p on p.client_id = c.id inner join events e on e.id = p.event_id where p.client_id = %s and e.id = %s'
         cursor.execute(query_check_registration, (client_id, event_id))
         registration = cursor.fetchone()
         cursor.close()
@@ -360,16 +360,24 @@ def register_event():
             error = "You are already registered for this event."
             return render_template("/client_home/client_search_event.html", error=error)
         else:
+            query_check_full = """SELECT current_ppl, max_ppl FROM events WHERE id = %s"""
+            cursor.execute(query_check_full, (event_id,))
+            event = cursor.fetchone()
+
+            if event['current_ppl'] >= event['max_ppl']:
+                error = "This event is already full."
+                return render_template("/client_home/client_search_event.html", error=error)
+
             cursor = conn.cursor()
-            q_rsvp = "INSERT INTO participate (client_id, event_id) VALUES (%s, %s)"
-            cursor.execute(q_rsvp, (client_id, event_id))
+            q_rsvp = "INSERT INTO participate (client_id, event_id) VALUES (%s, %s); UPDATE events SET current_ppl = current_ppl + 1 WHERE id = %s;"
+            cursor.execute(q_rsvp, (client_id, event_id, event_id))
             conn.commit()
             cursor.close()
 
             return render_template('/client_home/client_register_successful.html')
 
     # render the delete review page with review owned by the client
-    return render_template("client_home/client_search_event.html", events=events)
+    # return render_template("client_home/client_search_event.html", events=events)
     
 @app.route("/client_view_bo", methods=['GET', 'POST']) 
 def client_view_bo():
@@ -399,6 +407,15 @@ def client_view_bo():
         else:
             error = "There is an error for the business owner profile"
         return render_template("client_home/client_view_bo.html",error=error)
+    
+def refresh_follow_client(client_email):
+    cursor = conn.cursor()
+    q_get_follows = "select b.id, b.email, b.company_name, b.name, b.password, b.phone_number, b.city\
+        from businessowner b join follow f on f.prime_id = b.id where f.following_id = (select distinct id from client where email = %s)"
+    cursor.execute(q_get_follows, (client_email))
+    events = cursor.fetchall()
+    cursor.close()
+    return events
           
 @app.route('/client_follow_bo', methods=['GET', 'POST'])
 def follow():
@@ -436,7 +453,7 @@ def follow():
             message = "Followed successfully."
 
             # refresh the page
-            bos = refresh_event(client_email)
+            bos = refresh_follow_client(client_email)
             return render_template("client_home/client_view_bo.html", bos = bos, message = message)
 
     # render the delete review page with review owned by the client
@@ -487,6 +504,15 @@ def client_search_place_form():
     else:
         error = 'no such place'
         return render_template("client_home/client_search_place.html", error=error)
+
+def refresh_place_client(client_email):
+    cursor = conn.cursor()
+    q_get_places = "select p.id, p.name, p.location_long, p.location_lati, p.city\
+        from map m join place p on p.id = m.place_id where m.client_id = (select distinct id from client where email = %s)"
+    cursor.execute(q_get_places, (client_email))
+    events = cursor.fetchall()
+    cursor.close()
+    return events
     
 @app.route('/client_label_place_to_map', methods=['GET', 'POST'])
 def label():
@@ -532,7 +558,7 @@ def label():
             message = "Joined map successfully."
 
             # refresh the page
-            places = refresh_event(client_email)
+            places = refresh_place_client(client_email)
             return render_template("client_home/client_search_event.html", places = places, message = message)
 
     # render the delete review page with review owned by the client
@@ -572,7 +598,16 @@ def client_view_review():
     else:
         error = "You currently posted no review, please create one!"
         return render_template("client_home/client_view_review.html",error=error)
-    
+
+def refresh_review_client(client_email):
+    cursor = conn.cursor()
+    q_get_reviews = "select r.id, r.event_id, r.client_id, r.content, r.rating, e.name as event_name \
+        from review r join events e on r.event_id = e.id where r.client_id = (select distinct id from client where email = %s)"
+    cursor.execute(q_get_reviews, (client_email))
+    reviews = cursor.fetchall()
+    cursor.close()
+    return reviews
+
 # client delete a review
 @app.route("/client_delete_review", methods=["GET", "POST"])
 def client_delete_review():
@@ -617,7 +652,7 @@ def client_delete_review():
         message = "Review deleted successfully."
 
         # refresh the page
-        reviews = refresh_event(client_email)
+        reviews = refresh_review_client(client_email)
         return render_template("client_home/client_view_review.html",  reviews = reviews, message = message)
 
     # render the delete review page with review owned by the client
@@ -731,7 +766,15 @@ def client_post_event_review():
         conn.commit()
         cursor.close()
         return render_template('/client_home/client_review_successful.html')
-    
+
+def refresh_event_client(client_email):
+    cursor = conn.cursor()
+    q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
+        from events e join place p on p.id = e.place_id where e.client_id = (select distinct id from client where email = %s)"
+    cursor.execute(q_get_events, (client_email))
+    events = cursor.fetchall()
+    cursor.close()
+    return events
 
 @app.route("/client_unrsvp_event", methods=['GET', 'POST'])
 def cancle_register():
@@ -753,7 +796,7 @@ def cancle_register():
             from events e inner join place pl on pl.id = e.place_id inner join participate p on p.event_id = e.id inner join client c \
             on c.id = p.client_id where c.id = %s"
     cursor.execute(q_get_events, (client_id,))
-    reviews = cursor.fetchall()
+    events = cursor.fetchall()
     cursor.close()
 
     if request.method == "POST":
@@ -762,12 +805,12 @@ def cancle_register():
         cursor = conn.cursor()
         q_get_parti = "select p.id from events e inner join participate p on p.event_id = e.id inner join client c \
             on c.id = p.client_id where c.id = %s and e.id = %s"
-        cursor.execute(q_get_events, (client_id, event_id))
+        cursor.execute(q_get_parti, (client_id, event_id))
         parti = cursor.fetchone()
         cursor.close()
 
         cursor = conn.cursor()
-        q_delete_parti = "delete from participate where id = %s"
+        q_delete_parti = "delete from participate where id = %s; UPDATE events SET current_ppl = current_ppl - 1 WHERE id = %s;"
         cursor.execute(q_delete_parti, (parti))
         conn.commit()
         cursor.close()
@@ -775,7 +818,7 @@ def cancle_register():
         message = "UnRSVP successfully."
 
         # refresh the page
-        events = refresh_event(client_email)
+        events = refresh_event_client(client_email)
         return render_template("client_home/client_view_event.html",  events = events, message = message)
 
     # render the delete review page with review owned by the client
@@ -796,12 +839,12 @@ def get_following():
 @app.route('/client_unfollow_bo', methods=['GET', 'POST'])
 def unfollow():
     business_owner = request.form["id"]
-    email = session["email"]
+    client_email = session["email"]
     
     cursor = conn.cursor()
 
-    query_check_registration = 'SELECT * FROM follow as f, client as c WHERE f.prime_id = %s AND f.following_id = c.id AND c.email = %s'
-    cursor.execute(query_check_registration, (business_owner, email))
+    query_check_registration = 'SELECT f.id, f.prime_id, f.following_id FROM follow as f, client as c WHERE f.prime_id = %s AND f.following_id = c.id AND c.email = %s'
+    cursor.execute(query_check_registration, (business_owner, client_email))
     registration = cursor.fetchone()
 
     if registration is None:
@@ -809,8 +852,13 @@ def unfollow():
         return render_template("/client_home/client_view_bo.html", error=error)
 
     query_delete_registration = 'DELETE FROM follow as f, client as c WHERE c.email = %s AND f.following_id = c.id AND f.prime_id = %s'
-    cursor.execute(query_delete_registration, (email, business_owner))
+    message = "Unfollowed successfully."
+    cursor.execute(query_delete_registration, (client_email, business_owner))
     conn.commit()
+    # refresh the page
+    bos = refresh_follow_client(client_email)
+    return render_template("client_home/client_view_bo.html", bos = bos, message = message)
+    
 
 # view map
 @app.route('/view_map', methods=['GET', 'POST'])
@@ -820,7 +868,7 @@ def view_map():
     cursor = conn.cursor()
 
     # executes query
-    query = 'SELECT p.website FROM place as p, map as m, client as c WHERE c.email = %s '\
+    query = 'SELECT p.id, p.name, p.location_long, p.location_lati, p.city FROM place as p, map as m, client as c WHERE c.email = %s '\
             'and c.id = m.client_id and p.id = m.place_id'
     cursor.execute(query, (email))
 
@@ -852,7 +900,7 @@ def unlabel():
     cursor = conn.cursor()
 
     # Check if the user is registered for the event
-    query_check_registration = 'SELECT * FROM map as m, client as c WHERE m.place_id = %s AND m.client_id = c.id AND c.email = %s'
+    query_check_registration = 'SELECT m.id, m.event_id, m.place_id FROM map as m, client as c WHERE m.place_id = %s AND m.client_id = c.id AND c.email = %s'
     cursor.execute(query_check_registration, (place, email))
     registration = cursor.fetchone()
 
