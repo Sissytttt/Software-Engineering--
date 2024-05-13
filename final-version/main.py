@@ -559,10 +559,10 @@ def label():
 
             # refresh the page
             places = refresh_place_client(client_email)
-            return render_template("client_home/client_search_event.html", places = places, message = message)
+            return render_template("client_home/client_search_place.html", places = places, message = message)
 
     # render the delete review page with review owned by the client
-    return render_template("client_home/client_search_event.html", places=places)
+    return render_template("client_home/client_search_place.html", places=places)
 
 # client view his reviews: before view
 @app.route("/client_view_review", methods=["GET","POST"])

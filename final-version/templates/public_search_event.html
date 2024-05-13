@@ -137,7 +137,6 @@
             <th>Current People</th>
             <th>Score</th>
             <th>Price</th>
-            <th>Place</th>
         </tr>
         {% for event in events %}
         <tr>
@@ -148,7 +147,6 @@
             <td>{{ event.current_ppl }}</td>
             <td>{{ event.score }}</td>
             <td>{{ event.price }}</td>
-            <td>{{ event.place_name }}</td>
         </tr>
         {% endfor %}
     </table>

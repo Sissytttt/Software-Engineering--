@@ -171,7 +171,6 @@
             <th>Current People</th>
             <th>Score</th>
             <th>Price</th>
-            <th>Place</th>
             <th>RSVP</th>
             <th>View Business Owner</th>
         </tr>
@@ -184,7 +183,6 @@
             <td>{{ event.current_ppl }}</td>
             <td>{{ event.score }}</td>
             <td>{{ event.price }}</td>
-            <td>{{ event.place_name }}</td>
             <td>
                 <form action="/register_event" method="POST">
                     <input type="hidden" name="event_id" value="{{ event.id }}">
