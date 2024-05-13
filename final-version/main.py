@@ -399,10 +399,12 @@ def client_view_bo():
         query_check_bo = 'select b.name, b.company_name, b.city, b.description from events as e, businessowner as b where e.owner_id = b.id and e.id = %s'
         cursor.execute(query_check_bo, (event_id))
         view_bo = cursor.fetchone()
+        print(view_bo)
         cursor.close()
         
         if (view_bo):
-            return render_template("client_home/client_view_bo.html",bos=view_bo)
+            bos_list = [view_bo]
+            return render_template("client_home/client_view_bo.html",bos_list)
         else:
             error = "There is an error for the business owner profile"
         return render_template("client_home/client_view_bo.html",error=error)
