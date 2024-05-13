@@ -110,17 +110,15 @@
   <h1>Reviews You Posted</h1>
   <br>
   <br>
-  <br>
   <div class="btn-group">
-    <a href="/client_view_review" class="btn btn-outline-dark">Back to My Reviews</a>
-    <a href="/client_view_review" class="btn btn-view-reviews">View My Reviews</a>
+    <a href="/client_view_review_form" class="btn btn-view-reviews">View My Reviews</a>
   </div>
 
-  <!-- {% if error %}
+  {% if error %}
   <p>{{ error }}</p>
-  {% endif %} -->
+  {% endif %}
 
-  <!-- {% if reviews %} -->
+  {% if reviews %}
   <br>
   <br>
   <table class="table table-striped">
@@ -128,38 +126,27 @@
       <tr>
         <th>Event</th>
         <th>Rating</th>
-        <th>Price</th>
-        <th>Review Date</th>
         <th>Content</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      <!-- {% for review in reviews %} -->
+      {% for review in reviews %}
       <tr>
         <td>{{ review["event_name"] }}</td>
         <td>{{ review["rating"] }}</td>
-        <td>{{ review["price"] }}</td>
-        <td>{{ review["creation_date"] }}</td>
         <td>{{ review["content"] }}</td>
         <td>
           <form action="/client_delete_review" method="POST">
-            <input type="hidden" name="review_id" value="{{ review.id }}">
+            <input type="hidden" name="review_id" value="{{review.id}}">
             <button type="submit" class="btn-delete">Delete Review</button>
           </form>
         </td>
       </tr>
-      <!-- {% endfor %} -->
+      {% endfor %}
     </tbody>
   </table>
-  <!-- {% endif %} -->
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
+  {% endif %}
   <br>
   <a href="/client_home">Back to Home</a>
   <a href="/client_logout" class="btn btn-outline-dark">Log Out</a>

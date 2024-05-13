@@ -367,7 +367,110 @@ def client_search_place_form():
     else:
         error = 'no such place'
         return render_template("client_home/client_search_place.html", error=error)
+
+# client view his reviews: before view
+@app.route("/client_view_review", methods=["GET","POST"])
+def client_view_review():
+    """
+    Display the viw review display page
+    
+    This is an auxiliary function that shows the page that client can choose if 
+        he want to display all his reviews. 
+
+    Returns:
+        str: Rendered HTML template for the client's review display page.
+    """
+    return render_template("client_home/client_view_review.html")
       
+@app.route('/client_view_review_form', methods=['GET', 'POST'])
+def client_view_review_form():
+    """
+    Displays reviews posted by the logged-in client.
+
+    Retrieves the client's email from the session, 
+        obtains the corresponding business owner ID from the database,
+        retrieves events associated with that ID, and renders the 
+        business owner's event view page with the retrieved events 
+        if there are any. Otherwise, renders the page with an error message.
+
+    :return: Renders the business owner's event view page with events 
+             or an error message.
+    :rtype: str
+    """
+    client_email = session["email"]
+
+    # get this client_id
+    cursor = conn.cursor()
+    q_client_id = "SELECT id FROM client WHERE email = %s"
+    cursor.execute(q_client_id, (client_email,))
+    client_id = cursor.fetchone()["id"]
+    cursor.close()
+    
+    # display all his reviews
+    cursor = conn.cursor()
+    q_get_reviews = "select r.id, r.content, r.rating, e.name as event_name from client c inner join\
+            review r on r.client_id = c.id inner join events e on e.id = r.event_id where r.client_id = %s"
+    cursor.execute(q_get_reviews, (client_id,))
+    reviews = cursor.fetchall()
+    cursor.close()
+    
+    if (reviews):
+        return render_template("client_home/client_view_review.html",reviews=reviews)
+    else:
+        error = "You currently posted no review, please create one!"
+        return render_template("client_home/client_view_review.html",error=error)
+    
+# client delete a review
+@app.route("/client_delete_review", methods=["GET", "POST"])
+def client_delete_review():
+    """
+    Handles the deletion of reviews by clients.
+
+    Retrieves reviews owned by the logged-in client so that he
+        is assisted with a visual panel to choose which review to delete (no additional search),
+        deletes the selected review from the database upon form submission,
+        and renders the delete review form with a success message or 
+        refreshes the review list if deletion is successful.
+
+    :return: Renders the delete review form with reviews or a success message.
+    :rtype: str
+    """
+    # identify the current user
+    client_email = session["email"] 
+    
+    cursor = conn.cursor()
+    q_client_id = "SELECT id FROM client WHERE email = %s"
+    cursor.execute(q_client_id, (client_email,))
+    client_id = cursor.fetchone()["id"]
+    cursor.close()
+    
+    # display all his reviews
+    cursor = conn.cursor()
+    q_get_reviews = "select r.id, r.content, r.rating, e.name as event_name from client c inner join\
+            review r on r.client_id = c.id inner join events e on e.id = r.event_id where r.client_id = %s"
+    cursor.execute(q_get_reviews, (client_id,))
+    reviews = cursor.fetchall()
+    cursor.close()
+
+    if request.method == "POST":
+        review_id = request.form["review_id"]
+
+        cursor = conn.cursor()
+        q_delete_review = "delete from review where id = %s"
+        cursor.execute(q_delete_review, (review_id))
+        conn.commit()
+        cursor.close()
+
+        message = "Review deleted successfully."
+
+        # refresh the page
+        reviews = refresh_event(client_email)
+        return render_template("client_home/client_view_review.html",  reviews = reviews, message = message)
+
+    # render the delete review page with review owned by the client
+    return render_template("client_home/client_view_review.html", reviews=reviews)
+
+
 
 # view map
 @app.route("/public_view_map", methods=['GET', 'POST'])
@@ -477,18 +580,7 @@ def cancle_register():
     conn.commit()
     success_message = "Registration cancelled successfully."
     return render_template("/client_home/event_search.html", success=success_message)
-  
 
-# @app.route('/get_followers', methods=['GET', 'POST'])
-# def get_followers():
-#     prime_id = request.form["prime_id"]
-#     cursor = conn.cursor()
-#     query = 'SELECT following_id FROM follow WHERE prime_id = %s'
-#     cursor.execute(query, (prime_id))
-#     data = cursor.fetchall()
-#     cursor.close()
-    
-#     return render_template("/client_home/client_view_follow.html", posts=data)
 
 @app.route('/client_view_follow', methods=['GET', 'POST'])
 def get_following():
@@ -575,21 +667,6 @@ def client_view_event():
         return render_template("/client_home/client_view_event.html", message="No events found for this client.")
     
     return render_template("/client_home/client_view_event.html", events=events)
-
-@app.route('/client_view_review', methods=['GET', 'POST'])
-def client_view_review():
-    client_id = request.form.get('client_id')
-    cursor = conn.cursor()
-    query = 'SELECT event_id, content, rating FROM review WHERE client_id = %s'
-    cursor.execute(query, (client_id,))
-    reviews = cursor.fetchall()
-
-    cursor.close()
-
-    if not reviews:
-        return render_template("/client_home/client_view_review.html", message="No event reviews found for this client.")
-    
-    return render_template("/client_home/client_view_review.html", reviews=reviews)
 
 @app.route('/client_label_place_to_map', methods=['GET', 'POST'])
 def label():
@@ -708,41 +785,6 @@ def client_post_event_review():
     cursor.close()
     return render_template('/client_home/client_review_successful.html')
   
-@app.route("/delete_review", methods=['GET', 'POST'])
-def cancle_register():
-    user_id = request.form["user_id"]
-    event_id = request.form["event_id"]
-
-    # Create a database cursor
-    cursor = conn.cursor()
-
-    query_check = "select id from client"
-    cursor.execute(query_check)
-    check = cursor.fetchall()
-    # print(check)
-    # print(type(check[0]))
-
-    check1 = []
-    for item in check:
-        check1.append(item["user_id"])
-    if int(user_id) not in check1:
-        error = "Sorry, user_id not existed !"
-        return render_template("/client_home/client_post_review.html", error=error)
-
-    query_check2 = 'SELECT * FROM review WHERE event_id = %s and client_id = %s'
-    cursor.execute(query_check2, event_id, user_id)
-    check_f = cursor.fetchall()
-    if check_f is None:
-        error = "Sorry, you have not post any reviews for this event !"
-        return render_template("/client_home/client_post_review.html", error=error)
-
-    # If the event and registration exist, delete the registration
-    query_delete_review = 'DELETE FROM review WHERE client_id = %s AND event_id = %s'
-    cursor.execute(query_delete_review, (user_id, event_id))
-    conn.commit()  # Commit the transaction to make sure changes are saved
-
-    success_message = "Review cancelled successfully."
-    return render_template("/client_home/client_post_review.html", success=success_message)
 # -----------------------------------------------------------
 
 # ----------------------------------------------------------------------
