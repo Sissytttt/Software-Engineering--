@@ -396,7 +396,7 @@ def client_view_bo():
         event_id = request.form["event_id"]
 
         cursor = conn.cursor()
-        query_check_bo = 'select b.name, b.company_name, b.city, b.description from event e inner join\
+        query_check_bo = 'select b.name, b.company_name, b.city, b.description from events e inner join\
             businessowner b on e.owner_id = b.id where e.id = %s'
         cursor.execute(query_check_bo, (event_id))
         view_bo = cursor.fetchone()
@@ -540,7 +540,7 @@ def label():
 
         cursor = conn.cursor()
         query_check_map = 'select m.id from client c inner join\
-            map m on m.client_id = c.id inner join place p on p.id = m.event_id where m.client_id = %s and p.id = %s'
+            map m on m.client_id = c.id inner join place p on p.id = m.place_id where m.client_id = %s and p.id = %s'
         cursor.execute(query_check_map, (client_id, place_id))
         maped = cursor.fetchone()
         cursor.close()
