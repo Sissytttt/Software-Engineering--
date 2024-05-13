@@ -140,6 +140,9 @@ def public_search_place_form():
         error = 'no such place'
         return render_template("public_search_place.html", error=error)
       
+@app.route('/logout')
+def public_logout():
+    return render_template('/index.html')
 
 # -----------------------------------------------------------
 # --------------------------------------------------------------
