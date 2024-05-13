@@ -396,8 +396,7 @@ def client_view_bo():
         event_id = request.form["event_id"]
 
         cursor = conn.cursor()
-        query_check_bo = 'select b.name, b.company_name, b.city, b.description from events e inner join\
-            businessowner b on e.owner_id = b.id where e.id = %s'
+        query_check_bo = 'select b.name, b.company_name, b.city, b.description from events as e, businessowner as b where e.owner_id = b.id and e.id = %s'
         cursor.execute(query_check_bo, (event_id))
         view_bo = cursor.fetchone()
         cursor.close()
