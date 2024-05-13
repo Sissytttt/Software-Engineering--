@@ -149,7 +149,7 @@ class TestClientApp(unittest.TestCase):
         with self.app.session_transaction() as session:
             session['email'] = 'test@example.com'
 
-        response = self.app.post('/client_search_event_form', data=dict(
+        response = self.app.post('/register_event', data=dict(
             name='No such event',
             time='2000-05-14',
             score = '0',
