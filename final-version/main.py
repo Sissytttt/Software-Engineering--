@@ -930,7 +930,7 @@ def client_logout():
     return render_template('/index.html')
 
 @app.route('/client_home')
-def client_home():
+def return_client_home():
     session.pop('email')
     return render_template('/index.html')   
 # -----------------------------------------------------------
