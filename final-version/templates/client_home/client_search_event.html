@@ -144,9 +144,9 @@
     </div>
 
     <h2>Search for Events</h2>
-    <!-- {% if error %}
+    {% if error %}
     <p>{{ error }}</p>
-    {% endif %} -->
+    {% endif %}
 
     <form action="/client_search_event_form" method="POST">
         <label for="name">Event Name:</label><br>
@@ -200,7 +200,12 @@
         </tr>
         {% endfor %}
     </table>
+    {% endif %} 
+
+    {% if message %}
+    <p>{{ message }}</p>
     {% endif %}
+
 
     <div class="btn-group">
         <a href="/client_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>

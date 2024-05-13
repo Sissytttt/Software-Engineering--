@@ -180,21 +180,10 @@
             <td>{{ place.location_long }}</td>
             <td>{{ place.location_lati }}</td>
             <td>{{ place.city }}</td>
-            <td>
-                <form action="/client_label_place_to_map" method="POST">
-                    <input type="hidden" name="place_id" value="{{ place.id }}">
-                    <button type="submit" class="action-button">Add to Map</button>
-                </form>
-            </td>
         </tr>
         {% endfor %}
     </table>
     {% endif %}
-
-    <div class="btn-group">
-        <a href="/client_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>
-        <a href="/client_logout" class="btn btn-outline-dark">Log Out</a>
-    </div>
 
 </body>
 

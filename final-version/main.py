@@ -322,6 +322,122 @@ def client_search_event_form():
         else:
             error = 'No such event'
             return render_template("client_home/client_search_event.html", error=error)
+        
+@app.route("/register_event", methods=['GET', 'POST']) 
+def register_event():
+    """
+    Handles the registration of events by clients.
+
+    Retrieves events searched by the logged-in client so that he
+        is assisted with a visual panel to choose which event to join (no additional search),
+        insert the selected event from the database into paticipation table upon form submission,
+        and renders a success message or 
+        refreshes the search list if deletion is successful.
+
+    :return: Renders a success message.
+    :rtype: str
+    """
+    # identify the current user
+    client_email = session["email"] 
+
+    cursor = conn.cursor()
+    q_client_id = "SELECT id FROM client WHERE email = %s"
+    cursor.execute(q_client_id, (client_email,))
+    client_id = cursor.fetchone()["id"]
+    cursor.close()
+
+    if request.method == "POST":
+        event_id = request.form["event_id"]
+
+        cursor = conn.cursor()
+        query_check_registration = 'select p.id from client c inner join\
+            participate p on p.client_id = c.id inner join events e on e.id = p.event_id where r.client_id = %s and e.id = %s'
+        cursor.execute(query_check_registration, (client_id, event_id))
+        registration = cursor.fetchone()
+        cursor.close()
+        
+        if (registration):
+            error = "You are already registered for this event."
+            return render_template("/client_home/client_search_event.html", error=error)
+        else:
+            cursor = conn.cursor()
+            q_rsvp = "INSERT INTO participate (client_id, event_id) VALUES (%s, %s)"
+            cursor.execute(q_rsvp, (client_id, event_id))
+            conn.commit()
+            cursor.close()
+
+            message = "Joined event successfully."
+
+            # refresh the page
+            events = refresh_event(client_email)
+            return render_template("client_home/client_search_event.html", events = events, message = message)
+
+    # render the delete review page with review owned by the client
+    return render_template("client_home/client_search_event.html", events=events)
+    
+@app.route("/client_view_bo", methods=['GET', 'POST']) 
+def client_view_bo():
+    """
+    Handles the viewing of business owner profile of the event.
+
+    Retrieves bo profile searched by the logged-in client so that he
+        is assisted with a visual panel to choose to follow the bo or not.
+
+    :return: Renders a bo profile page.
+    :rtype: str: Rendered HTML template for the bo profile display page.
+    """
+    # identify the current user
+
+    if request.method == "POST":
+        event_id = request.form["event_id"]
+
+        cursor = conn.cursor()
+        query_check_bo = 'select b.name, b.company_name, b.city, b.description from event e inner join\
+            businessowner b on e.owner_id = b.id where e.id = %s'
+        cursor.execute(query_check_bo, (event_id))
+        view_bo = cursor.fetchone()
+        cursor.close()
+        
+        if (view_bo):
+            return render_template("client_home/client_view_bo.html",bos=view_bo)
+        else:
+            error = "There is an error for the busniess owner profile"
+        return render_template("client_home/client_view_bo.html",error=error)
+          
+# @app.route("/cancel_register", methods=['GET', 'POST'])
+# def cancle_register():
+#     username = request.form["username"]
+#     id = request.form["id"]
+#     cursor = conn.cursor()
+
+#     # Check if the event exists
+#     query_check_event = 'SELECT * FROM event WHERE id = %s'
+#     cursor.execute(query_check_event, (id))
+#     event = cursor.fetchall()
+#     event_id = event['id']
+#     query_client = "SELECT id FROM client WHERE username = %s"
+#     cursor.execute(query_client, (username,))
+#     client_result = cursor.fetchone()
+#     client_id = client_result['id']
+
+#     if event_id is None:
+#         error = "Event not found."
+#         return render_template("/client_home/event_search.html", error=error)
+
+#     # Check if the user is registered for the event
+#     query_check_registration = "SELECT p.id FROM participate as p, client as c, event as e WHERE c.username = %s AND c.id = p.client_id AND p.event_id = %s"
+#     cursor.execute(query_check_registration, (username, event_id))
+#     registration = cursor.fetchone()
+#     if registration is None:
+#         error = "No registration found for this user and event."
+#         return render_template("/client_home/event_search.html", error=error)
+
+#     # If the event and registration exist, delete the registration
+#     query_delete_registration = 'DELETE FROM participate WHERE client_id = %s AND event_id = %s'
+#     cursor.execute(query_delete_registration, (client_id, event_id))
+#     conn.commit()
+#     success_message = "Registration cancelled successfully."
+#     return render_template("/client_home/event_search.html", success=success_message)
 
 # public search place: before search
 @app.route("/client_search_place_display", methods=['GET', 'POST'])
@@ -367,6 +483,56 @@ def client_search_place_form():
     else:
         error = 'no such place'
         return render_template("client_home/client_search_place.html", error=error)
+    
+@app.route('/client_label_place_to_map', methods=['GET', 'POST'])
+def label():
+    """
+    Handles the labeling of places by clients.
+
+    Add places searched by the logged-in client so that he
+        is assisted with a visual panel to choose wether to 
+        insert to map in the database map table upon form submission,
+        and renders a success message.
+
+    :return: Renders a success message.
+    :rtype: str
+    """
+    client_email = session["email"] 
+
+    cursor = conn.cursor()
+    q_client_id = "SELECT id FROM client WHERE email = %s"
+    cursor.execute(q_client_id, (client_email,))
+    client_id = cursor.fetchone()["id"]
+    cursor.close()
+
+    if request.method == "POST":
+        place_id = request.form["place_id"]
+
+        cursor = conn.cursor()
+        query_check_map = 'select m.id from client c inner join\
+            map m on m.client_id = c.id inner join place p on p.id = m.event_id where m.client_id = %s and p.id = %s'
+        cursor.execute(query_check_map, (client_id, place_id))
+        map = cursor.fetchone()
+        cursor.close()
+        
+        if (map):
+            error = "The place is already maped."
+            return render_template("client_home/client_search_place.html", error=error)
+        else:
+            cursor = conn.cursor()
+            q_map = "INSERT INTO map (client_id, place_id) VALUES (%s, %s)"
+            cursor.execute(q_map, (client_id, place_id))
+            conn.commit()
+            cursor.close()
+
+            message = "Joined map successfully."
+
+            # refresh the page
+            places = refresh_event(client_email)
+            return render_template("client_home/client_search_event.html", places = places, message = message)
+
+    # render the delete review page with review owned by the client
+    return render_template("client_home/client_search_event.html", places=places)
 
 # client view his reviews: before view
 @app.route("/client_view_review", methods=["GET","POST"])
@@ -388,12 +554,12 @@ def client_view_review_form():
     Displays reviews posted by the logged-in client.
 
     Retrieves the client's email from the session, 
-        obtains the corresponding business owner ID from the database,
-        retrieves events associated with that ID, and renders the 
-        business owner's event view page with the retrieved events 
+        obtains the corresponding client ID from the database,
+        retrieves reviews associated with that ID, and renders the 
+        client's review view page with the retrieved reviews 
         if there are any. Otherwise, renders the page with an error message.
 
-    :return: Renders the business owner's event view page with events 
+    :return: Renders the client's review view page with reviews 
              or an error message.
     :rtype: str
     """
@@ -506,80 +672,6 @@ def view_map():
         error = 'no such place'
         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
         return render_template("/client_home/view_map.html", error=error)
-   
-
-@app.route("/register_event", methods=['GET', 'POST']) 
-def register_event():
-    username = request.form["username"]
-    id = request.form["id"]
-
-    cursor = conn.cursor()
-    query = 'SELECT * FROM event WHERE id = %s'
-    cursor.execute(query, (id))
-    data = cursor.fetchall()  # list(dict())
-    event_id = data['id']
-   
-    query_client = "SELECT id FROM client WHERE username = %s"
-    cursor.execute(query_client, (username,))
-    client_result = cursor.fetchone()
-    client_id = client_result['id']
-    
-    if event_id is None:
-        error = "Sorry, no such event exists!"
-        return render_template("/client_home/event_search.html", error=error)
-      
-    query_check_registration = 'SELECT p.id FROM event as e, participate as p, client as c '\
-        'WHERE c.username = %s AND c.id = p.client_id AND e.id = p.event_id'
-    cursor.execute(query_check_registration, (username, event_id))
-    registration = cursor.fetchone()
-
-    if registration:
-        error = "You are already registered for this event."
-        return render_template("/client_home/event_search.html", error=error)
-
-    # Register the user for the event
-    query_register = 'INSERT INTO participate (client_id, event_id) VALUES (%s, %s)'
-    cursor.execute(query_register, (client_id, event_id))
-    conn.commit()  # Commit to save the changes
-
-    success_message = "You have successfully registered for the event."
-    return render_template("/client_home/event_search.html", success=success_message)
-
-      
-@app.route("/cancel_register", methods=['GET', 'POST'])
-def cancle_register():
-    username = request.form["username"]
-    id = request.form["id"]
-    cursor = conn.cursor()
-
-    # Check if the event exists
-    query_check_event = 'SELECT * FROM event WHERE id = %s'
-    cursor.execute(query_check_event, (id))
-    event = cursor.fetchall()
-    event_id = event['id']
-    query_client = "SELECT id FROM client WHERE username = %s"
-    cursor.execute(query_client, (username,))
-    client_result = cursor.fetchone()
-    client_id = client_result['id']
-
-    if event_id is None:
-        error = "Event not found."
-        return render_template("/client_home/event_search.html", error=error)
-
-    # Check if the user is registered for the event
-    query_check_registration = "SELECT p.id FROM participate as p, client as c, event as e WHERE c.username = %s AND c.id = p.client_id AND p.event_id = %s"
-    cursor.execute(query_check_registration, (username, event_id))
-    registration = cursor.fetchone()
-    if registration is None:
-        error = "No registration found for this user and event."
-        return render_template("/client_home/event_search.html", error=error)
-
-    # If the event and registration exist, delete the registration
-    query_delete_registration = 'DELETE FROM participate WHERE client_id = %s AND event_id = %s'
-    cursor.execute(query_delete_registration, (client_id, event_id))
-    conn.commit()
-    success_message = "Registration cancelled successfully."
-    return render_template("/client_home/event_search.html", success=success_message)
 
 
 @app.route('/client_view_follow', methods=['GET', 'POST'])
@@ -668,43 +760,6 @@ def client_view_event():
     
     return render_template("/client_home/client_view_event.html", events=events)
 
-@app.route('/client_label_place_to_map', methods=['GET', 'POST'])
-def label():
-    client_id = request.form["id"]
-    place_id = request.form["id"]
-
-    cursor = conn.cursor()
-    query = 'SELECT * FROM place WHERE id = %s'
-    cursor.execute(query, (place_id))
-    data = cursor.fetchone()
-   
-    query_client = "SELECT id FROM client WHERE id = %s"
-    cursor.execute(query_client, (client_id))
-    client_result = cursor.fetchone()
-    
-    query_id = 'SELECT MAX(id) AS max_id FROM map'
-    cursor.excute(query_id)
-    result = cursor.fetchone()
-    max_id = result[0] if result[0] is not None else 0
-    
-    if data is None:
-        error = "Sorry, no such place!"
-        return render_template("/client_home/view_map.html", error=error)
-    if client_result is None:
-        error = "Sorry, no such user!"
-        return render_template("/client_home/view_map.html", error=error)
-      
-    query_check_registration = 'SELECT * FROM map WHERE client_id = %s AND place_id = %s'
-    cursor.execute(query_check_registration, (client_id, place_id))
-    registration = cursor.fetchone()
-
-    if registration:
-        error = "You have already labeled this place."
-        return render_template("/client_home/view_map.html", error=error)
-
-    query_register = 'INSERT INTO map (id, client_id, place_id) VALUES (%s, %s)'
-    cursor.execute(query_register, (max_id + 1, client_id, place_id))
-    conn.commit()
 
 
 @app.route('/unlabel', methods=['GET', 'POST'])
