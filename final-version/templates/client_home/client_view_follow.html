@@ -96,16 +96,12 @@
   <br>
   <br>
   <br>
-  <div class="btn-group">
-    <a href="/client_view_follow" class="btn btn-outline-dark">Back to Business Owners</a>
-    <a href="/client_view_follow" class="btn btn-view-bo">View Business Owners</a>
-  </div>
 
-  <!-- {% if error %}
+  {% if error %}
   <p>{{ error }}</p>
-  {% endif %} -->
+  {% endif %}
 
-  <!-- {% if bos %} -->
+  {% if bos %}
   <table class="table table-striped">
     <thead>
       <tr>
@@ -118,7 +114,7 @@
     </thead>
     <br>
     <tbody>
-      <!-- {% for bo in bos %} -->
+      {% for bo in bos %}
       <tr>
         <td>{{ bo["name"] }}</td>
         <td>{{ bo["company_name"] }}</td>
@@ -131,18 +127,12 @@
           </form>
         </td>
       </tr>
-      <!-- {% endfor %} -->
+      {% endfor %}
     </tbody>
   </table>
-  <!-- {% endif %} -->
+  {% endif %}
   <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
+
 
   <a href="/client_home">Back to Home</a>
   <a href="/client_logout" class="btn btn-outline-dark">Log Out</a>

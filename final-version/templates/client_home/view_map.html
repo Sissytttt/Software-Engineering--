@@ -96,16 +96,12 @@
   <br>
   <br>
   <br>
-  <div class="btn-group">
-    <a href="/client_view_map" class="btn btn-outline-dark">Back to My Map</a>
-    <a href="/client_view_map" class="btn btn-view-map">View My Map</a>
-  </div>
 
-  <!-- {% if error %}
+  {% if error %}
   <p>{{ error }}</p>
   {% endif %}
 
-  {% if places %} -->
+  {% if places %}
 
   <table class="table table-striped">
     <thead>
@@ -116,7 +112,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- {% for place in places %} -->
+      {% for place in places %}
       <br>
       <br>
       <br>
@@ -130,14 +126,10 @@
           </form>
         </td>
       </tr>
-      <!-- {% endfor %} -->
+      {% endfor %}
     </tbody>
   </table>
-  <!-- {% endif %} -->
-  <br>
-  <br>
-  <br>
-  <br>
+  {% endif %}
   <br>
   <br>
   <a href="/client_home">Back to Home</a>
