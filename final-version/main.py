@@ -422,7 +422,12 @@ def client_view_bo():
 @app.route('/client_follow_bo', methods=['GET', 'POST'])
 def follow():
     """
+    The function checks if the client has already followed the specified business owner. If not, it
+    inserts a new record in the 'follow' table to establish this relationship. If the client has already followed the
+    business owner, it displays an error message.
     
+    :return: Redirects to a success page 'client_home/client_follow_successful.html'.
+    :rtype: str
     """
     client_email = session["email"] 
 
@@ -734,14 +739,20 @@ def client_post_event_review():
     return render_template('client_home/client_review_successful.html')
 
 def refresh_event_client(client_email):
-    # get this client_id
+    """
+    Get updated events list
+    
+    This is a help function that helps to fetech the updated events list, if there is any rsvp or cancle rsvp events, and thus facilitate page refresh.
+
+    Returns:
+        tuple: a tuple of dictionary for events retreived
+    """
     cursor = conn.cursor()
     q_client_id = "SELECT id FROM client WHERE email = %s"
     cursor.execute(q_client_id, (client_email,))
     client_id = cursor.fetchone()["id"]
     cursor.close()
     
-    # display all his events
     cursor = conn.cursor()
     q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, pl.name as place_name \
         from events e inner join place pl on pl.id = e.place_id inner join participate p on p.event_id = e.id inner join client c on c.id = p.client_id where c.id = %s"
@@ -753,7 +764,9 @@ def refresh_event_client(client_email):
 @app.route("/client_unrsvp_event", methods=['GET', 'POST'])
 def cancle_register():
     """
-    
+    It manages the cancellation of a client's registration for an event. It processes the client's request to unregister for a specified event, decrements the current_ppl count in the events table to reflect the cancellation, and deletes the participation record from the participate table. After updating the database, it fetches and displays the updated list of events the client is registered for, along with a success message indicating the successful cancellation.
+
+    Returns: a rendered template with an updated event list of the client and a success message if unregistration is successful.
     """
     client_email = session["email"]
 
@@ -796,18 +809,21 @@ def cancle_register():
 
         message = "UnRSVP successfully."
 
-        # refresh the page
         events = refresh_event_client(client_email)
         return render_template("client_home/client_view_event.html",  events = events, message = message)
 
-    # render the delete review page with review owned by the client
     return render_template("client_home/client_view_event.html", events=events)
 
 @app.route('/client_view_follow', methods=['GET', 'POST'])
 def get_following():
+    """
+    This function retrieves a list of all business owners followed by the client based on their email. It fetches details such as business owner ID, name, company name, city, and description from the 
+    'follow' and 'businessowner' tables.
+
+    Returns: Rendered template 'client_home/client_view_follow.html' populated with the details of the business owners.
+    """
     client_email = session["email"]
 
-    # get this client_id
     cursor = conn.cursor()
     q_client_id = "SELECT id FROM client WHERE email = %s"
     cursor.execute(q_client_id, (client_email,))
@@ -827,6 +843,14 @@ def get_following():
         return render_template("client_home/client_view_follow.html",message=error)
    
 def refresh_follow_client(client_email):
+    """
+    Get updated the business owner list followed by client
+    
+    This is a help function that helps to fetech the updated business owner list followed by client, if there is any following or unfollowing, and thus facilitate page refresh.
+
+    Returns:
+        tuple: a tuple of dictionary for business owners retreived
+    """
     cursor = conn.cursor()
     q_client_id = "SELECT id FROM client WHERE email = %s"
     cursor.execute(q_client_id, (client_email,))
@@ -842,6 +866,11 @@ def refresh_follow_client(client_email):
 
 @app.route('/client_unfollow_bo', methods=['GET', 'POST'])
 def unfollow():
+    """
+    The function reads the business owner's ID from the form data and the client's email. It then delete the corresponding entry in the 'follow' table where the client is following the business owner. Upon successful deletion, the function updates the list of business owners the client currently follows and displays them along with a success message.
+
+    Returns: Rendered template 'client_home/client_view_follow.html' with the updated list of business owners the client follows and a message indicating successful unfollow.
+    """
     business_owner = request.form["bo_id"]
     client_email = session["email"]
     
@@ -856,38 +885,44 @@ def unfollow():
     cursor.execute(query_delete_follow, (client_id, business_owner))
     conn.commit()
     cursor.close()
-    # refresh the page
+    
     message = "Unfollowed successfully."
     bos = refresh_follow_client(client_email)
     return render_template("client_home/client_view_follow.html", bos = bos, message = message)
     
 
-# view map
 @app.route('/view_map', methods=['GET', 'POST'])
 def view_map():
-    email = session["email"]  # now required to fill in
+    """
+    This function fetches the places that the client is associated with from the database using the client's email. It queries the 'place' and 'map' tables to gather details about each place including its name, longitude, latitude, and city. 
+
+    Returns: Rendered template: Returns 'client_home/view_map.html' with data about the places.
+    """
+    email = session["email"]
 
     cursor = conn.cursor()
-
-    # executes query
     query = 'SELECT p.id, p.name, p.location_long as longitude, p.location_lati as latitude, p.city FROM place as p, map as m, client as c WHERE c.email = %s '\
             'and c.id = m.client_id and p.id = m.place_id'
     cursor.execute(query, (email))
 
-    data = cursor.fetchall()  # list(dict())
-    # use fetchall() if you are expecting more than 1 data row
+    data = cursor.fetchall()
     cursor.close()
     error = None
-    # if data is not none
     if len(data) > 0:
-        return render_template("/client_home/view_map.html", places=data)  # a url in app.route
+        return render_template("/client_home/view_map.html", places=data)
     if len(data) == 0:
-        # returns an error message to the html page
         error = 'no such place'
         return render_template("/client_home/view_map.html", error=error)
 
 def refresh_map_client(client_email):
-    # get this client_id
+    """
+    Get updated the map of places labeled by the client
+    
+    This is a help function that helps to fetech the updated map of places labeled by the client, if there is any labeling or unlabeling, and thus facilitate page refresh.
+
+    Returns:
+        tuple: a tuple of dictionary for places retreived
+    """
     cursor = conn.cursor()
     query = 'SELECT p.id, p.name, p.location_long as longitude, p.location_lati as latitude, p.city FROM place as p, map as m, client as c WHERE c.email = %s '\
             'and c.id = m.client_id and p.id = m.place_id'
@@ -898,10 +933,14 @@ def refresh_map_client(client_email):
 
 @app.route('/client_unlike_place', methods=['GET', 'POST'])
 def unlabel():
+    """
+    This function retrieves a place's ID from the form data and the client's email. It uses the client's email to fetch their ID and then delete operation to remove the association between the client and the specified place from the 'map' table. After successfully deleting the association, the function refreshes the list of places associated with the client with a success message.
+
+    Returns: Rendered templaten 'client_home/view_map.html' with an updated list of places and a success message confirming the removal.
+    """
     place = request.form["place_id"]
     email = session["email"]
 
-    # get this client_id
     cursor = conn.cursor()
     q_client_id = "SELECT id FROM client WHERE email = %s"
     cursor.execute(q_client_id, (email,))
@@ -909,14 +948,12 @@ def unlabel():
     cursor.close()
 
     cursor = conn.cursor()
-    # If the event and registration exist, delete the registration
     query_delete_registration = 'DELETE FROM map WHERE client_id = %s AND place_id = %s'
     cursor.execute(query_delete_registration, (client_id, place))
     conn.commit()
     cursor.close()
 
     message = "Unlabel place successfully!"
-
     places = refresh_map_client(email)
     return render_template("client_home/view_map.html",  places = places, message = message)
 
