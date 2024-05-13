@@ -97,32 +97,10 @@ class TestClientApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_client_search_event(self):
-        """
-        Test case for creating an event by a business owner.
-
-        Simulates an event creation attempt and checks if the response
-            status code is as expected.
-        """
-        # assume a logged-in session
-        with self.app.session_transaction() as session:
-            session['email'] = 'test@example.com'
-
-        response = self.app.post('/bo_create_event_form', data=dict(
-            e_name='New Event',
-            e_time='2024-05-14',
-            e_descript='Description',
-            e_max_ppl='100',
-            e_price='20',
-            e_place='Yu Garden'
-        ))
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_bo_search_event_form(self):
+    def test_client_search_event_form(self):
         # assume a logged-in session
         """
-        Test case for searching events by a business owner.
+        Test case for searching events by a client.
 
         Simulates an event search attempt and checks if the response
         status code is as expected.
@@ -130,7 +108,7 @@ class TestClientApp(unittest.TestCase):
         with self.app.session_transaction() as session:
             session['email'] = 'test@example.com'
 
-        response = self.app.post('/bo_search_event_form', data=dict(
+        response = self.app.post('/client_search_event_form', data=dict(
             name='New event',
             time='2000-05-14',
             score = '0',
@@ -139,7 +117,7 @@ class TestClientApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_bo_search_event_form_no_such_event(self):
+    def test_client_search_event_form_no_such_event(self):
         # assume a logged-in session
         """
         Test case for corner case when searching events that doesn't exist,
@@ -151,7 +129,27 @@ class TestClientApp(unittest.TestCase):
         with self.app.session_transaction() as session:
             session['email'] = 'test@example.com'
 
-        response = self.app.post('/bo_search_event_form', data=dict(
+        response = self.app.post('/client_search_event_form', data=dict(
+            name='No such event',
+            time='2000-05-14',
+            score = '0',
+            price = '10'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_client_register_event(self):
+        # assume a logged-in session
+        """
+        Test case for registering an event.
+
+        Simulates an event register attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_search_event_form', data=dict(
             name='No such event',
             time='2000-05-14',
             score = '0',
