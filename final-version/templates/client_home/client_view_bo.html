@@ -131,13 +131,13 @@
       <td>Shanghai</td>
       <td>This is a description for owner 1.</td>
       <td>
-    {% for bo in bos %}
+    <!-- {% for bo in bos %}
     <tr>
       <td>{{ bo["name"] }}</td>
       <td>{{ bo["company_name"] }}</td>
       <td>{{ bo["city"] }}</td>
       <td>{{ bo["description"] }}</td>
-      <td>
+      <td> -->
         <!-- New table cell for the action -->
         <form action="/client_follow_bo" method="POST">
           <input type="hidden" name="bo_id" value="{{ bo.id }}">
