@@ -800,33 +800,33 @@ def get_following():
 @app.route('/client_unfollow_bo', methods=['GET', 'POST'])
 def unfollow():
     business_owner = request.form["id"]
-    client = request.form["id"]
+    email = request.form["email"]
     
     cursor = conn.cursor()
 
-    query_check_registration = 'SELECT * FROM follow WHERE prime_id = %s AND following_id = %s'
-    cursor.execute(query_check_registration, (business_owner, client))
+    query_check_registration = 'SELECT * FROM follow as f, client as c WHERE f.prime_id = %s AND f.following_id = c.id AND c.email = %s'
+    cursor.execute(query_check_registration, (business_owner, email))
     registration = cursor.fetchone()
 
     if registration is None:
         error = "You have not followed this business owner"
         return render_template("/client_home/client_view_bo.html", error=error)
 
-    query_delete_registration = 'DELETE FROM follow WHERE following_id = %s AND prime_id = %s'
-    cursor.execute(query_delete_registration, (client, business_owner))
+    query_delete_registration = 'DELETE FROM follow as f, client as c WHERE c.email = %s AND f.following_id = c.id AND f.prime_id = %s'
+    cursor.execute(query_delete_registration, (email, business_owner))
     conn.commit()
 
 # view map
 @app.route('/view_map', methods=['GET', 'POST'])
 def view_map():
-    username = request.form["username"]  # now required to fill in
+    email = session["email"]  # now required to fill in
 
     cursor = conn.cursor()
 
     # executes query
-    query = 'SELECT p.website FROM place as p, map as m, client as c WHERE c.username = %s '\
+    query = 'SELECT p.website FROM place as p, map as m, client as c WHERE c.email = %s '\
             'and c.id = m.client_id and p.id = m.place_id'
-    cursor.execute(query, (username))
+    cursor.execute(query, (email))
 
     # stores the results in a variable
     # fetchone 即每次只读一行
@@ -848,25 +848,35 @@ def view_map():
 
 
 
-@app.route('/unlabel', methods=['GET', 'POST'])
+@app.route('/client_unlike_place', methods=['GET', 'POST'])
 def unlabel():
     place = request.form["id"]
-    client = request.form["id"]
+    email = session["email"]
     
     cursor = conn.cursor()
 
     # Check if the user is registered for the event
-    query_check_registration = 'SELECT * FROM map WHERE place_id = %s AND client_id = %s'
-    cursor.execute(query_check_registration, (place, client))
+    query_check_registration = 'SELECT * FROM map as m, client as c WHERE m.place_id = %s AND m.client_id = c.id AND c.email = %s'
+    cursor.execute(query_check_registration, (place, email))
     registration = cursor.fetchone()
 
+    # if request.method == "POST":
+    #     # event_id = request.form["event_id"]
+
+    #     cursor = conn.cursor()
+    #     q_unlike_place = "delete from map where id = %s"
+    #     cursor.execute(q_unlike_place, (place))
+    #     conn.commit()
+    #     cursor.close()
+
+    #     flash("Event deleted successfully.")
     if registration is None:
         error = "You have not labeled this map"
         return render_template("/client_home/view_map.html", error=error)
 
     # If the event and registration exist, delete the registration
-    query_delete_registration = 'DELETE FROM map WHERE client_id = %s AND place_id = %s'
-    cursor.execute(query_delete_registration, (client, place))
+    query_delete_registration = 'DELETE FROM map as m, client as c WHERE c.email = %s AND m.client_id = c.id AND place_id = %s'
+    cursor.execute(query_delete_registration, (email, place))
     conn.commit()
 
 
@@ -875,7 +885,7 @@ def logout():
     session.pop('email')
     return render_template('/index.html')
 
- @app.route('/client_home')
+@app.route('/client_home')
 def logout():
     session.pop('email')
     return render_template('/index.html')   
