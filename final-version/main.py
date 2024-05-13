@@ -321,8 +321,8 @@ def client_search_event_form():
             return render_template("client_home/client_search_event.html", events=data) 
         else:
             error = 'No such event'
-            return render_template("client_home/client_search_event.html", error=error)
-        
+            return render_template("client_home/client_search_event.html", error=error)   
+
 @app.route("/register_event", methods=['GET', 'POST']) 
 def register_event():
     """
@@ -366,11 +366,7 @@ def register_event():
             conn.commit()
             cursor.close()
 
-            message = "Joined event successfully."
-
-            # refresh the page
-            events = refresh_event(client_email)
-            return render_template("client_home/client_search_event.html", events = events, message = message)
+            return render_template('/client_home/client_register_successful.html')
 
     # render the delete review page with review owned by the client
     return render_template("client_home/client_search_event.html", events=events)
