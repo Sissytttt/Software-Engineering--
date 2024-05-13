@@ -33,7 +33,109 @@ def login():
 
 # -----------------------------------------------------------
 # --------------------------------------------------------------
+# before resgister
+@app.route('/register_client')
+def register_client():
+    """
+    Display the register
+    
+    This is an auxiliary function that helps display the client register page before authentication.
 
+    Returns:
+        str: Rendered HTML template for the registration page.
+    """
+
+    return render_template('register/client_register.html')
+
+# Authenticates the register for client
+@app.route('/register_auth_client', methods=['GET', 'POST'])
+def registerAuth_client():
+    """
+    Authenticates the register
+    
+    Authenticates the registration of a client. Extracts required information such as email, name, password, phone number, and city
+        from the request form. Checks for duplicate client in the database. If the user already exists, renders the registration 
+        template with an error message. Otherwise, inserts the new client's information into the database and redirects to the 
+        index page after successful registration.
+
+    Returns:
+        str: Rendered HTML template for the registration page / homepage.
+    """
+
+    email = request.form["email"]
+    name = request.form["name"]
+    password = request.form["password"]
+    phone_number = request.form["phone_number"]
+    city = request.form["city"]
+
+    cursor = conn.cursor()
+    # check for duplicate owner
+    query = 'SELECT * FROM client WHERE email = %s' 
+    cursor.execute(query, (email))
+    data = cursor.fetchone()
+    error = None
+
+    if (data):
+        # If the previous query returns data, then user exists
+        error = "This user already exists"
+        return render_template('register/client_register.html', error=error)
+    else:
+        ins = 'INSERT INTO businessowner (email, name, password, phone_number, city) VALUES (%s, %s, %s, %s, %s)'
+        cursor.execute(ins, (email, name, password, phone_number, city))
+        conn.commit()
+        cursor.close()
+        flash("Register Sucessful!")
+        return render_template('index.html')
+
+# ----------------------------------------------------------------------    
+# before log in
+@app.route('/login_client')
+def log_in_client():
+    """
+    Display the log in
+    
+    This is an auxiliary function that helps display the client log in page before authentication.
+
+    Returns:
+        str: Rendered HTML template for the log in page.
+    """
+    return render_template('log_in/client_login.html')
+
+
+# Authenticates the log in for business owner
+@app.route('/login_auth_client', methods=['GET', 'POST'])
+def loginAuth_client():
+    """
+    Authenticates client login.
+
+    Retrieves email and password from the form, queries the database
+        to validate credentials, and redirects to the client home
+        page if authentication succeeds. Otherwise, renders the login page
+        with an error message.
+
+    :return: Redirects to the client home page if login is successful, 
+             otherwise renders the login page with an error message.
+    :rtype: str
+    """
+
+    email = request.form["email"] 
+    password = request.form['password']
+    cursor = conn.cursor()
+
+    query = 'SELECT * FROM client WHERE email = %s and password = %s'
+    cursor.execute(query, (email, password))
+    data = cursor.fetchone()
+    cursor.close()
+    error = None
+
+    if (data):
+        session['email'] = email
+        return redirect(url_for('client_home'))  
+    else:
+        error = 'Invalid username or password'
+        return render_template("log_in/client_login.html", error=error)
+    
+# ----------------------------------------------------------------------    
 # search
 @app.route("/public_place_search", methods=['GET', 'POST'])
 def public_place_search():
@@ -147,94 +249,10 @@ def view_map():
         error = 'no such place'
         # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
         return render_template("/client_home/view_map.html", error=error)
-      
-# register
-@app.route('/register_client')
-def register_client():
-    return render_template('/register/client_register.html')
-
-# Authenticates the register
-@app.route('/register_auth_client', methods=['GET', 'POST'])
-def registerAuth_client():
-    # grabs information from the forms
-    username = request.form['username']
-    password = request.form['password']
-    name = request.form['name']
-    phone = request.form['phone']
-    city = request.form['city']
-
-    # cursor used to send queries
-    cursor = conn.cursor()
-
-    # executes query
-    query = 'SELECT username FROM client WHERE username = %s'  # check for no same username
-    cursor.execute(query, (username))
-    # stores the results in a variable
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    error = None
-
-    if (data):
-        # If the previous query returns data, then user exists
-        error = "This user already exists"
-        return render_template('/register/client_register.html', error=error)
-
-    else:
-        ins = 'INSERT INTO client VALUES(%s, MD5(%s), %s, %s, %s)'
-        cursor.execute(ins, (username, password, name, phone, city))
-        conn.commit()
-        cursor.close()
-        return render_template('/index.html')
-
-
-    
+   
 
 # --------------------------------------------------------------------------
-# log in
-# @app.route('/log_in_bo')
-# def log_in_bo():
-#     return render_template('log_in/log_in_client.html')
-    
-
-# log in
-@app.route('/log_in_client')
-def log_in_client():
-    return render_template('/log_in/client_login.html')
-
-# Authenticates the login
-# 既可以向外展示，也可以获取数据
-@app.route('/login_auth_client', methods=['GET', 'POST'])
-def loginAuth_client():
-    # grabs information from the forms
-    # get
-    username = request.form["username"]  # 对应html 文件的form class
-    password = request.form['password']
-
-    # cursor used to send queries
-    # 游标（Cursor）是处理数据的一种方法，为了查看或者处理结果集中的数据，游标提供了在结果集中一次一行或者多行前进或向后浏览数据的能力。可以把游标当作一个指针，它可以指定结果中的任何位置，然后允许用户对指定位置的数据进行处理
-    cursor = conn.cursor()
-
-    # executes query
-    query = 'SELECT * FROM client WHERE email = %s and password = MD5(%s)'
-    cursor.execute(query, (username, password))
-    # stores the results in a variable
-    # fetchone 即每次只读一行
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
-    # if data is not none
-    if data is not None:
-        # creates a session for the the user
-        # 创造一个会话
-        # session is a built in
-        session['username'] = username
-        return redirect('/client_home/client_home.html')  # a url in app.route
-    else:
-        # returns an error message to the html page
-        error = 'Invalid username or password'
-        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("/log_in/client_login.html", error=error)
+# --------------------------------------------------------------------------  
 
       
 # -------------------------------------------------------------
