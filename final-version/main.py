@@ -1358,44 +1358,8 @@ def bo_logout():
     session.pop('email')
     return render_template('/index.html')
 
-# -----------------------------------------------------------
-# ------------------------------------------------------------
-# search event + view map
-# search place
-# log in
-# register
-# authentication
-
-# client ---
-
-# register event
-# cancel register
-
-# label and unlabel place from collection
-
-# post event review
-# delete event review
-# rate event
-
-# get followers (a table with id, follower, followee)
-# follow - only follow business owner (owner - event - client)
-# unfollow
-
-
-# business owner ---
-# create event
-# update event
-# delete event
-
-
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
-
-
-@app.route('/logout')
-def logout():
-    session.pop('username')
-    return render_template('index.html')
 
 
 app.secret_key = 'some key that you will never guess'
