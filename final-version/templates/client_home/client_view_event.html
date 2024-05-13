@@ -104,7 +104,12 @@
     <a href="/client_view_event" class="btn btn-view-event">View My Event</a>
   </div> -->
   <br>
-  <!-- {% if events %} -->
+  
+  {% if error %}
+  <p>{{ error }}</p>
+  {% endif %}
+
+  {% if events %}
   <table class="table table-striped">
     <thead>
       <tr>
@@ -120,7 +125,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- {% for event in events %} -->
+      {% for event in events %}
       <tr>
         <td>{{ event["name"] }}</td>
         <td>{{ event["time"] }}</td>
@@ -135,7 +140,8 @@
             <input type="hidden" name="event_id" value="{{ event.id }}">
             <button type="submit" class="btn-action">View its Business Owner</button>
           </form>
-          <form action="/client_post_review" method="POST">
+          <form action="/post_event_review" method="POST">
+            <input type="hidden" name="event_id" value="{{ event.id }}">
             <button type="submit" class="btn-action">Post Review</button>
           </form>
           <form action="/client_unrsvp_event" method="POST">
@@ -144,10 +150,10 @@
           </form>
         </td>
       </tr>
-      <!-- {% endfor %} -->
+      {% endfor %}
     </tbody>
   </table>
-  <!-- {% endif %} -->
+  {% endif %}
   <br>
   <br>
   <br>

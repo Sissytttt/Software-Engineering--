@@ -97,38 +97,25 @@
   <br>
   <br>
 
-  {% if error %}
-  <p>{{ error }}</p>
+  {% if message %}
+  <p>{{ message }}</p>
   {% endif %}
 
   {% if places %}
 
   <table class="table table-striped">
-    <thead>
-      <tr>
+    <tr>
         <th>Name</th>
         <th>Longitude</th>
         <th>Latitude</th>
         <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>The Bund</td>
-        <td>121.48560</td>
-        <td>31.23660</td>
-        <td>Shanghai</td>
-        <td>
-      <!-- {% for place in places %}
-      <br>
-      <br>
-      <br>
+    </tr>
+      {% for place in places %}
       <tr>
         <td>{{ place["name"] }}</td>
-        <!-- <td>{{ place["website"] }}</td> -->
         <td>{{ place["longitude"] }}</td>
         <td>{{ place["latitude"] }}</td>
-        <td> -->
+        <td>
           <form action="/client_unlike_place" method="POST">
             <input type="hidden" name="place_id" value="{{ place.id }}">
             <button type="submit" class="btn-unlike">Unlike Place</button>
@@ -136,7 +123,6 @@
         </td>
       </tr>
       {% endfor %}
-    </tbody>
   </table>
   {% endif %}
   <br>

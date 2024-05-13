@@ -103,24 +103,20 @@
     </div>
     <br>
     <br>
-    <br>
-    <br>
 
     <div class="container">
         <h1>Post Review</h1>
         <form action="/client_post_review" method="POST" onsubmit="return validateForm()">
-            <div class="form-group">
-                <label for="event_id">Event ID:</label>
-                <input id="event_id" name="event_id" required></textarea>
-            </div>
             <div class="form-group">
                 <label for="rating">Rating from 1 to 5:</label>
                 <input type="number" id="rating" name="rating" required>
             </div>
             <div class="form-group">
                 <label for="content">Anything you'd like to say to us:</label>
-                <input id="content" name="content" required></textarea>
+                <input id="content" name="content" required style="width: 300px; height: 200px;"></textarea>
+                
             </div>
+            <input type="hidden" name="event_id" value="{{ event_id }}">
             <input type="submit" value="Create Review">
         </form>
     </div>

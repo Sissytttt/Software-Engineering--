@@ -93,17 +93,13 @@
 
 <body>
   <h1>Business Owners I Like</h1>
-  <br>
-  <br>
-  <br>
 
-  {% if error %}
-  <p>{{ error }}</p>
+  {% if message %}
+  <p>{{ message }}</p>
   {% endif %}
 
   {% if bos %}
   <table class="table table-striped">
-    <thead>
       <tr>
         <th>Name</th>
         <th>Company Name</th>
@@ -111,8 +107,6 @@
         <th>Description</th>
         <th>Action</th>
       </tr>
-    </thead>
-    <br>
     <tbody>
       {% for bo in bos %}
       <tr>
