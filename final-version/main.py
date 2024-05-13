@@ -815,7 +815,7 @@ def cancle_register():
         cur = cursor.fetchone()
         
         q_delete_parti = "delete from participate where id = %s; UPDATE events SET current_ppl = %s WHERE id = %s;"
-        cursor.execute(q_delete_parti, (parti, cur - 1, event_id))
+        cursor.execute(q_delete_parti, (parti[0], cur - 1, event_id))
         conn.commit()
         cursor.close()
 
