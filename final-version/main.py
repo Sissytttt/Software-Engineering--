@@ -926,6 +926,7 @@ def registerAuth_bo():
     password = request.form["password"]
     phone_number = request.form["phone_number"]
     city = request.form["city"]
+    description = request.form["description"]
 
     cursor = conn.cursor()
     # check for duplicate owner
@@ -939,8 +940,8 @@ def registerAuth_bo():
         error = "This user already exists"
         return render_template('register/bo_register.html', error=error)
     else:
-        ins = 'INSERT INTO businessowner (email, company_name, name, password, phone_number, city) VALUES (%s, %s, %s, %s, %s, %s)'
-        cursor.execute(ins, (email, company_name, name, password, phone_number, city))
+        ins = 'INSERT INTO businessowner (email, company_name, name, password, phone_number, city, description) VALUES (%s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(ins, (email, company_name, name, password, phone_number, city, description))
         conn.commit()
         cursor.close()
         flash("Register Sucessful!")
