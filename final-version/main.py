@@ -730,7 +730,7 @@ def client_post_event_review():
         event_id = request.form["event_id"]
         content = request.form["content"]
         rating = request.form["rating"]
-        price = request.form["price"]
+        # price = request.form["price"]
 
         cursor = conn.cursor()
 
@@ -762,7 +762,7 @@ def client_post_event_review():
 
 
         ins = 'INSERT INTO review VALUES(%s, %s, %s, %s, %s, %s, CURRENT_DATE())'
-        cursor.execute(ins, (str(review_id + 1), event_id, client_id, content, rating, price))
+        cursor.execute(ins, (str(review_id + 1), event_id, client_id, content, rating))
         conn.commit()
         cursor.close()
         return render_template('/client_home/client_review_successful.html')
