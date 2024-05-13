@@ -23,6 +23,8 @@ CityConnection is a platform to transform the way individuals experience and eng
 3. execute test cases
     (1) test for busienss owner:
         directly execute the "test_business_owner.py", it should expect to pass all the test cases (including any corner cases), and return OK
+    (2) test for client:
+        directly execute the "test_client.py", it should expect to pass all the test cases (including any corner cases), and return OK
 
 4. code documentation
     all code documentation are prepared using Pydoc style. They are documented below each function/class, can be found in main.py and all testing file.
