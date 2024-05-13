@@ -404,7 +404,7 @@ def client_view_bo():
         
         if (view_bo):
             bos_list = [view_bo]
-            return render_template("client_home/client_view_bo.html",bos_list)
+            return render_template("client_home/client_view_bo.html",bos=bos_list)
         else:
             error = "There is an error for the business owner profile"
         return render_template("client_home/client_view_bo.html",error=error)
