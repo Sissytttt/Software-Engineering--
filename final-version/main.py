@@ -594,15 +594,35 @@ def cancle_register():
 # -----------------------------------------------------------
 
 # ----------------------------------------------------------------------
-
+# before resgister
 @app.route('/register_bo')
 def register_business_owner():
+    """
+    Display the register
+    
+    This is an auxiliary function that helps display the business owner register page before authentication.
+
+    Returns:
+        str: Rendered HTML template for the registration page.
+    """
+
     return render_template('register/bo_register.html')
 
-# Authenticates the register
+# Authenticates the register for business owner
 @app.route('/register_auth_bo', methods=['GET', 'POST'])
 def registerAuth_bo():
-    # all required
+    """
+    Authenticates the register
+    
+    Authenticates the registration of a business owner. Extracts required information such as email, company name, name, password, 
+        phone number, and city from the request form. Checks for duplicate owner in the database. If the user already exists, renders 
+        the registration template with an error message. Otherwise, inserts the new business owner's information into the database 
+        and redirects to the index page after successful registration.
+
+    Returns:
+        str: Rendered HTML template for the registration page / homepage.
+    """
+
     email = request.form["email"]
     company_name = request.form["company_name"]
     name = request.form["name"]
@@ -611,7 +631,6 @@ def registerAuth_bo():
     city = request.form["city"]
 
     cursor = conn.cursor()
-    
     # check for duplicate owner
     query = 'SELECT * FROM businessowner WHERE email = %s' 
     cursor.execute(query, (email))
@@ -629,24 +648,48 @@ def registerAuth_bo():
         cursor.close()
         flash("Register Sucessful!")
         return render_template('index.html')
-    
+
+# ----------------------------------------------------------------------    
+# before log in
 @app.route('/login_bo')
 def log_in_business_owner():
+    """
+    Display the log in
+    
+    This is an auxiliary function that helps display the business owner log in page before authentication.
+
+    Returns:
+        str: Rendered HTML template for the log in page.
+    """
     return render_template('log_in/bo_login.html')
 
+
+# Authenticates the log in for business owner
 @app.route('/login_auth_bo', methods=['GET', 'POST'])
 def loginAuth_business_owner():
+    """
+    Authenticates business owner login.
+
+    Retrieves email and password from the form, queries the database
+        to validate credentials, and redirects to the business owner home
+        page if authentication succeeds. Otherwise, renders the login page
+        with an error message.
+
+    :return: Redirects to the business owner home page if login is successful, 
+             otherwise renders the login page with an error message.
+    :rtype: str
+    """
+
     email = request.form["email"] 
     password = request.form['password']
-
     cursor = conn.cursor()
 
     query = 'SELECT * FROM businessowner WHERE email = %s and password = %s'
     cursor.execute(query, (email, password))
     data = cursor.fetchone()
-   
     cursor.close()
     error = None
+
     if (data):
         session['email'] = email
         return redirect(url_for('bo_home'))  
@@ -654,18 +697,54 @@ def loginAuth_business_owner():
         error = 'Invalid username or password'
         return render_template("log_in/bo_login.html", error=error)
     
-# ------------------------------------------------------------
-
+# ----------------------------------------------------------------------
+# after log in
+# bo home page
 @app.route("/bo_home", methods=["GET"])
 def bo_home():
+    """
+    Display the homepage for logged in business owner
+    
+    This function display the business owner homepage if he sucessfully logged in. 
+
+    Returns:
+        str: Rendered HTML template for the bo home page.
+    """
     return render_template("bo_page/bo_home.html")
 
+
+# bo view his event: before view
 @app.route("/bo_view_event_display", methods=["GET","POST"])
 def bo_view_my_event_display():
+    """
+    Display the viw event display page
+    
+    This is an auxiliary function that shows the page that business owner can choose if 
+        he want to display all his event. 
+
+    Returns:
+        str: Rendered HTML template for the bo's event display page.
+    """
     return render_template("bo_page/bo_view_event.html")
 
+
+# bo view his event: after view
 @app.route("/bo_view_event", methods=["GET","POST"])
 def bo_view_my_event():
+    """
+    Displays events owned by the logged-in business owner.
+
+    Retrieves the business owner's email from the session, 
+        obtains the corresponding business owner ID from the database,
+        retrieves events associated with that ID, and renders the 
+        business owner's event view page with the retrieved events 
+        if there are any. Otherwise, renders the page with an error message.
+
+    :return: Renders the business owner's event view page with events 
+             or an error message.
+    :rtype: str
+    """
+
     bo_email = session["email"]
 
     # get this bo_id
@@ -675,6 +754,7 @@ def bo_view_my_event():
     bo_id = cursor.fetchone()["id"]
     cursor.close()
     
+    # display all his event
     cursor = conn.cursor()
     q_get_events = "select e.name, e.time, e.description, e.max_ppl, \
             e.current_ppl, e.score, e.price, p.name as place_name from businessowner b inner join\
@@ -689,12 +769,36 @@ def bo_view_my_event():
         error = "You currently owned no event, please create one!"
         return render_template("bo_page/bo_view_event.html",error=error)
 
+
+# bo search event: before search
 @app.route("/bo_search_event_display", methods=["GET","POST"])
 def bo_search_event_display():
+    """
+    Display the viw event display page
+    
+    This is an auxiliary function that shows the page that business owner can choose the
+        event he want to search. 
+
+    Returns:
+        str: Rendered HTML template for the bo's search event display page.
+    """
     return render_template("bo_page/bo_search_event.html")
 
+
+# bo search event: after search
 @app.route("/bo_search_event_form", methods=["GET","POST"])
 def bo_search_event_form():
+    """
+    Processes the search for events based on user input.
+
+    Retrieves search parameters from the form, constructs and executes 
+        a SQL query to search for events matching the criteria, and renders 
+        the search results or an error message.
+
+    :return: Renders the event search results or an error message.
+    :rtype: str
+    """
+
     if request.method == "POST":
         name = request.form["name"]  # required
         time = request.form["time"]  # required
@@ -703,8 +807,7 @@ def bo_search_event_form():
 
         cursor = conn.cursor()
 
-        # executes query
-
+        # case
         if len(price) == 0:
             if len(score) == 0:
                 query = 'SELECT * FROM events WHERE name like %s and date(time) > %s '
@@ -712,7 +815,6 @@ def bo_search_event_form():
             else:
                 query = 'SELECT * FROM events WHERE like = %s and date(time) > %s  and score > %s '
                 cursor.execute(query, ("%"+name+"%", time, score))
-
         else:
             if len(score) == 0:
                 query = 'SELECT * FROM events WHERE name like %s and date(time) > %s and price < %s'
@@ -721,21 +823,36 @@ def bo_search_event_form():
                 query = 'SELECT * FROM events WHERE name like %s and date(time) > %s and score > %s and price < %s'
                 cursor.execute(query, ("%"+name+"%", time, score, price))
 
+        # get result
         data = cursor.fetchall() 
         cursor.close()
         error = None
+
         if (data):
             return render_template("bo_page/bo_search_event.html", events=data) 
         else:
             error = 'No such event'
             return render_template("bo_page/bo_search_event.html", error=error)
-    
-# when front end finished, add the bo log out, and title as bo greeting
-    
+        
 
+# bo create an event
 @app.route("/bo_create_event_form", methods=["GET", "POST"])
 def bo_create_event_form():
-    # Fetch place names from the database
+    """
+    Handles the creation of new events by business owners.
+
+    Fetches available place names from the database and display as 
+        multiple choice, so that no unpermitted place name
+        is allowed for manual input. Retrieves event details 
+        from the form, validates the input, and inserts a new event 
+        record into the database if validation passes. Renders 
+        the home page with a success message or an error message 
+        if event creation fails.
+
+    :return: Renders the home page with a success message or an error message.
+    :rtype: str
+    """
+    # fetch place names from the database
     cursor = conn.cursor()
     cursor.execute("select name from place")
     place_names = [row for row in cursor.fetchall()]
@@ -751,7 +868,6 @@ def bo_create_event_form():
         event_score = 0
         event_price = request.form["e_price"]
         event_place = request.form["e_place"]
-        event_owner = bo_email
 
         # get this bo_id
         cursor = conn.cursor()
@@ -779,6 +895,7 @@ def bo_create_event_form():
             error =  "Failed! Event already exists!"
             return render_template("bo_page/bo_home.html", error=error)
         else:
+            # create record
             cursor = conn.cursor()
             q_create_event = "INSERT INTO events (name, time, description, max_ppl, current_ppl, score, price, place_id, owner_id) \
                 VALUES (%s, %s, %s, %s, %s, %s, %s, (SELECT id FROM place WHERE name = %s), %s)"
@@ -792,10 +909,44 @@ def bo_create_event_form():
     return render_template("bo_page/bo_create_event.html", place_names=place_names)
 
 
+# help function for page refresh after event is deleted/modified
+def refresh_event(bo_email):
+    """
+    Get updated event information
+    
+    This is a help function that helps to fetech the updated event information,
+        if there is any delete or modification to event, and thus facilitate page refresh.
+
+    Returns:
+        tuple: a tuple of dictionary for events retreived
+    """
+    cursor = conn.cursor()
+    q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
+        from events e join place p on p.id = e.place_id where e.owner_id = (select distinct id from businessowner where email = %s)"
+    cursor.execute(q_get_events, (bo_email,))
+    events = cursor.fetchall()
+    cursor.close()
+    return events
+
+
+# bo delete an event
 @app.route("/bo_delete_event_form", methods=["GET", "POST"])
 def bo_delete_event_form():
-    bo_email = session["email"]
-        
+    """
+    Handles the deletion of events by business owners.
+
+    Retrieves events owned by the logged-in business owner so that he
+        is assisted with a visual panel to choose which event to delete (no additional search),
+        deletes the selected event from the database upon form submission,
+        and renders the delete event form with a success message or 
+        refreshes the event list if deletion is successful.
+
+    :return: Renders the delete event form with events or a success message.
+    :rtype: str
+    """
+    # identify the current user
+    bo_email = session["email"] 
+    
     # list all event this bo has
     cursor = conn.cursor()
     q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
@@ -815,24 +966,30 @@ def bo_delete_event_form():
 
         message = "Event deleted successfully."
 
+        # refresh the page
         events = refresh_event(bo_email)
-        # redirect to same page to refresh event list
         return render_template("bo_page/bo_delete_event_form.html",  events = events, message = message)
 
     # render the delete event page with events owned by the business owner
     return render_template("bo_page/bo_delete_event_form.html", events=events)
 
-def refresh_event(bo_email):
-    cursor = conn.cursor()
-    q_get_events = "select e.id, e.name, e.time, e.description, e.max_ppl, e.current_ppl, e.score, e.price, p.name as place_name \
-        from events e join place p on p.id = e.place_id where e.owner_id = (select distinct id from businessowner where email = %s)"
-    cursor.execute(q_get_events, (bo_email,))
-    events = cursor.fetchall()
-    cursor.close()
-    return events
 
+# modify event from bo
 @app.route("/bo_modify_event_form", methods=["GET", "POST"])
 def bo_modify_event_form():
+    """
+    Handles the modification of events by business owners.
+
+    Retrieves events owned by the logged-in business owner,
+        modifies the selected event and event parameter based on user input.
+        If the bo want to modify event name, duplicate check is initiated to
+        ensure no duplicate event name can exists. Then the function renders
+        the modify event form with a success message or an error message.
+
+    :return: Renders the modify event form with events or a success message.
+    :rtype: str
+    """
+        
     bo_email = session["email"]
 
     # list all his event
@@ -844,14 +1001,17 @@ def bo_modify_event_form():
     cursor.close()
     
     if request.method == "POST":
+        # get event, evnt parameter, and respective value to modify
         event_name = request.form["event_name"]
         parameter_to_modify = request.form["parameter_to_modify"]
         new_value = request.form["new_value"]
         new_time = request.form["new_time"]
 
+        # handle different input type for time
         if parameter_to_modify == 'time':
             new_value = new_time
 
+        # once update event name, check for duplicate
         if parameter_to_modify == 'name':
             cursor = conn.cursor()
             q_n_event= "SELECT * FROM events WHERE name = %s"
@@ -866,7 +1026,6 @@ def bo_modify_event_form():
                 return render_template("bo_page/bo_modify_event.html", evemts=events, message=error, event_name=event_name)
             # modify
             else:
-
                 cursor = conn.cursor()
                 q_modify_event = f"update events set {parameter_to_modify} = %s where name = %s"
                 cursor.execute(q_modify_event, (new_value, event_name))
@@ -876,7 +1035,7 @@ def bo_modify_event_form():
                 message = "Event modified sucesfully!"
                 events = refresh_event(bo_email)
                 return render_template("bo_page/bo_modify_event.html", events=events, message=message, event_name=event_name)
-
+        # if not modify name, then direct modify the value
         else:
             cursor = conn.cursor()
             q_modify_event = f"update events set {parameter_to_modify} = %s where name = %s"
@@ -886,31 +1045,27 @@ def bo_modify_event_form():
 
             message = "Event modified sucesfully!"
             events = refresh_event(bo_email)
-            
             return render_template("bo_page/bo_modify_event.html", events=events, message=message, event_name=event_name)
     
     events = refresh_event(bo_email)
     return render_template("bo_page/bo_modify_event.html", events=events)
 
- # # Redirect to the same page to refresh event list
-        # return redirect(url_for("bo_modify_event"))
 
-    # Render the modify event page with events owned by the business owner
-
-
+# ----------------------------------------------------------------------
+# bo log out
 @app.route('/bo_logout')
 def bo_logout():
+    """
+    Define the log out function for business owner
+    
+    This function pops out the current user session if log out is clicked,
+        then redirect to the main menu before log in.
+
+    Returns:
+        str: Rendered HTML template for the general home page.
+    """
     session.pop('email')
     return render_template('/index.html')
-
-
-app.secret_key = 'some key that you will never guess'
-# Run the app on localhost port 5000
-# debug = True -> you don't have to restart flask
-# for changes to go through, TURN OFF FOR PRODUCTION
-if __name__ == "__main__":
-    app.run('127.0.0.1', 5000, debug=True)
-
 
 # -----------------------------------------------------------
 # ------------------------------------------------------------
