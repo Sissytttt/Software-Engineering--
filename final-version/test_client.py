@@ -150,88 +150,205 @@ class TestClientApp(unittest.TestCase):
             session['email'] = 'test@example.com'
 
         response = self.app.post('/register_event', data=dict(
+            event_id='7'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_client_register_event_again(self):
+        # assume a logged-in session
+        """
+        Test case for registering an event.
+
+        Simulates an event register attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/register_event', data=dict(
+            event_id='7'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_client_view_event_bo(self):
+        # assume a logged-in session
+        """
+        Test case for viewing the business owner profile of an event.
+
+        Simulates an view bo profile attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_view_bo', data=dict(
+            event_id='7'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_client_follow_bo(self):
+        # assume a logged-in session
+        """
+        Test case for viewing the business owner profile of an event.
+
+        Simulates an follow bo attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_follow_bo', data=dict(
+            bo_id='1'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_client_follow_bo_again(self):
+        # assume a logged-in session
+        """
+        Test case for corner case when the business owner is already followed by the client,
+            the app will not crash.
+
+        Simulates an follow bo attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_follow_bo', data=dict(
+            bo_id='1'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_client_search_place_form(self):
+        # assume a logged-in session
+        """
+        Test case for searching places by a client.
+
+        Simulates an place search attempt and checks if the response
+        status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_search_place_form', data=dict(
+            name='Yu Garden',
+            city='Shanghai'
+        ))
+        self.assertEqual(response.status_code, 200)
+    
+    def test_client_search_place_form_no_such_place(self):
+        # assume a logged-in session
+        """
+        Test case for corner case when searching places that doesn't exist,
+            the app will not crash.
+
+        Simulates an place search attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_search_place_form', data=dict(
             name='No such event',
-            time='2000-05-14',
-            score = '0',
-            price = '10'
+            city='Test city'
         ))
         self.assertEqual(response.status_code, 200)
 
-
-    def test_bo_view_my_event(self):
+    def test_client_label_place(self):
+        # assume a logged-in session
         """
-        Test case for viewing events owned by a business owner.
+        Test case for labeling a place into an event's map.
 
-        Simulates viewing owned events and checks if the response
+        Simulates an label place attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_label_place_to_map', data=dict(
+            place_id='7'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_client_label_place_again(self):
+        # assume a logged-in session
+        """
+        Test case for corner case when the place is already added to the client's map,
+            the app will not crash.
+
+        Simulates an label place attempt and checks if the response
+            status code is as expected.
+        """
+        with self.app.session_transaction() as session:
+            session['email'] = 'test@example.com'
+
+        response = self.app.post('/client_label_place_to_map', data=dict(
+            place_id='7'
+        ))
+        self.assertEqual(response.status_code, 200)
+
+    def test_client_view_posted_reviews(self):
+        """
+        Test case for viewing reviews posted by a client.
+
+        Simulates viewing posted reviews and checks if the response
             status code is as expected.
         """
         # assume a logged-in session
         with self.app.session_transaction() as session:
             session['email'] = 'test@example.com'
 
-        response = self.app.get('/bo_view_event')
+        response = self.app.get('/client_view_review')
         self.assertEqual(response.status_code, 200)
 
-
-    def test_bo_modify_event_form(self):
+    def test_client_view_posted_reviews_delete_reviews(self):
         """
-        Test case for modifying an event by a business owner.
+        Test case for deleting reviews posted by a client.
 
-        Simulates modifying an event and checks if the response
+        Simulates deleting posted reviews and checks if the response
             status code is as expected.
         """
         # assume a logged-in session
         with self.app.session_transaction() as session:
             session['email'] = 'test@example.com'
 
-        response = self.app.post('/bo_modify_event_form', data=dict(
-            event_name='New Event',
-            parameter_to_modify='score',
-            new_value='1' ,
-            new_time = '2024-5-11' 
+        response = self.app.post('/client_delete_review', data=dict(
+            review_id='2'
         ))
         self.assertEqual(response.status_code, 200)
 
-
-    def test_bo_modify_event_duplicate_name_form(self):
+    def test_client_view_event(self):
         """
-        Test case for modifying an event with a duplicate name by a business owner, 
-            encountering the corner case will not crash the app.
+        Test case for viewing any events a client has RSVPed.
 
-        Simulates modifying an event with a name that already exists and checks
-            if the response status code is as expected.
+        Simulates viewing rsvped events and checks if the response
+            status code is as expected.
         """
         # assume a logged-in session
         with self.app.session_transaction() as session:
             session['email'] = 'test@example.com'
 
-        response = self.app.post('/bo_modify_event_form', data=dict(
-            event_name='New Event',
-            parameter_to_modify='name',
-            new_value='New Event' ,
-            new_time = '2024-5-11' 
-        ))
+        response = self.app.post('/client_view_event')
         self.assertEqual(response.status_code, 200)
 
-
-    def test_bo_delete_event_form(self):
-        """
-        Test case for deleting an event by a business owner.
-            Since our front end only displays events that's available,
-            so no corner case in delete event, like delete an unexisted event,
-            as such event will not be displayed to bo on front end.
-
-        Simulates deleting an event and checks if the response status
-            code is as expected.
-        """
+    def test_client_post_review(self):
         # assume a logged-in session
+        """
+        Test case when the client wants to post a review for an event.
+
+        Simulates an post review attempt and checks if the response
+            status code is as expected.
+        """
         with self.app.session_transaction() as session:
             session['email'] = 'test@example.com'
 
-        response = self.app.post('/bo_delete_event_form', data=dict(
-            event_id='1'
+        response = self.app.post('/client_post_review', data=dict(
+            event_id='7',
+            content='Test content',
+            rating='5'
         ))
         self.assertEqual(response.status_code, 200)
+
 
     
 # start test
