@@ -2,7 +2,7 @@ import unittest
 from main import app
 
 
-class TestBoApp(unittest.TestCase):
+class TestClientApp(unittest.TestCase):
     """
     Unit tests for the business owner part of the app, starting from register.
 
@@ -31,14 +31,14 @@ class TestBoApp(unittest.TestCase):
 
     # start testing --------------------------------------------------
 
-    def test_registerAuth_bo(self):
+    def test_registerAuth_client(self):
         """
-        Test case for business owner registration authentication.
+        Test case for client registration authentication.
 
         Simulates a registration attempt and checks if the response status
             code is as expected.
         """
-        response = self.app.post('/register_auth_bo', data=dict(
+        response = self.app.post('/register_auth_client', data=dict(
             email='test@example.com',
             company_name='Test Company',
             name='Test User',
@@ -49,15 +49,15 @@ class TestBoApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_registerAuth_duplicate_bo(self):
+    def test_registerAuth_duplicate_client(self):
         """
-        Test case for corner case business owner registration authentication,
+        Test case for corner case client registration authentication,
             when a duplicate name is registered, the app will not crash.
 
         Simulates a registration attempt and checks if the response status
             code is as expected.
         """
-        response = self.app.post('/register_auth_bo', data=dict(
+        response = self.app.post('/register_auth_client', data=dict(
             email='test@example.com',
             company_name='Test Company',
             name='Test User',
@@ -68,36 +68,36 @@ class TestBoApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_loginAuth_business_owner(self):
+    def test_loginAuth_client(self):
         """
-        Test case for business owner login authentication.
+        Test case for client login authentication.
 
         Simulates a login attempt and checks if the response status code
         is as expected.
         """
-        response = self.app.post('/login_auth_bo', data=dict(
+        response = self.app.post('/login_auth_client', data=dict(
             email='test@example.com',
             password='password'
         ), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
 
-    def test_loginAuth_business_owner_false_credential(self):
+    def test_loginAuth_client_false_credential(self):
         """
-        Test case for corner case when business owner login input false credential,
+        Test case for corner case when client login input false credential,
             the app will not crash.
 
         Simulates a login attempt and checks if the response status code
         is as expected.
         """
-        response = self.app.post('/login_auth_bo', data=dict(
+        response = self.app.post('/login_auth_client', data=dict(
             email='t@e.com',
             password='fasle_password'
         ), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
 
-    def test_bo_create_event_form(self):
+    def test_client_search_event(self):
         """
         Test case for creating an event by a business owner.
 
