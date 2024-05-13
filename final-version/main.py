@@ -190,7 +190,7 @@ def registerAuth_client():
         error = "This user already exists"
         return render_template('register/client_register.html', error=error)
     else:
-        ins = 'INSERT INTO businessowner (email, name, password, phone_number, city) VALUES (%s, %s, %s, %s, %s)'
+        ins = 'INSERT INTO client (email, name, password, phone_number, city) VALUES (%s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, name, password, phone_number, city))
         conn.commit()
         cursor.close()
