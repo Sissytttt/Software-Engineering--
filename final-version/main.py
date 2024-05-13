@@ -783,10 +783,10 @@ def cancle_register():
 
 @app.route('/client_view_follow', methods=['GET', 'POST'])
 def get_following():
-    following_id = request.form["following_id"]
+    email = session["email"]
     cursor = conn.cursor()
-    query = 'SELECT prime_id FROM follow WHERE following_id = %s'
-    cursor.execute(query, (following_id))
+    query = 'SELECT prime_id FROM follow as f, client as c WHERE c.email = %s AND c.id = f.following_id'
+    cursor.execute(query, (email))
     data = cursor.fetchall()
     cursor.close()
     
@@ -796,7 +796,7 @@ def get_following():
 @app.route('/client_unfollow_bo', methods=['GET', 'POST'])
 def unfollow():
     business_owner = request.form["id"]
-    email = request.form["email"]
+    email = session["email"]
     
     cursor = conn.cursor()
 
