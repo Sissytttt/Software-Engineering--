@@ -30,7 +30,152 @@ def register():
 def login():
     return render_template("log_in/log_in.html")
 
+# ---------------------------------------------------------------
+# --------------------------------------------------------------
+# public search event: before search
+@app.route("/public_event_search", methods=["GET","POST"])
+def public_search_event_display():
+    """
+    Display the viw event display page
+    
+    This is an auxiliary function that shows the page that anyone can choose the event he want to search before login. 
 
+    Returns:
+        str: Rendered HTML template for the search event display page.
+    """
+    return render_template("public_search_event.html")
+
+
+# bo search event: after search
+@app.route("/public_search_event_form", methods=["GET","POST"])
+def public_search_event_form():
+    """
+    Processes the search for events based on user input.
+
+    Retrieves search parameters from the form, constructs and executes 
+        a SQL query to search for events matching the criteria, and renders 
+        the search results or an error message.
+
+    :return: Renders the event search results or an error message.
+    :rtype: str
+    """
+
+    if request.method == "POST":
+        name = request.form["name"]  # required
+        time = request.form["time"]  # required
+        score = request.form["score"] # optional
+        price = request.form["price"] # optional
+
+        cursor = conn.cursor()
+
+        # case
+        if len(price) == 0:
+            if len(score) == 0:
+                query = 'SELECT * FROM events WHERE name like %s and date(time) > %s '
+                cursor.execute(query, ("%"+name+"%", time))
+            else:
+                query = 'SELECT * FROM events WHERE like = %s and date(time) > %s  and score > %s '
+                cursor.execute(query, ("%"+name+"%", time, score))
+        else:
+            if len(score) == 0:
+                query = 'SELECT * FROM events WHERE name like %s and date(time) > %s and price < %s'
+                cursor.execute(query, ("%"+name+"%", time, price))
+            else:
+                query = 'SELECT * FROM events WHERE name like %s and date(time) > %s and score > %s and price < %s'
+                cursor.execute(query, ("%"+name+"%", time, score, price))
+
+        # get result
+        data = cursor.fetchall() 
+        cursor.close()
+        error = None
+
+        if (data):
+            return render_template("public_search_event.html", events=data) 
+        else:
+            error = 'No such event'
+            return render_template("public_search_event.html", error=error)
+
+# public search place: before search
+@app.route("/public_place_search", methods=['GET', 'POST'])
+def public_search_place_display():
+    """
+    Display the viw place display page
+    
+    This is an auxiliary function that shows the page that anyone can choose the event he want to search before login. 
+
+    Returns:
+        str: Rendered HTML template for the search event display page.
+    """
+    return render_template('public_search_place.html')
+
+
+@app.route('/public_search_place_form', methods=['GET', 'POST'])
+def public_search_place_form():
+    """
+    Processes the search for places based on user input.
+
+    Retrieves search parameters from the form, constructs and executes 
+        a SQL query to search for places matching the criteria, and renders 
+        the search results or an error message.
+
+    :return: Renders the place search results or an error message.
+    :rtype: str
+    """
+
+    city = request.form["city"]  # required
+    name = request.form["name"]  # required
+
+    cursor = conn.cursor()
+
+    query = 'SELECT * FROM place WHERE name = %s and city = %s '
+    cursor.execute(query, (name, city))
+
+    data = cursor.fetchall() 
+    cursor.close()
+    error = None
+    # if data is not none
+    if (data):
+        return render_template("public_search_place.html", places=data)  # a url in app.route
+    else:
+        error = 'no such place'
+        return render_template("public_search_place.html", error=error)
+      
+
+# view map
+@app.route("/public_view_map", methods=['GET', 'POST'])
+def public_view_map():
+    return render_template('/client_home/view_map.html')
+
+
+@app.route('/view_map', methods=['GET', 'POST'])
+def view_map():
+    username = request.form["username"]  # now required to fill in
+
+    cursor = conn.cursor()
+
+    # executes query
+    query = 'SELECT p.website FROM place as p, map as m, client as c WHERE c.username = %s '\
+            'and c.id = m.client_id and p.id = m.place_id'
+    cursor.execute(query, (username))
+
+    # stores the results in a variable
+    # fetchone 即每次只读一行
+    data = cursor.fetchall()  # list(dict())
+    # use fetchall() if you are expecting more than 1 data row
+    cursor.close()
+    error = None
+    # if data is not none
+    if len(data) > 0:
+        # creates a session for the the user
+        # 创造一个会话
+        # session is a built in
+        return render_template("/client_home/view_map.html", posts=data)  # a url in app.route
+    if len(data) == 0:
+        # returns an error message to the html page
+        error = 'no such place'
+        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
+        return render_template("/client_home/view_map.html", error=error)
+   
 # -----------------------------------------------------------
 # --------------------------------------------------------------
 # before resgister
@@ -136,120 +281,6 @@ def loginAuth_client():
         return render_template("log_in/client_login.html", error=error)
     
 # ----------------------------------------------------------------------    
-# search
-@app.route("/public_place_search", methods=['GET', 'POST'])
-def public_place_search():
-    return render_template('/place_search.html')
-
-
-@app.route('/client_search_place_form', methods=['GET', 'POST'])
-def place_search():
-    city = request.form["city"]  # now required to fill in
-    name = request.form["name"]  # now required to fill in    type str
-
-    cursor = conn.cursor()
-
-    # executes query
-
-    if len(city) == 0:
-        query = 'SELECT * FROM place WHERE name = %s '
-        cursor.execute(query, (name))
-
-    else:
-        query = 'SELECT * FROM place WHERE name = %s and city = %s '
-        cursor.execute(query, (name, city))
-
-    # stores the results in a variable
-    # fetchone 即每次只读一行
-    data = cursor.fetchall()  # list(dict())
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
-    # if data is not none
-    if len(data) > 0:
-        # creates a session for the the user
-        # 创造一个会话
-        # session is a built in
-        return render_template("/client_home/place_search.html", posts=data)  # a url in app.route
-    if len(data) == 0:
-        # returns an error message to the html page
-        error = 'no such place'
-        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("/client_home/place_search.html", error=error)
-      
-@app.route("/public_event_search", methods=['GET', 'POST'])
-def public_event_search():
-    return render_template('/client_home/event_search.html')
-
-
-@app.route('/client_search_event_form', methods=['GET', 'POST'])
-def event_search():
-    name = request.form["name"]  # now required to fill in    type str
-    time = request.form["time"]  # required
-    score = request.form["score"] # optional
-    price = request.form["price"] # optional
-
-    cursor = conn.cursor()
-
-    if len(price) == 0:
-        if len(score) == 0:
-            query = 'SELECT * FROM event WHERE name = %s and time > %s '
-            cursor.execute(query, (name, time))
-        else:
-            query = 'SELECT * FROM event WHERE name = %s and time > %s  and score > %s '
-            cursor.execute(query, (name, time, score))
-    else:
-        if len(score) == 0:
-            query = 'SELECT * FROM event WHERE name = %s and time > %s and price < %s'
-            cursor.execute(query, (name, time, price))
-        else:
-            query = 'SELECT * FROM event WHERE name = %s and time > %s and score > %s and price < %s'
-            cursor.execute(query, (name, time, score, price))
-
-    data = cursor.fetchall()
-    cursor.close()
-    error = None
-    if len(data) > 0:
-        return render_template("/client_home/event_search.html", posts=data)
-    if len(data) == 0:
-        error = 'no such event'
-        return render_template("/client_home/event_search.html", error=error)
-
-# view map
-@app.route("/public_view_map", methods=['GET', 'POST'])
-def public_view_map():
-    return render_template('/client_home/view_map.html')
-
-
-@app.route('/view_map', methods=['GET', 'POST'])
-def view_map():
-    username = request.form["username"]  # now required to fill in
-
-    cursor = conn.cursor()
-
-    # executes query
-    query = 'SELECT p.website FROM place as p, map as m, client as c WHERE c.username = %s '\
-            'and c.id = m.client_id and p.id = m.place_id'
-    cursor.execute(query, (username))
-
-    # stores the results in a variable
-    # fetchone 即每次只读一行
-    data = cursor.fetchall()  # list(dict())
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
-    # if data is not none
-    if len(data) > 0:
-        # creates a session for the the user
-        # 创造一个会话
-        # session is a built in
-        return render_template("/client_home/view_map.html", posts=data)  # a url in app.route
-    if len(data) == 0:
-        # returns an error message to the html page
-        error = 'no such place'
-        # 用于返回静态页面，同时可以实现参数传递，render_template函数会自动在templates文件夹中找到对应的html，因此我们不用写完整的html文件路径
-        return render_template("/client_home/view_map.html", error=error)
-   
 
 # --------------------------------------------------------------------------
 # --------------------------------------------------------------------------  

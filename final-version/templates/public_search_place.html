@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Place Search</title>
+
+    <!-- Link to Google Fonts - Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS (for button styles) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Montserrat", sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            color: #333;
+        }
+
+        h2 {
+            padding-top: 70px;
+            text-align: center;
+            margin-bottom: 0px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            /* background: #fff; */
+            padding: 20px;
+            /* border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            background: linear-gradient(135deg, #FFB38E, #FF9662);
+            /* Orange gradient */
+            color: #fff;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(135deg, #FF9662, #ff9e6e);
+            /* Darker orange gradient on hover */
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        .btn-group {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+            color: #333;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Additional Styles */
+        .logo-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .logo-container img {
+            width: 100px;
+            height: auto;
+        }
+
+        /* Custom styling for table and action button */
+        .table-title {
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .action-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo-container">
+        <img src="../logo.png" alt="Logo">
+    </div>
+
+    <h2>Search for Places</h2>
+    <!-- {% if error %}
+    <p>{{ error }}</p>
+    {% endif %} -->
+
+    <form action="/public_search_place_form" method="POST">
+        <label for="name">Place Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="city">In this City:</label>
+        <input type="text" id="city" name="city" required>
+
+        <input type="submit" value="Search">
+    </form>
+
+    {% if places %}
+    <h2 class="table-title">Places from your search</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Longitude</th>
+            <th>Latitude</th>
+            <th>City</th>
+            <th>Action</th>
+        </tr>
+        {% for place in places %}
+        <tr>
+            <td>{{ place.name }}</td>
+            <td>{{ place.location_long }}</td>
+            <td>{{ place.location_lati }}</td>
+            <td>{{ place.city }}</td>
+            <td>
+                <form action="/client_label_place_to_map" method="POST">
+                    <input type="hidden" name="place_id" value="{{ place.id }}">
+                    <button type="submit" class="action-button">Add to Map</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <div class="btn-group">
+        <a href="/client_home" class="btn btn-outline-dark" aria-current="page">Back to Home</a>
+        <a href="/client_logout" class="btn btn-outline-dark">Log Out</a>
+    </div>
+
+</body>
+
+</html>
