@@ -113,7 +113,13 @@
       </tr>
     </thead>
     <tbody>
-      {% for place in places %}
+      <tr>
+        <td>The Bund</td>
+        <td>121.48560</td>
+        <td>31.23660</td>
+        <td>Shanghai</td>
+        <td>
+      <!-- {% for place in places %}
       <br>
       <br>
       <br>
@@ -122,7 +128,7 @@
         <!-- <td>{{ place["website"] }}</td> -->
         <td>{{ place["longitude"] }}</td>
         <td>{{ place["latitude"] }}</td>
-        <td>
+        <td> -->
           <form action="/client_unlike_place" method="POST">
             <input type="hidden" name="place_id" value="{{ place.id }}">
             <button type="submit" class="btn-unlike">Unlike Place</button>
