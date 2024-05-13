@@ -924,13 +924,13 @@ def unlabel():
     conn.commit()
 
 
-@app.route('/logout')
-def logout():
+@app.route('/client_logout')
+def client_logout():
     session.pop('email')
     return render_template('/index.html')
 
 @app.route('/client_home')
-def logout():
+def client_home():
     session.pop('email')
     return render_template('/index.html')   
 # -----------------------------------------------------------
