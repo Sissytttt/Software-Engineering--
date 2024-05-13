@@ -108,19 +108,13 @@
     <img src="../logo.png" alt="Logo">
   </div>
   <h1>Reviews You Posted</h1>
-  <br>
-  <br>
-  <div class="btn-group">
-    <a href="/client_view_review_form" class="btn btn-view-reviews">View My Reviews</a>
-  </div>
 
   {% if error %}
   <p>{{ error }}</p>
   {% endif %}
 
   {% if reviews %}
-  <br>
-  <br>
+
   <table class="table table-striped">
     <thead>
       <tr>
